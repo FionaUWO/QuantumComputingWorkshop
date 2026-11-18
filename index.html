@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quantum Computing Workshop | Q-AICON Lab, Western University</title>
+<meta name="description" content="Eight one-hour lectures on quantum computing for undergraduates in mathematics, run by the Q-AICON Lab at Western University.">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="logo" href="index.html"><img src="assets/img/lab-logo.png" alt="" width="38" height="38">Quantum Workshop</a>
+    <nav class="site-nav" aria-label="Site">
+      <a href="#parts">Programme</a>
+      <a href="#lectures">Lectures</a>
+      <a href="playground/index.html">Playground</a>
+      <a href="#lab">The lab</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div data-reveal>
+        <h1>Quantum Computing Workshop</h1>
+        <p class="lede">Eight one-hour lectures for mathematics undergraduates at Western University. We start from a single qubit and reach Shor's algorithm, QAOA and quantum error correction.</p>
+        <div class="actions">
+          <a class="btn" href="lectures/01-qubit.html">Start lecture 1</a>
+          <a class="btn btn-quiet" href="playground/index.html">Open the playground</a>
+        </div>
+        <ul class="facts">
+          <li><b data-count="8">8</b> lectures</li>
+          <li><b data-count="60">60</b> minutes each</li>
+          <li><b data-count="8">8</b> browser simulations</li>
+          <li><b>0</b> physics courses required</li>
+        </ul>
+      </div>
+      <figure class="hero-live" style="margin:0 auto">
+        <canvas id="hero-qubit" role="img" aria-label="A qubit state moving over the surface of the Bloch sphere"></canvas>
+        <figcaption>One qubit, drawn live. Move the pointer over it.</figcaption>
+      </figure>
+    </div>
+    <div class="wrap hero-art" aria-hidden="true">
+      <svg viewBox="0 0 980 230" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <g stroke="#24123f" stroke-width="2">
+          <path d="M40 50h900M40 115h900M40 180h900"/>
+          <path d="M330 50v130M520 115v65M700 50v65"/>
+        </g>
+        <g fill="#4f2683">
+          <circle class="pulse" style="--i:0" cx="40" cy="50" r="6"/>
+          <circle class="pulse" style="--i:1" cx="40" cy="115" r="6"/>
+          <circle class="pulse" style="--i:2" cx="40" cy="180" r="6"/>
+        </g>
+        <g font-family="Inter, sans-serif" font-weight="600" font-size="22" text-anchor="middle">
+          <g class="gate" style="--i:0"><rect x="120" y="26" width="48" height="48" rx="8" fill="#4f2683"/><text x="144" y="58" fill="#fff">H</text></g>
+          <g class="gate" style="--i:1"><rect x="120" y="91" width="48" height="48" rx="8" fill="#4f2683"/><text x="144" y="123" fill="#fff">H</text></g>
+          <g class="gate" style="--i:2"><rect x="120" y="156" width="48" height="48" rx="8" fill="#4f2683"/><text x="144" y="188" fill="#fff">H</text></g>
+          <g class="gate" style="--i:3"><rect x="230" y="91" width="48" height="48" rx="8" fill="#807f83"/><text x="254" y="123" fill="#fff">T</text></g>
+          <g class="gate" style="--i:5"><rect x="420" y="26" width="48" height="48" rx="8" fill="#b9a3dc"/><text x="444" y="58" fill="#24123f">Z</text></g>
+          <g class="gate" style="--i:7"><rect x="600" y="26" width="48" height="48" rx="8" fill="#807f83"/><text x="624" y="58" fill="#fff">X</text></g>
+          <g class="gate" style="--i:7"><rect x="600" y="156" width="48" height="48" rx="8" fill="#b9a3dc"/><text x="624" y="188" fill="#24123f">S</text></g>
+        </g>
+        <g class="gate" style="--i:4"><circle cx="330" cy="50" r="7" fill="#24123f"/><circle cx="330" cy="180" r="13" fill="#f6f4fa" stroke="#24123f" stroke-width="2"/><path d="M317 180h26M330 167v26" stroke="#24123f" stroke-width="2"/></g>
+        <g class="gate" style="--i:6"><circle cx="520" cy="115" r="7" fill="#24123f"/><circle cx="520" cy="180" r="13" fill="#f6f4fa" stroke="#24123f" stroke-width="2"/><path d="M507 180h26M520 167v26" stroke="#24123f" stroke-width="2"/></g>
+        <g class="gate" style="--i:8"><circle cx="700" cy="50" r="7" fill="#24123f"/><circle cx="700" cy="115" r="13" fill="#f6f4fa" stroke="#24123f" stroke-width="2"/><path d="M687 115h26M700 102v26" stroke="#24123f" stroke-width="2"/></g>
+        <g class="gate" style="--i:9"><rect x="800" y="26" width="56" height="48" rx="8" fill="#fff" stroke="#24123f" stroke-width="2"/><path d="M812 64a16 16 0 0 1 32 0M828 64l10-18" stroke="#4f2683" stroke-width="3"/></g>
+        <g class="gate" style="--i:10"><rect x="800" y="91" width="56" height="48" rx="8" fill="#fff" stroke="#24123f" stroke-width="2"/><path d="M812 129a16 16 0 0 1 32 0M828 129l-6-19" stroke="#4f2683" stroke-width="3"/></g>
+        <g class="gate" style="--i:11"><rect x="800" y="156" width="56" height="48" rx="8" fill="#fff" stroke="#24123f" stroke-width="2"/><path d="M812 194a16 16 0 0 1 32 0M828 194l12-15" stroke="#4f2683" stroke-width="3"/></g>
+      </svg>
+    </div>
+  </section>
+
+  <section class="section" id="parts">
+    <div class="wrap">
+      <div class="sec-head" data-reveal>
+        <h2>Four parts, two lectures each</h2>
+        <p>Each part needs only the ones before it. Pick one to see what it covers.</p>
+      </div>
+
+      <div class="stepper" role="tablist" aria-label="Parts of the workshop">
+        <button type="button" role="tab" id="tab-1" aria-controls="part-1" aria-selected="true">Foundations</button>
+        <button type="button" role="tab" id="tab-2" aria-controls="part-2" aria-selected="false" tabindex="-1">Algorithms</button>
+        <button type="button" role="tab" id="tab-3" aria-controls="part-3" aria-selected="false" tabindex="-1">Variational methods</button>
+        <button type="button" role="tab" id="tab-4" aria-controls="part-4" aria-selected="false" tabindex="-1">Error correction</button>
+      </div>
+
+      <div class="split" role="tabpanel" id="part-1" aria-labelledby="tab-1">
+        <div>
+          <h3>Qubits are vectors, gates are unitary matrices</h3>
+          <p>We replace probability vectors with complex amplitudes and stochastic matrices with unitaries. Entanglement appears as soon as there are two qubits.</p>
+          <ul class="icon-list">
+            <li>Lecture 1: states, the Born rule, the Bloch sphere</li>
+            <li>Lecture 2: tensor products, Bell states, teleportation</li>
+          </ul>
+          <a class="btn" href="lectures/01-qubit.html">Start lecture 1</a>
+        </div>
+        <div class="art-stack"><div class="art" data-art="bloch"></div></div>
+      </div>
+
+      <div class="split" role="tabpanel" id="part-2" aria-labelledby="tab-2" hidden>
+        <div>
+          <h3>Interference, arranged so that wrong answers cancel</h3>
+          <p>Grover's search is a rotation in a two-dimensional plane. Shor's factoring is Fourier analysis on a cyclic group. Both fit on one blackboard once the linear algebra is in place.</p>
+          <ul class="icon-list">
+            <li>Lecture 3: oracles, Deutsch–Jozsa, Grover search</li>
+            <li>Lecture 4: the quantum Fourier transform, phase estimation, Shor</li>
+          </ul>
+        </div>
+        <div class="art-stack"><div class="art" data-art="grover"></div></div>
+      </div>
+
+      <div class="split" role="tabpanel" id="part-3" aria-labelledby="tab-3" hidden>
+        <div>
+          <h3>Optimisation problems written as Hamiltonians</h3>
+          <p>MaxCut becomes the question of finding the lowest eigenvalue of a diagonal matrix. QAOA searches for it with a short parametrised circuit and a classical optimiser. This is the part closest to the lab's own research.</p>
+          <ul class="icon-list">
+            <li>Lecture 5: observables, the variational principle, MaxCut</li>
+            <li>Lecture 6: QAOA and what limits it</li>
+          </ul>
+        </div>
+        <div class="art-stack"><div class="art" data-art="maxcut"></div></div>
+      </div>
+
+      <div class="split" role="tabpanel" id="part-4" aria-labelledby="tab-4" hidden>
+        <div>
+          <h3>Protecting quantum information from noise</h3>
+          <p>A stabilizer code is the joint +1 eigenspace of an abelian subgroup of the Pauli group. We build up from the three-qubit repetition code to the surface code.</p>
+          <ul class="icon-list">
+            <li>Lecture 7: noise, syndromes, the first codes</li>
+            <li>Lecture 8: stabilizer codes, the surface code, thresholds</li>
+          </ul>
+        </div>
+        <div class="art-stack"><div class="art" data-art="surface"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="lectures">
+    <div class="wrap">
+      <div class="sec-head" data-reveal>
+        <h2>The eight lectures</h2>
+        <p>Each comes with notes, a simulation and exercises. Lectures 1 and 2 are ready; the others follow as the workshop runs.</p>
+      </div>
+      <div class="courses" data-reveal>
+        <article class="course">
+          <div class="art" data-art="bloch"></div><div class="num">1</div><span class="tag">Foundations</span>
+          <h3>A qubit is a unit vector in ℂ²</h3>
+          <p>States, the Born rule, the Bloch sphere, single-qubit gates.</p>
+          <div class="foot"><span>60 minutes</span><a class="btn btn-small" href="lectures/01-qubit.html">Open lecture 1</a></div>
+        </article>
+        <article class="course">
+          <div class="art" data-art="entangle"></div><div class="num">2</div><span class="tag">Foundations</span>
+          <h3>Multiple qubits and entanglement</h3>
+          <p>Tensor products, Bell states, no-cloning, teleportation.</p>
+          <div class="foot"><span>60 minutes</span><a class="btn btn-small" href="lectures/02-entanglement.html">Open lecture 2</a></div>
+        </article>
+        <article class="course">
+          <div class="art" data-art="grover"></div><div class="num">3</div><span class="tag">Algorithms</span>
+          <h3>Query algorithms and Grover search</h3>
+          <p>Oracles, phase kickback, search as a rotation in a plane.</p>
+          <div class="foot"><span>60 minutes</span><span class="waiting">In preparation</span></div>
+        </article>
+        <article class="course">
+          <div class="art" data-art="qft"></div><div class="num">4</div><span class="tag">Algorithms</span>
+          <h3>The quantum Fourier transform and Shor</h3>
+          <p>Fourier analysis on ℤ<sub>N</sub>, phase estimation, order finding.</p>
+          <div class="foot"><span>60 minutes</span><span class="waiting">In preparation</span></div>
+        </article>
+        <article class="course">
+          <div class="art" data-art="maxcut"></div><div class="num">5</div><span class="tag">Variational methods</span>
+          <h3>Hamiltonians and optimisation</h3>
+          <p>Observables, the variational principle, MaxCut as an Ising model.</p>
+          <div class="foot"><span>60 minutes</span><span class="waiting">In preparation</span></div>
+        </article>
+        <article class="course">
+          <div class="art" data-art="qaoa"></div><div class="num">6</div><span class="tag">Variational methods</span>
+          <h3>QAOA</h3>
+          <p>Cost and mixer layers, adiabatic evolution, what limits it.</p>
+          <div class="foot"><span>60 minutes</span><span class="waiting">In preparation</span></div>
+        </article>
+        <article class="course">
+          <div class="art" data-art="repetition"></div><div class="num">7</div><span class="tag">Error correction</span>
+          <h3>Noise and the first codes</h3>
+          <p>Pauli errors, the repetition code, syndromes, Shor's nine-qubit code.</p>
+          <div class="foot"><span>60 minutes</span><span class="waiting">In preparation</span></div>
+        </article>
+        <article class="course">
+          <div class="art" data-art="surface"></div><div class="num">8</div><span class="tag">Error correction</span>
+          <h3>Stabilizer codes and the surface code</h3>
+          <p>Abelian subgroups of the Pauli group, CSS codes, thresholds.</p>
+          <div class="foot"><span>60 minutes</span><span class="waiting">In preparation</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section soft" id="needs">
+    <div class="wrap">
+      <div class="sec-head" data-reveal>
+        <h2>What you need to follow along</h2>
+        <p>Less than you might expect.</p>
+      </div>
+      <div class="needs" data-reveal>
+        <div class="need"><h3>Linear algebra</h3><p>Complex vectors and matrices, inner products, eigenvalues and eigenvectors.</p></div>
+        <div class="need"><h3>A little Python</h3><p>Enough to run and edit a notebook. The simulations on this site need no code at all.</p></div>
+        <div class="need"><h3>No physics</h3><p>Everything is built from the mathematics. Some group theory helps in the last two lectures.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="lab">
+    <div class="wrap">
+      <div class="sec-head" data-reveal><h2>Run by the Q-AICON Lab</h2></div>
+      <div class="split">
+        <div class="lab-copy" data-reveal>
+          <p class="who">Quantum and AI for Computing, Optimization, and Networking, led by Dr. Fang (Fiona) Fang, Assistant Professor in Electrical &amp; Computer Engineering and in Computer Science at Western University.</p>
+          <p>The lab builds optimisation and learning methods for networked systems, and studies quantum optimisation that needs fewer qubits. The workshop is how we share the quantum side of that work with undergraduates.</p>
+          <p style="margin-top:1.8rem"><a class="btn btn-quiet" href="https://fionauwo.github.io/QAICON/">Visit the lab website</a></p>
+        </div>
+        <div class="lab-photos" data-reveal>
+          <div class="main"><img src="assets/img/group-2026.webp" alt="Members of the Q-AICON Lab standing in the Thompson Engineering Building at Western University" width="1200" height="900" loading="lazy" decoding="async"></div>
+          <div><img src="assets/img/group-01.webp" alt="Lab members at the IEEE ICC 2025 conference in Montreal" width="1200" height="900" loading="lazy" decoding="async"></div>
+          <div><img src="assets/img/group-03.webp" alt="Lab members outside the Thompson Engineering Building" width="1200" height="1600" loading="lazy" decoding="async"></div>
+        </div>
+      </div>
+
+      <div class="research" data-reveal>
+        <img src="assets/img/qubit-efficient.webp" alt="Diagram of the lab's qubit-efficient QAOA: the dynamics stay inside one block of the full Hilbert space, which is mapped to a smaller qubit register" width="900" height="506" loading="lazy" decoding="async">
+        <div>
+          <h3>Where lecture 6 leads: QAOA with fewer qubits</h3>
+          <p>When a combinatorial problem has symmetry, QAOA never leaves a small invariant subspace. The lab's framework maps that subspace onto fewer qubits, so the same optimisation runs on a smaller device. Lectures 5 and 6 give you the background to read this work.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap contact-grid" data-reveal>
+      <div>
+        <h2>Interested in quantum?</h2>
+        <p class="lede">Talk to Dr. Fang. If the workshop makes you want to go further, whether a summer project, a thesis or graduate study, send an email. Say what you have studied and what caught your interest. The lab is recruiting Ph.D. students.</p>
+        <div class="actions">
+          <a class="btn btn-light" href="mailto:fang.fang@uwo.ca?subject=Quantum%20Computing%20Workshop%3A%20interested%20in%20quantum%20research">Email Dr. Fang</a>
+        </div>
+      </div>
+      <address>
+        <b>Dr. Fang (Fiona) Fang</b>
+        <a href="mailto:fang.fang@uwo.ca">fang.fang@uwo.ca</a><br>
+        Department of Electrical and Computer Engineering<br>
+        Thompson Engineering Building, Room TEB 261<br>
+        Western University<br>
+        1151 Richmond St, London, ON N6A 3K7
+      </address>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <span>Quantum Computing Workshop, Q-AICON Lab, Western University</span>
+    <span><a href="#contact">Contact Dr. Fang</a></span>
+  </div>
+</footer>
+
+<script src="assets/js/art.js"></script>
+<script src="assets/js/home.js"></script>
+</body>
+</html>

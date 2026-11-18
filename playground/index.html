@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Playground | Quantum Computing Workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="logo" href="../index.html"><img src="../assets/img/lab-logo.png" alt="" width="38" height="38">Quantum Workshop</a>
+    <nav class="site-nav" aria-label="Site">
+      <a href="../index.html">Home</a>
+      <a href="../index.html#lectures">Lectures</a>
+      <a href="index.html" aria-current="page">Playground</a>
+    </nav>
+    <span class="head-note">Q-AICON Lab, Western University</span>
+  </div>
+</header>
+
+<main>
+  <div class="page-hero"><div class="wrap">
+    <h1 class="grad">Playground</h1>
+    <p class="lede">Simulations from the lectures, free to explore. One is ready; the rest arrive with their lectures.</p>
+  </div></div>
+
+  <div class="wrap play-grid">
+    <section aria-labelledby="pg-bloch">
+      <div class="board" id="sphere"></div>
+    </section>
+
+    <section>
+      <h2 id="pg-bloch" style="margin-top:0">Single qubit on the Bloch sphere</h2>
+      <p>Apply gates and watch the state rotate, or set the angles θ and φ directly with the sliders. Measuring once collapses the state; measuring 100 copies shows the statistics without disturbing it. Goes with <a href="../lectures/01-qubit.html">Lecture 1</a>.</p>
+
+      <h3>Still to come</h3>
+      <ul class="planned">
+        <li><b>Two qubits and teleportation</b><span>Compare product states with Bell states, then step through the protocol. Ready inside <a href="../lectures/02-entanglement.html">Lecture 2</a>.</span></li>
+        <li><b>Grover's rotation</b><span>Choose the number of iterations and see the amplitude overshoot. Lecture 3.</span></li>
+        <li><b>Fourier transform on ℤ<sub>N</sub></b><span>Periodic inputs turn into sharp peaks. Lecture 4.</span></li>
+        <li><b>MaxCut by hand</b><span>Colour the vertices of a small graph and read off the energy. Lecture 5.</span></li>
+        <li><b>QAOA landscape</b><span>Move γ and β and watch the output distribution. Lecture 6.</span></li>
+        <li><b>Repetition code</b><span>Flip qubits, read the syndrome, correct. Lecture 7.</span></li>
+        <li><b>Surface code</b><span>Place errors on the lattice and see which stabilizers fire. Lecture 8.</span></li>
+      </ul>
+    </section>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap"><span>Quantum Computing Workshop, Western University</span><span><a href="../index.html#contact">Contact Dr. Fang</a></span></div>
+</footer>
+
+<script src="../assets/js/bloch.js"></script>
+<script>new BlochSphere(document.getElementById('sphere'), { sliders: true });</script>
+</body>
+</html>

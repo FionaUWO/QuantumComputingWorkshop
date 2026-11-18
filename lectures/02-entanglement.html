@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lecture 2: Multiple qubits and entanglement | Quantum Computing Workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="logo" href="../index.html"><img src="../assets/img/lab-logo.png" alt="" width="38" height="38">Quantum Workshop</a>
+    <nav class="site-nav" aria-label="Site">
+      <a href="../index.html">Home</a>
+      <a href="../index.html#lectures" aria-current="page">Lectures</a>
+      <a href="../playground/index.html">Playground</a>
+    </nav>
+    <span class="head-note">Q-AICON Lab, Western University</span>
+  </div>
+</header>
+
+<main>
+  <div class="page-hero"><div class="wrap">
+    <p class="kicker">Foundations, lecture 2 of 8</p>
+    <h1 class="grad">Two qubits live in ℂ² ⊗ ℂ²</h1>
+    <p class="lede">Most vectors in a tensor product are not products. Those that are not are called entangled, and they are what makes a quantum computer more than a collection of independent qubits.</p>
+    <nav class="toc" aria-label="In this lecture">
+      <ol>
+        <li><a href="#tensor">Tensor products</a></li>
+        <li><a href="#entangled">Product or entangled</a></li>
+        <li><a href="#gates">Two-qubit gates</a></li>
+        <li><a href="#partial">Measuring one qubit</a></li>
+        <li><a href="#cloning">No cloning</a></li>
+        <li><a href="#teleport">Teleportation</a></li>
+        <li><a href="#exercises">Exercises</a></li>
+      </ol>
+    </nav>
+  </div></div>
+
+  <div class="wrap lecture-grid">
+    <aside class="board-col" aria-label="Interactive two-qubit simulator">
+      <div class="board" id="pair"></div>
+    </aside>
+
+    <article class="notes">
+
+      <h2 id="tensor">1. Tensor products</h2>
+      <p>A probability distribution over two bits is a vector with four entries, one for each of $00, 01, 10, 11$. The quantum rule is the same with amplitudes in place of probabilities.</p>
+      <div class="statement">
+        <p><strong>Definition.</strong> A state of two qubits $A$ and $B$ is a unit vector in $\mathbb{C}^2 \otimes \mathbb{C}^2 \cong \mathbb{C}^4$:</p>
+        $$|\psi\rangle = a_{00}|00\rangle + a_{01}|01\rangle + a_{10}|10\rangle + a_{11}|11\rangle, \qquad \sum_{i,j} |a_{ij}|^2 = 1.$$
+      </div>
+      <p>Here $|ij\rangle$ is shorthand for $|i\rangle \otimes |j\rangle$. If $A$ is in the state $\alpha|0\rangle + \beta|1\rangle$ and $B$ is in the state $\gamma|0\rangle + \delta|1\rangle$, with no relationship between them, the pair is described by the Kronecker product</p>
+      $$\begin{pmatrix} \alpha \\ \beta \end{pmatrix} \otimes \begin{pmatrix} \gamma \\ \delta \end{pmatrix} = \begin{pmatrix} \alpha\gamma \\ \alpha\delta \\ \beta\gamma \\ \beta\delta \end{pmatrix}.$$
+      <p>With $n$ qubits the space is $(\mathbb{C}^2)^{\otimes n}$, of dimension $2^n$. Thirty qubits already need a billion amplitudes. That exponential growth is the reason classical simulation becomes hard, and the resource quantum algorithms try to use.</p>
+
+      <h2 id="entangled">2. Product or entangled</h2>
+      <p>A state of the form $|\phi\rangle \otimes |\chi\rangle$ is a <em>product state</em>. Counting parameters shows that most states are not of this form: product states need two complex numbers per qubit, while a general state has four.</p>
+      <p>There is a clean test. Arrange the amplitudes in a matrix</p>
+      $$M = \begin{pmatrix} a_{00} &amp; a_{01} \\ a_{10} &amp; a_{11} \end{pmatrix}.$$
+      <p>For a product state $M$ is the outer product of $(\alpha, \beta)$ and $(\gamma, \delta)$, so it has rank one. Conversely any rank-one matrix factors that way.</p>
+      <div class="statement">
+        <p><strong>Proposition.</strong> A two-qubit state is a product state if and only if $\det M = a_{00}a_{11} - a_{01}a_{10} = 0$. Otherwise it is <em>entangled</em>.</p>
+      </div>
+      <p>The best known entangled state is the Bell state</p>
+      $$|\Phi^+\rangle = \tfrac{1}{\sqrt2}\big(|00\rangle + |11\rangle\big), \qquad \det M = \tfrac12.$$
+      <p>Neither qubit of a Bell pair has a state of its own. There is no vector in $\mathbb{C}^2$ that describes $A$ alone.</p>
+      <div class="try">
+        <p>The simulator shows the four amplitudes and the value of $|\det M|$. Put each qubit in superposition separately, then compare with a Bell pair.</p>
+        <div class="try-actions">
+          <button class="btn btn-small" data-run="reset,HA,HB">Apply H to A and to B</button>
+          <button class="btn btn-small" data-run="reset,HA,CAB">Make a Bell pair</button>
+        </div>
+      </div>
+
+      <h2 id="gates">3. Two-qubit gates</h2>
+      <p>Gates are still unitary matrices, now $4 \times 4$. Applying $U$ to qubit $A$ and leaving $B$ alone is the matrix $U \otimes I$; acting on $B$ alone is $I \otimes U$. Such gates never change $|\det M|$ (why?), so they cannot create entanglement.</p>
+      <p>To entangle we need a gate that is not a tensor product. The standard one is the controlled-NOT, which flips the target qubit when the control is $|1\rangle$:</p>
+      $$\mathrm{CNOT} = \begin{pmatrix} 1 &amp; 0 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 1 \\ 0 &amp; 0 &amp; 1 &amp; 0 \end{pmatrix}, \qquad |a, b\rangle \mapsto |a, a \oplus b\rangle.$$
+      <p>On basis states it is a classical reversible gate. Its quantum character appears when the control is in superposition:</p>
+      $$|00\rangle \xrightarrow{\;H \otimes I\;} \tfrac{1}{\sqrt2}\big(|00\rangle + |10\rangle\big) \xrightarrow{\;\mathrm{CNOT}\;} \tfrac{1}{\sqrt2}\big(|00\rangle + |11\rangle\big).$$
+      <p>Single-qubit gates together with CNOT generate every unitary on $n$ qubits. We will use that fact without proof.</p>
+      <div class="try">
+        <p>CNOT does nothing interesting to $|00\rangle$, copies a classical bit, and entangles a superposition.</p>
+        <div class="try-actions">
+          <button class="btn btn-small" data-run="reset,CAB">CNOT on |00⟩</button>
+          <button class="btn btn-small" data-run="reset,XA,CAB">CNOT on |10⟩</button>
+          <button class="btn btn-small" data-run="reset,HA,CAB">CNOT on |+⟩|0⟩</button>
+        </div>
+      </div>
+
+      <h2 id="partial">4. Measuring one qubit</h2>
+      <p>Measuring only qubit $A$ gives outcome $0$ with probability $|a_{00}|^2 + |a_{01}|^2$, the total weight of the basis states that agree with it. The state then collapses onto those terms and is rescaled to unit length:</p>
+      $$|\psi\rangle \;\longmapsto\; |0\rangle \otimes \frac{a_{00}|0\rangle + a_{01}|1\rangle}{\sqrt{|a_{00}|^2 + |a_{01}|^2}}.$$
+      <p>In terms of $M$: the outcome picks a row, and that row, normalised, is the new state of $B$.</p>
+      <p>For the Bell state each row has a single non-zero entry. Alice's result is a fair coin, and Bob's qubit is then certain to give the same value, however far away it is. Nothing travels: Bob sees a fair coin too, and only by comparing notes do they discover the agreement.</p>
+      <div class="try">
+        <p>Measure $A$ on a Bell pair and watch what happens to $B$. Then look at the statistics over a hundred pairs.</p>
+        <div class="try-actions">
+          <button class="btn btn-small" data-run="reset,HA,CAB,MA">Bell pair, then measure A</button>
+          <button class="btn btn-small" data-run="reset,HA,CAB,sample">Bell pair, measure both, 100 copies</button>
+        </div>
+      </div>
+      <p>Two people who share a classical coin flip would see the same agreement, so this alone proves nothing. The difference shows when both rotate before measuring. Because $(H \otimes H)|\Phi^+\rangle = |\Phi^+\rangle$, the results still always agree, although each side is now asking a different question. No shared coin can answer every such pair of questions consistently; that is the content of Bell's theorem, which we state but do not prove.</p>
+      <div class="try">
+        <div class="try-actions">
+          <button class="btn btn-small" data-run="reset,HA,CAB,HA,HB,sample">Bell pair, H on both, measure 100 copies</button>
+          <button class="btn btn-small" data-run="reset,HA,CAB,HA,sample">Bell pair, H on A only, measure 100 copies</button>
+        </div>
+      </div>
+
+      <h2 id="cloning">5. No cloning</h2>
+      <p>CNOT copies $|0\rangle$ and $|1\rangle$: it sends $|b\rangle|0\rangle$ to $|b\rangle|b\rangle$. It does not copy $|+\rangle$; it produced a Bell pair instead of $|+\rangle|+\rangle$. This is not a defect of CNOT.</p>
+      <div class="statement">
+        <p><strong>Theorem (no cloning).</strong> There is no unitary $U$ with $U\big(|\psi\rangle \otimes |0\rangle\big) = |\psi\rangle \otimes |\psi\rangle$ for every state $|\psi\rangle$.</p>
+      </div>
+      <p><em>Proof.</em> Suppose $U$ clones both $|\psi\rangle$ and $|\phi\rangle$. Unitaries preserve inner products, so</p>
+      $$\langle\psi|\phi\rangle = \big(\langle\psi| \otimes \langle 0|\big)\big(|\phi\rangle \otimes |0\rangle\big) = \big(\langle\psi| \otimes \langle\psi|\big)\big(|\phi\rangle \otimes |\phi\rangle\big) = \langle\psi|\phi\rangle^2.$$
+      <p>Hence $\langle\psi|\phi\rangle$ is $0$ or $1$: the two states are orthogonal or equal. A machine can copy an orthonormal basis and nothing more. $\qquad\blacksquare$</p>
+      <p>The consequences are large. Quantum information cannot be backed up, a single unknown qubit cannot be measured repeatedly to learn its amplitudes, and error correction (lectures 7 and 8) has to work without ever looking at the data.</p>
+
+      <h2 id="teleport">6. Teleportation</h2>
+      <p>Alice has a qubit $M$ in an unknown state $|\psi\rangle = \alpha|0\rangle + \beta|1\rangle$ and wants Bob to have it. She cannot measure it and send the result, and she cannot copy it. But if she and Bob already share a Bell pair, two classical bits are enough.</p>
+      <ol>
+        <li>Alice applies CNOT from $M$ to her half $A$ of the pair, then $H$ to $M$.</li>
+        <li>She measures $M$ and $A$, getting bits $m$ and $a$, and sends them to Bob.</li>
+        <li>Bob applies $X$ to his qubit if $a = 1$, then $Z$ if $m = 1$.</li>
+      </ol>
+      <p>Why it works is a single identity, obtained by expanding and regrouping:</p>
+      $$|\psi\rangle_M \otimes |\Phi^+\rangle_{AB} = \tfrac12 \sum_{m, a \in \{0,1\}} |\beta_{ma}\rangle_{MA} \otimes X^a Z^m |\psi\rangle_B,$$
+      <p>where the $|\beta_{ma}\rangle$ are the four Bell states. Alice's two gates rotate the Bell basis to the standard basis, so her measurement selects one term, and Bob undoes the leftover $X^a Z^m$.</p>
+      <div class="board" id="teleport-demo"></div>
+      <p>Three things are worth noticing. Each of Alice's four outcomes has probability $\tfrac14$ whatever $\alpha$ and $\beta$ are, so her bits reveal nothing about the message. Bob's qubit is useless until the classical bits arrive, so nothing moves faster than light. And Alice's copy is destroyed, so the no-cloning theorem is respected.</p>
+
+      <h2 id="exercises">7. Exercises</h2>
+      <ol>
+        <li>Compute $|{+}\rangle \otimes |{-}\rangle$ as a vector in $\mathbb{C}^4$ and check that $\det M = 0$.</li>
+        <li>Show that $(U \otimes V)$ acts on the amplitude matrix by $M \mapsto U M V^{\mathsf T}$, and deduce that local gates preserve $|\det M|$.</li>
+        <li>Write down the other three Bell states $|\Phi^-\rangle, |\Psi^+\rangle, |\Psi^-\rangle$. Starting from $|00\rangle$, which circuits on the simulator prepare each of them?</li>
+        <li>Verify that $(H \otimes H)|\Phi^+\rangle = |\Phi^+\rangle$. More generally, show that $(U \otimes \bar U)|\Phi^+\rangle = |\Phi^+\rangle$ for every unitary $U$.</li>
+        <li>What is the largest possible value of $|\det M|$ for a unit vector, and which states attain it?</li>
+        <li>Prove the teleportation identity by expanding the right-hand side.</li>
+        <li>Three CNOTs with alternating directions swap two qubits. Check this on the simulator, then prove it on basis states.</li>
+      </ol>
+
+      <p class="next">Next: lecture 3, query algorithms and Grover search. With superposition, entanglement and interference in hand, we can finally compute something. <a href="../index.html#lectures">Back to all lectures</a>.</p>
+    </article>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap"><span>Quantum Computing Workshop, Western University</span><span><a href="../index.html#contact">Contact Dr. Fang</a></span></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script src="../assets/js/multi.js"></script>
+<script>
+  renderMathInElement(document.querySelector('main'), {
+    delimiters: [{ left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false }],
+  });
+  const pair = new TwoQubit(document.getElementById('pair'));
+  new Teleport(document.getElementById('teleport-demo'));
+  document.querySelectorAll('[data-run]').forEach((b) => {
+    b.addEventListener('click', () => {
+      // On narrow screens the simulator is not beside the notes, so bring it into view first.
+      const board = document.getElementById('pair');
+      const r = board.getBoundingClientRect();
+      if (r.bottom < 80 || r.top > window.innerHeight - 80) board.scrollIntoView({ block: 'start' });
+      pair.run(b.dataset.run.split(','));
+    });
+  });
+</script>
+</body>
+</html>
