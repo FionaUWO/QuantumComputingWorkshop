@@ -78,3 +78,24 @@ body:has(.course-shell) .site-head .wrap { max-width: none; padding-left: 1.25re
 .notes .reading { margin-top: 2.4rem; font-size: var(--small); color: var(--muted); }
 .draft-note { display: inline-block; margin: 0.9rem 0 0; padding: 0.35rem 0.8rem; border-radius: 8px; background: var(--lavender); color: var(--purple-dark); font-size: var(--small); }
 .lecture-open .draft-note { display: block; width: fit-content; margin: 0 0 1.4rem; }
+
+/* The contents menu: an arrow on each lecture that turns as its list slides open or shut
+   (the sliding itself is in CourseMenu.astro). */
+.menu-lecture summary { grid-template-columns: 1.6rem minmax(0, 1fr) auto; transition: background-color 0.2s, color 0.2s; }
+.menu-lecture summary::after { content: ""; width: 0.5rem; height: 0.5rem; margin: 0.35rem 0.2rem 0 0; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); transition: transform 0.26s var(--ease); }
+.menu-lecture[open]:not(.closing) summary::after { transform: translateY(0.25rem) rotate(-135deg); }
+.menu-lecture.closing summary { color: var(--ink); }
+
+/* Wider reading column on the lecture pages (was 40rem, then 48rem). */
+.course-body .notes { max-width: 62.4rem; }
+.lecture-open { max-width: 48rem; }
+/* ...and room for that column beside the simulator on large screens (the block was capped at 65rem). */
+@media (min-width: 1000px) {
+  .course-main { padding-inline: max(clamp(1rem, 4vw, 3.5rem), calc((100% - 88rem) / 2)); }
+}
+/* Prose keeps a comfortable measure inside that wide column; a formula or table sits on the
+   same measure when it fits and grows into the extra width when it does not; simulators use all of it. */
+.course-body .notes > * { max-width: 48rem; }
+.course-body .notes > .katex-display, .course-body .notes > table { width: fit-content; min-width: min(100%, 48rem); max-width: 100%; }
+.course-body .notes > .board, .course-body .notes > figure { max-width: none; }
+

@@ -25,7 +25,6 @@ const l = course.find((x) => x.slug === slug)!;
     <h1>{l.heading ?? l.title}</h1>
     <p class="lede">{l.lede ?? l.blurb}</p>
     {l.draft && <p class="draft-note">First draft. These notes have not been reviewed yet and may contain errors.</p>}
-    <a class="btn" href={l.sections[0].href}>Start with section 1</a>
 
     <h2>In this lecture</h2>
     <ol class="section-list">

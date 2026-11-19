@@ -331,6 +331,33 @@ p { margin: 1rem 0 0; }
 .contact { padding: clamp(3rem, 5.5vw, 5rem) 0; }
 .contact .lede { margin-top: 1rem; }
 .contact .actions { margin-top: 1.5rem; }
+/* Recruiting band and footer, laid out like the Q-AICON Lab site:
+   text on the left with the button at the far right, then a dark three-column footer. */
+.contact { padding: clamp(2.5rem, 4.5vw, 3.5rem) 0; }
+.contact-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.5rem 3rem; }
+.contact-row > div { flex: 1 1 22rem; max-width: 40rem; }
+.contact h2 { font-size: var(--h2); line-height: 1.1; letter-spacing: -0.02em; }
+.contact p { margin-top: 0.8rem; color: var(--lavender); }
+.contact p a { color: #fff; }
+.contact-row .btn { flex: none; white-space: nowrap; }
+/* Same three columns as the footer below, so the button lines up with "Explore". */
+@media (min-width: 820px) {
+  .contact-row { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 4fr) minmax(0, 2fr); gap: 3rem; }
+  .contact-row > div { grid-column: span 2; }
+  .contact-row .btn { justify-self: start; }
+}
+
+.site-foot { background: #16151b; color: #d9d6e0; font-size: 1rem; }
+.site-foot .wrap { display: grid; gap: 2.2rem; justify-content: stretch; padding-top: clamp(2.5rem, 5vw, 4rem); padding-bottom: clamp(2.5rem, 5vw, 4rem); }
+@media (min-width: 820px) { .site-foot .wrap { grid-template-columns: minmax(0, 5fr) minmax(0, 4fr) minmax(0, 2fr); gap: 3rem; } }
+.site-foot p { margin: 0; }
+.site-foot .foot-label { margin-bottom: 1rem; font: 500 0.75rem/1.4 ui-monospace, "SF Mono", Menlo, Consolas, monospace; letter-spacing: 0.18em; text-transform: uppercase; color: #a8a4b3; }
+.site-foot .foot-name { margin-bottom: 1.2rem; font: 600 1.5rem/1.2 var(--serif); letter-spacing: -0.01em; color: #fff; max-width: 24rem; }
+.site-foot address { font-style: normal; line-height: 1.6; }
+.site-foot nav { display: grid; gap: 0.45rem; align-content: start; justify-items: start; }
+.site-foot nav .foot-label { margin-bottom: 0.55rem; }
+.site-foot a { color: #fff; }
+.site-foot a:hover { color: var(--lilac); }
 
 /* ---------- lecture notes written in Markdown ---------- */
 .notes { counter-reset: sec; }
@@ -340,3 +367,31 @@ p { margin: 1rem 0 0; }
 .example p:first-child { margin-top: 0; }
 .notes h3 { font-size: 1.25rem; margin-top: 2.2rem; }
 .notes table { display: block; overflow-x: auto; }
+
+/* ---------- lecture drawings come alive on hover ----------
+   art.js tags the moving parts (a-swing, a-pulse, ...). Each animation starts and ends
+   at the resting drawing and stays paused until its card is hovered or focused. */
+@media (prefers-reduced-motion: no-preference) {
+  .art [class^="a-"] { transform-box: fill-box; transform-origin: center; animation: 2.4s ease-in-out infinite paused; }
+  .course:hover .art [class^="a-"], .course:focus-within .art [class^="a-"],
+  .art-stack:hover .art [class^="a-"] { animation-play-state: running; }
+  .art .a-swing { animation-name: art-swing; animation-duration: 2.8s; }
+  .art .a-pulse { animation-name: art-pulse; animation-duration: 1.6s; }
+  .art .a-pulse.late { animation-delay: -0.8s; }
+  .art .a-pulse.big { animation-name: art-pulse-big; }
+  .art .a-run { animation-name: art-run; animation-duration: 0.8s; animation-timing-function: linear; }
+  .art .a-grow { transform-origin: bottom; animation-name: art-grow; animation-duration: 2s; }
+  .art .a-shrink { transform-origin: bottom; animation-name: art-shrink; animation-duration: 2s; }
+  .art .a-step { animation-name: art-step; animation-duration: 3.2s; animation-timing-function: steps(8); }
+  .art .a-draw { animation-name: art-draw; animation-duration: 2.4s; }
+  .art .a-blink { animation-name: art-blink; animation-duration: 1.6s; }
+}
+@keyframes art-swing { 0%, 100% { transform: rotate(0); } 35% { transform: rotate(-80deg); } 70% { transform: rotate(35deg); } }
+@keyframes art-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.22); } }
+@keyframes art-pulse-big { 0%, 100% { transform: scale(1); } 50% { transform: scale(2); } }
+@keyframes art-run { to { stroke-dashoffset: -16; } }
+@keyframes art-grow { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.4); } }
+@keyframes art-shrink { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(2.2); } }
+@keyframes art-step { to { transform: rotate(-360deg); } }
+@keyframes art-draw { 0%, 100% { stroke-dashoffset: 0; } 12% { stroke-dashoffset: 1; } 80% { stroke-dashoffset: 0; } }
+@keyframes art-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }

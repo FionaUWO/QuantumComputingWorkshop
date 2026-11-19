@@ -52,6 +52,35 @@ const { course, lecture, section, subsections = [] } = Astro.props;
     if (seen.includes(new URL(a.href).pathname)) a.classList.add('seen');
   });
 
+  // Opening and closing a lecture slides its list instead of snapping.
+  const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLDetailsElement>('details.menu-lecture').forEach((d) => {
+    const list = d.querySelector<HTMLElement>(':scope > ul');
+    const summary = d.querySelector('summary');
+    if (!list || !summary || calm || !list.animate) return;
+    let running: Animation | null = null;
+    summary.addEventListener('click', (e) => {
+      e.preventDefault();
+      running?.cancel();
+      const closing = d.open && !d.classList.contains('closing');
+      d.classList.toggle('closing', closing);
+      if (!closing) d.open = true;
+      const full = { height: list.scrollHeight + 'px', paddingBottom: getComputedStyle(list).paddingBottom, opacity: 1 };
+      const shut = { height: '0px', paddingBottom: '0px', opacity: 0 };
+      list.style.overflow = 'hidden';
+      running = list.animate(closing ? [full, shut] : [shut, full], { duration: 260, easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)' });
+      running.onfinish = () => {
+        if (closing) d.open = false;
+        d.classList.remove('closing');
+        list.style.overflow = '';
+        running = null;
+      };
+      // If the browser is not painting (a background tab), do not leave the list half open.
+      const mine = running;
+      setTimeout(() => { if (running === mine) mine.finish(); }, 400);
+    });
+  });
+
   // On narrow screens the menu is a drawer opened from the bar above the page.
   const shell = document.querySelector('.course-shell');
   const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');

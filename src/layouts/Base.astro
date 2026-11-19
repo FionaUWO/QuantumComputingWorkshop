@@ -30,7 +30,7 @@ const home = current === 'home';
     <a class="logo" href={url()}><img src={url('assets/img/lab-logo.png')} alt="" width="38" height="38">Quantum Workshop</a>
     {home ? (
       <nav class="site-nav" aria-label="Site">
-        <a href="#parts">Programme</a>
+        <a href="#parts">Outline</a>
         <a href="#lectures">Lectures</a>
         <a href={url('playground/')}>Playground</a>
         <a href="#lab">The lab</a>
@@ -55,8 +55,28 @@ const home = current === 'home';
 
 <footer class="site-foot">
   <div class="wrap">
-    <span>Quantum Computing Workshop, Q-AICON Lab, Western University</span>
-    <span><a href={home ? '#contact' : url('#contact')}>Contact Dr. Fang</a></span>
+    <div>
+      <p class="foot-label">Q-AICON Lab</p>
+      <p class="foot-name">Quantum and AI for Computing, Optimization, and Networking</p>
+      <p>Western University</p>
+    </div>
+    <div>
+      <p class="foot-label">Contact</p>
+      <address>
+        Dr. Fang (Fiona) Fang<br>
+        Department of Electrical and Computer Engineering<br>
+        Thompson Engineering Building, Room TEB 261<br>
+        Western University<br>
+        1151 Richmond St, London, ON N6A 3K7<br>
+        <a href="mailto:fang.fang@uwo.ca">fang.fang@uwo.ca</a>
+      </address>
+    </div>
+    <nav aria-label="Footer">
+      <p class="foot-label">Explore</p>
+      <a href={home ? '#lectures' : url('#lectures')}>Lectures</a>
+      <a href={url('playground/')}>Playground</a>
+      <a href="https://fionauwo.github.io/QAICON/">Lab website</a>
+    </nav>
   </div>
 </footer>
 
