@@ -42,6 +42,8 @@ p.menu-lecture.waiting small { grid-column: 2; font-size: 0.78rem; }
   .course-shell { grid-template-columns: 19rem minmax(0, 1fr); align-items: start; }
   .course-menu { position: sticky; top: 0; height: 100vh; border-right: 1px solid var(--lavender-2); }
   .course-bar { display: none; }
+  /* On wide screens the notes and the simulator stay together in one block of at most 65rem, centred beside the menu. */
+  .course-main { padding-inline: max(clamp(1rem, 4vw, 3.5rem), calc((100% - 65rem) / 2)); }
 }
 
 /* ---------- a section page ---------- */
@@ -52,7 +54,7 @@ p.menu-lecture.waiting small { grid-column: 2; font-size: 0.78rem; }
 .course-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; }
 .course-body .board-col { max-width: 30rem; }
 @media (min-width: 1280px) {
-  .course-body.has-board { grid-template-columns: minmax(0, 40rem) minmax(19rem, 24rem); gap: 3rem; justify-content: space-between; align-items: start; }
+  .course-body.has-board { grid-template-columns: minmax(0, 1fr) clamp(19rem, 32%, 22rem); gap: 3rem; align-items: start; }
   .course-body.has-board .board-col { position: sticky; top: 1.25rem; order: 2; max-width: none; }
 }
 
