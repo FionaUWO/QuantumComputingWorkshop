@@ -400,6 +400,11 @@ p { margin: 1rem 0 0; }
 .notes { counter-reset: sec; }
 .notes h2 { counter-increment: sec; scroll-margin-top: 1rem; }
 .notes h2::before { content: counter(sec) ". "; }
+/* The narrated video of a section, above its notes. */
+.lesson-video { margin: 0 0 2rem; }
+.lesson-video video { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 10px; background: var(--purple-dark); }
+.lesson-video figcaption { margin-top: 0.5rem; font-size: 0.9rem; color: var(--muted); }
+
 .example { border-left: 3px solid var(--lilac); padding: 0.1rem 0 0.2rem 1.1rem; margin-top: 1.6rem; }
 .example p:first-child { margin-top: 0; }
 /* Examples are numbered automatically, restarting on each page. */

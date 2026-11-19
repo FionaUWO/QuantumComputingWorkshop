@@ -1,0 +1,19 @@
+---
+// The narrated video of a section, shown above its notes.
+// `src` and `poster` are site-relative paths under public/, for example "assets/video/L1_1.mp4".
+import { url } from '../lib/url';
+
+interface Props {
+  src: string;
+  poster?: string;
+  title: string;
+}
+const { src, poster, title } = Astro.props;
+---
+<figure class="lesson-video">
+  <video controls preload="metadata" playsinline poster={poster ? url(poster) : undefined} aria-label={title}>
+    <source src={url(src)} type="video/mp4">
+    <a href={url(src)}>Download the video</a>
+  </video>
+  <figcaption>{title}</figcaption>
+</figure>
