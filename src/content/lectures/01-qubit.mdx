@@ -1,0 +1,128 @@
+---
+num: 1
+short: The qubit
+heading: A qubit is a unit vector in ℂ²
+lede: "Everything in this workshop is linear algebra over the complex numbers. Today we set up the three ingredients for a single qubit: states, measurements and gates."
+board: bloch
+boardLabel: Interactive Bloch sphere
+nextNote: Two qubits live in ℂ² ⊗ ℂ², and most vectors there are not products.
+---
+import Statement from '../../components/Statement.astro';
+import Try from '../../components/Try.astro';
+
+## From bits to amplitudes
+
+A classical bit is an element of $\{0,1\}$. If we are unsure which, we describe it by a probability vector
+
+$$
+\begin{pmatrix} p_0 \\ p_1 \end{pmatrix}, \qquad p_0, p_1 \ge 0, \quad p_0 + p_1 = 1,
+$$
+
+and the operations that keep such vectors valid are the stochastic matrices. This is the theory of a random bit: vectors of unit $1$-norm with non-negative entries.
+
+Quantum theory changes two things. The entries become complex numbers, called *amplitudes*, and the norm that is preserved is the Euclidean $2$-norm. Almost everything else follows from that swap.
+
+## States
+
+<Statement>
+**Definition.** A state of a qubit is a unit vector in $\mathbb{C}^2$:
+
+$$
+|\psi\rangle = \begin{pmatrix} \alpha \\ \beta \end{pmatrix}, \qquad \alpha, \beta \in \mathbb{C}, \quad |\alpha|^2 + |\beta|^2 = 1.
+$$
+</Statement>
+
+The symbol $|\psi\rangle$ is read "ket psi" and simply means a column vector. The standard basis vectors get the names
+
+$$
+|0\rangle = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \qquad |1\rangle = \begin{pmatrix} 0 \\ 1 \end{pmatrix},
+$$
+
+so every state can be written $|\psi\rangle = \alpha|0\rangle + \beta|1\rangle$. A state with both amplitudes non-zero is called a *superposition* of $|0\rangle$ and $|1\rangle$.
+
+The "bra" $\langle\psi|$ is the conjugate transpose, a row vector, so that $\langle\phi|\psi\rangle$ is the usual Hermitian inner product and the normalisation condition reads $\langle\psi|\psi\rangle = 1$.
+
+Four superpositions come up constantly:
+
+$$
+|\pm\rangle = \tfrac{1}{\sqrt2}\big(|0\rangle \pm |1\rangle\big), \qquad |{\pm i}\rangle = \tfrac{1}{\sqrt2}\big(|0\rangle \pm i|1\rangle\big).
+$$
+
+## Measurement
+
+We cannot read $\alpha$ and $\beta$ off a qubit. The only way to get information out is to measure it, and a measurement returns a single classical bit.
+
+<Statement>
+**Born rule.** Measuring $\alpha|0\rangle + \beta|1\rangle$ in the standard basis gives outcome $0$ with probability $|\alpha|^2$ and outcome $1$ with probability $|\beta|^2$. Afterwards the state is $|0\rangle$ or $|1\rangle$, matching the outcome.
+</Statement>
+
+The normalisation condition is exactly what makes these probabilities sum to one. Measurement is destructive: one copy of a state yields one bit, and the amplitudes are gone. To estimate $|\alpha|^2$ you need many identically prepared copies.
+
+<Try runs={[
+  { do: 'reset,H,sample', label: 'Prepare |+⟩ and measure 100 copies' },
+  { do: 'reset,H,measure', label: 'Prepare |+⟩ and measure once' },
+]}>
+The state $|+\rangle$ should give each outcome half the time. Prepare it and measure. Then compare a single measurement with a hundred copies.
+</Try>
+
+## The Bloch sphere
+
+The vectors $|\psi\rangle$ and $e^{i\gamma}|\psi\rangle$ give identical probabilities for every measurement we will ever define, so they describe the same physical state. The factor $e^{i\gamma}$ is called a *global phase*.
+
+Unit vectors in $\mathbb{C}^2$ form the sphere $S^3$. Quotienting by global phase leaves the complex projective line, and $\mathbb{CP}^1 \cong S^2$. Concretely, use the phase freedom to make $\alpha$ real and non-negative; then every state has the form
+
+$$
+|\psi\rangle = \cos\tfrac{\theta}{2}\,|0\rangle + e^{i\varphi}\sin\tfrac{\theta}{2}\,|1\rangle, \qquad 0 \le \theta \le \pi, \quad 0 \le \varphi \lt 2\pi,
+$$
+
+and we plot it at the point of the unit sphere with polar angle $\theta$ and azimuth $\varphi$. This picture is the Bloch sphere.
+
+- $|0\rangle$ is the north pole and $|1\rangle$ the south pole.
+- The equator holds the equal superpositions; $\varphi$ is the *relative phase* between the two amplitudes.
+- Orthogonal states are antipodal points, not perpendicular ones. That is the price of the half-angle $\theta/2$.
+- The height of the point determines the measurement statistics: $P(0) = \cos^2\tfrac{\theta}{2} = \tfrac{1+z}{2}$.
+
+## Gates
+
+An operation on a qubit must send unit vectors to unit vectors, and it must be linear. Those are the unitary matrices: $U^\dagger U = I$. Every unitary is invertible, so quantum gates never lose information; only measurement does.
+
+| Gate | Matrix | On the sphere |
+| --- | --- | --- |
+| $X$ | $\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$ | half turn about the $x$-axis |
+| $Z$ | $\begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}$ | half turn about the $z$-axis |
+| $H$ | $\tfrac{1}{\sqrt2}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}$ | half turn about the axis midway between $x$ and $z$ |
+| $S$ | $\begin{pmatrix} 1 & 0 \\ 0 & i \end{pmatrix}$ | quarter turn about the $z$-axis |
+| $T$ | $\begin{pmatrix} 1 & 0 \\ 0 & e^{i\pi/4} \end{pmatrix}$ | eighth turn about the $z$-axis |
+
+The third column is no accident. Up to global phase, single-qubit unitaries form $SU(2)$, and $SU(2)$ acts on the Bloch sphere by rotations through the two-to-one homomorphism $SU(2) \to SO(3)$. Every gate is a rotation, and every rotation is a gate.
+
+<Try runs={[
+  { do: 'reset,X', label: 'Apply X to |0⟩' },
+  { do: 'reset,H,Z,H', label: 'Apply H, Z, H to |0⟩' },
+  { do: 'reset,H,T,T', label: 'Apply H, T, T to |0⟩' },
+]}>
+$X$ is the classical NOT: it swaps $|0\rangle$ and $|1\rangle$. $Z$ does nothing visible to $|0\rangle$, but conjugating it by $H$ turns it into $X$. Watch the path the state traces.
+</Try>
+
+## Interference
+
+The states $|+\rangle$ and $|-\rangle$ differ only in a relative phase, and a standard-basis measurement cannot tell them apart: both give $0$ and $1$ with probability $\tfrac12$. A coin flip would do the same.
+
+But apply $H$ before measuring. Since $H|+\rangle = |0\rangle$ and $H|-\rangle = |1\rangle$, the outcome is now certain and distinguishes the two states perfectly. In the computation of $H|+\rangle$ the two contributions to the amplitude of $|1\rangle$ are $+\tfrac12$ and $-\tfrac12$, and they cancel. Probabilities cannot cancel; amplitudes can. This is *interference*, and every quantum algorithm in the coming lectures is an arrangement for wrong answers to cancel.
+
+<Try runs={[
+  { do: 'reset,H,sample', label: 'H, then measure 100 copies' },
+  { do: 'reset,H,H,sample', label: 'H, H, then measure 100 copies' },
+  { do: 'reset,H,Z,H,sample', label: 'H, Z, H, then measure 100 copies' },
+]}>
+One $H$ gives a random bit. Two give $0$ every time, which no process that flips a coin twice can do.
+</Try>
+
+## Exercises
+
+1. Verify that $H$ is unitary and that $H^2 = I$. Which rotation of the sphere squares to the identity?
+2. Show that $HZH = X$ and $HXH = Z$ by multiplying matrices, then confirm on the sphere.
+3. Find $\theta$ and $\varphi$ for $|{+i}\rangle$ and for $\tfrac{\sqrt3}{2}|0\rangle - \tfrac12|1\rangle$. What is $P(0)$ for each?
+4. Prove that two states are orthogonal if and only if their Bloch points are antipodal.
+5. $T^2 = S$ and $S^2 = Z$. Using only $H$ and $T$, can you reach the state $|{-i}\rangle$ from $|0\rangle$? How many gates do you need?
+6. A stochastic matrix $M$ with $M^2 = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$ does not exist, but a unitary one does. Find a "square root of NOT".

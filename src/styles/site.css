@@ -225,9 +225,9 @@ p { margin: 1rem 0 0; }
 .try p { margin-top: 0; }
 .try .try-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.9rem; }
 
-table.gates { border-collapse: collapse; width: 100%; margin-top: 1.4rem; font-size: 1rem; }
-table.gates th { font-weight: 600; text-align: left; font-size: var(--small); color: var(--ink); }
-table.gates th, table.gates td { border-bottom: 1px solid var(--lavender-2); padding: 0.6rem 0.8rem 0.6rem 0; vertical-align: middle; }
+.notes table { border-collapse: collapse; width: 100%; margin-top: 1.4rem; font-size: 1rem; }
+.notes table th { font-weight: 600; text-align: left; font-size: var(--small); color: var(--ink); }
+.notes table th, .notes table td { border-bottom: 1px solid var(--lavender-2); padding: 0.6rem 0.8rem 0.6rem 0; vertical-align: middle; }
 
 .next { margin-top: 3rem; background: var(--soft); border-radius: 12px; padding: 1.2rem 1.4rem; }
 
@@ -331,3 +331,8 @@ table.gates th, table.gates td { border-bottom: 1px solid var(--lavender-2); pad
 .contact { padding: clamp(3rem, 5.5vw, 5rem) 0; }
 .contact .lede { margin-top: 1rem; }
 .contact .actions { margin-top: 1.5rem; }
+
+/* ---------- lecture notes written in Markdown ---------- */
+.notes { counter-reset: sec; }
+.notes h2 { counter-increment: sec; scroll-margin-top: 1rem; }
+.notes h2::before { content: counter(sec) ". "; }

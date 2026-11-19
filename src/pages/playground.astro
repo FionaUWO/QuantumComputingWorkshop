@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+import Board from '../components/Board.astro';
+import { url } from '../lib/url';
+---
+<Base title="Playground | Quantum Computing Workshop" description="Simulations from the Quantum Computing Workshop lectures, free to explore." current="playground">
+  <div class="page-hero"><div class="wrap">
+    <h1 class="grad">Playground</h1>
+    <p class="lede">Simulations from the lectures, free to explore. One is ready; the rest arrive with their lectures.</p>
+  </div></div>
+
+  <div class="wrap play-grid">
+    <section aria-labelledby="pg-bloch">
+      <Board kind="bloch" sliders />
+    </section>
+
+    <section>
+      <h2 id="pg-bloch" style="margin-top:0">Single qubit on the Bloch sphere</h2>
+      <p>Apply gates and watch the state rotate, or set the angles θ and φ directly with the sliders. Measuring once collapses the state; measuring 100 copies shows the statistics without disturbing it. Goes with <a href={url('lectures/01-qubit/')}>Lecture 1</a>.</p>
+
+      <h3>Still to come</h3>
+      <ul class="planned">
+        <li><b>Two qubits and teleportation</b><span>Compare product states with Bell states, then step through the protocol. Ready inside <a href={url('lectures/02-entanglement/')}>Lecture 2</a>.</span></li>
+        <li><b>Grover's rotation</b><span>Choose the number of iterations and see the amplitude overshoot. Lecture 3.</span></li>
+        <li><b>Fourier transform on ℤ<sub>N</sub></b><span>Periodic inputs turn into sharp peaks. Lecture 4.</span></li>
+        <li><b>MaxCut by hand</b><span>Colour the vertices of a small graph and read off the energy. Lecture 5.</span></li>
+        <li><b>QAOA landscape</b><span>Move γ and β and watch the output distribution. Lecture 6.</span></li>
+        <li><b>Repetition code</b><span>Flip qubits, read the syndrome, correct. Lecture 7.</span></li>
+        <li><b>Surface code</b><span>Place errors on the lattice and see which stabilizers fire. Lecture 8.</span></li>
+      </ul>
+    </section>
+  </div>
+</Base>

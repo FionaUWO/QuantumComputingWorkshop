@@ -1,0 +1,14 @@
+---
+// A simulator panel. `main` marks the one that the "try it" buttons on the page drive.
+interface Props {
+  kind: 'bloch' | 'pair' | 'teleport';
+  sliders?: boolean;
+  main?: boolean;
+}
+const { kind, sliders = false, main = false } = Astro.props;
+---
+<div class="board" data-widget={kind} data-sliders={sliders ? '' : undefined} data-main={main ? '' : undefined}></div>
+
+<script>
+  import '../scripts/boards.js';
+</script>

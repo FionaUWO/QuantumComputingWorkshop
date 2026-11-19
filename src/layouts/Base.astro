@@ -1,0 +1,63 @@
+---
+import '../styles/site.css';
+import { url } from '../lib/url';
+
+interface Props {
+  title: string;
+  description?: string;
+  current?: 'home' | 'lectures' | 'playground';
+}
+const { title, description, current } = Astro.props;
+const home = current === 'home';
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title}</title>
+{description && <meta name="description" content={description}>}
+<script is:inline>document.documentElement.classList.add('js');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="logo" href={url()}><img src={url('assets/img/lab-logo.png')} alt="" width="38" height="38">Quantum Workshop</a>
+    {home ? (
+      <nav class="site-nav" aria-label="Site">
+        <a href="#parts">Programme</a>
+        <a href="#lectures">Lectures</a>
+        <a href={url('playground/')}>Playground</a>
+        <a href="#lab">The lab</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    ) : (
+      <Fragment>
+        <nav class="site-nav" aria-label="Site">
+          <a href={url()}>Home</a>
+          <a href={url('#lectures')} aria-current={current === 'lectures' ? 'page' : undefined}>Lectures</a>
+          <a href={url('playground/')} aria-current={current === 'playground' ? 'page' : undefined}>Playground</a>
+        </nav>
+        <span class="head-note">Q-AICON Lab, Western University</span>
+      </Fragment>
+    )}
+  </div>
+</header>
+
+<main>
+  <slot />
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <span>Quantum Computing Workshop, Q-AICON Lab, Western University</span>
+    <span><a href={home ? '#contact' : url('#contact')}>Contact Dr. Fang</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

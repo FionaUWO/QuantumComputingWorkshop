@@ -1,40 +1,25 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quantum Computing Workshop | Q-AICON Lab, Western University</title>
-<meta name="description" content="Eight one-hour lectures on quantum computing for undergraduates in mathematics, run by the Q-AICON Lab at Western University.">
-<script>document.documentElement.classList.add('js');</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/site.css">
-</head>
-<body>
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { lectures } from '../data/lectures';
+import { url } from '../lib/url';
 
-<header class="site-head">
-  <div class="wrap">
-    <a class="logo" href="index.html"><img src="assets/img/lab-logo.png" alt="" width="38" height="38">Quantum Workshop</a>
-    <nav class="site-nav" aria-label="Site">
-      <a href="#parts">Programme</a>
-      <a href="#lectures">Lectures</a>
-      <a href="playground/index.html">Playground</a>
-      <a href="#lab">The lab</a>
-      <a href="#contact">Contact</a>
-    </nav>
-  </div>
-</header>
-
-<main>
+// A lecture card links to its page once the lecture's .mdx file exists.
+const ready = new Set((await getCollection('lectures')).map((e) => e.id));
+---
+<Base
+  title="Quantum Computing Workshop | Q-AICON Lab, Western University"
+  description="Eight one-hour lectures on quantum computing for undergraduates in mathematics, run by the Q-AICON Lab at Western University."
+  current="home"
+>
   <section class="hero">
     <div class="wrap hero-grid">
       <div data-reveal>
         <h1>Quantum Computing Workshop</h1>
         <p class="lede">Eight one-hour lectures for mathematics undergraduates at Western University. We start from a single qubit and reach Shor's algorithm, QAOA and quantum error correction.</p>
         <div class="actions">
-          <a class="btn" href="lectures/01-qubit.html">Start lecture 1</a>
-          <a class="btn btn-quiet" href="playground/index.html">Open the playground</a>
+          <a class="btn" href={url('lectures/01-qubit/')}>Start lecture 1</a>
+          <a class="btn btn-quiet" href={url('playground/')}>Open the playground</a>
         </div>
         <ul class="facts">
           <li><b data-count="8">8</b> lectures</li>
@@ -100,7 +85,7 @@
             <li>Lecture 1: states, the Born rule, the Bloch sphere</li>
             <li>Lecture 2: tensor products, Bell states, teleportation</li>
           </ul>
-          <a class="btn" href="lectures/01-qubit.html">Start lecture 1</a>
+          <a class="btn" href={url('lectures/01-qubit/')}>Start lecture 1</a>
         </div>
         <div class="art-stack"><div class="art" data-art="bloch"></div></div>
       </div>
@@ -150,54 +135,16 @@
         <p>Each comes with notes, a simulation and exercises. Lectures 1 and 2 are ready; the others follow as the workshop runs.</p>
       </div>
       <div class="courses" data-reveal>
-        <article class="course">
-          <div class="art" data-art="bloch"></div><div class="num">1</div><span class="tag">Foundations</span>
-          <h3>A qubit is a unit vector in ℂ²</h3>
-          <p>States, the Born rule, the Bloch sphere, single-qubit gates.</p>
-          <div class="foot"><span>60 minutes</span><a class="btn btn-small" href="lectures/01-qubit.html">Open lecture 1</a></div>
-        </article>
-        <article class="course">
-          <div class="art" data-art="entangle"></div><div class="num">2</div><span class="tag">Foundations</span>
-          <h3>Multiple qubits and entanglement</h3>
-          <p>Tensor products, Bell states, no-cloning, teleportation.</p>
-          <div class="foot"><span>60 minutes</span><a class="btn btn-small" href="lectures/02-entanglement.html">Open lecture 2</a></div>
-        </article>
-        <article class="course">
-          <div class="art" data-art="grover"></div><div class="num">3</div><span class="tag">Algorithms</span>
-          <h3>Query algorithms and Grover search</h3>
-          <p>Oracles, phase kickback, search as a rotation in a plane.</p>
-          <div class="foot"><span>60 minutes</span><span class="waiting">In preparation</span></div>
-        </article>
-        <article class="course">
-          <div class="art" data-art="qft"></div><div class="num">4</div><span class="tag">Algorithms</span>
-          <h3>The quantum Fourier transform and Shor</h3>
-          <p>Fourier analysis on ℤ<sub>N</sub>, phase estimation, order finding.</p>
-          <div class="foot"><span>60 minutes</span><span class="waiting">In preparation</span></div>
-        </article>
-        <article class="course">
-          <div class="art" data-art="maxcut"></div><div class="num">5</div><span class="tag">Variational methods</span>
-          <h3>Hamiltonians and optimisation</h3>
-          <p>Observables, the variational principle, MaxCut as an Ising model.</p>
-          <div class="foot"><span>60 minutes</span><span class="waiting">In preparation</span></div>
-        </article>
-        <article class="course">
-          <div class="art" data-art="qaoa"></div><div class="num">6</div><span class="tag">Variational methods</span>
-          <h3>QAOA</h3>
-          <p>Cost and mixer layers, adiabatic evolution, what limits it.</p>
-          <div class="foot"><span>60 minutes</span><span class="waiting">In preparation</span></div>
-        </article>
-        <article class="course">
-          <div class="art" data-art="repetition"></div><div class="num">7</div><span class="tag">Error correction</span>
-          <h3>Noise and the first codes</h3>
-          <p>Pauli errors, the repetition code, syndromes, Shor's nine-qubit code.</p>
-          <div class="foot"><span>60 minutes</span><span class="waiting">In preparation</span></div>
-        </article>
-        <article class="course">
-          <div class="art" data-art="surface"></div><div class="num">8</div><span class="tag">Error correction</span>
-          <h3>Stabilizer codes and the surface code</h3>
-          <p>Abelian subgroups of the Pauli group, CSS codes, thresholds.</p>
-          <div class="foot"><span>60 minutes</span><span class="waiting">In preparation</span></div>
-        </article>
+        {lectures.map((l) => (
+          <article class="course">
+            <div class="art" data-art={l.art}></div><div class="num">{l.num}</div><span class="tag">{l.part}</span>
+            <h3 set:html={l.title}></h3>
+            <p set:html={l.blurb}></p>
+            <div class="foot"><span>60 minutes</span>{ready.has(l.slug)
+              ? <a class="btn btn-small" href={url(`lectures/${l.slug}/`)}>Open lecture {l.num}</a>
+              : <span class="waiting">In preparation</span>}</div>
+          </article>
+        ))}
       </div>
     </div>
   </section>
@@ -226,14 +173,14 @@
           <p style="margin-top:1.8rem"><a class="btn btn-quiet" href="https://fionauwo.github.io/QAICON/">Visit the lab website</a></p>
         </div>
         <div class="lab-photos" data-reveal>
-          <div class="main"><img src="assets/img/group-2026.webp" alt="Members of the Q-AICON Lab standing in the Thompson Engineering Building at Western University" width="1200" height="900" loading="lazy" decoding="async"></div>
-          <div><img src="assets/img/group-01.webp" alt="Lab members at the IEEE ICC 2025 conference in Montreal" width="1200" height="900" loading="lazy" decoding="async"></div>
-          <div><img src="assets/img/group-03.webp" alt="Lab members outside the Thompson Engineering Building" width="1200" height="1600" loading="lazy" decoding="async"></div>
+          <div class="main"><img src={url('assets/img/group-2026.webp')} alt="Members of the Q-AICON Lab standing in the Thompson Engineering Building at Western University" width="1200" height="900" loading="lazy" decoding="async"></div>
+          <div><img src={url('assets/img/group-01.webp')} alt="Lab members at the IEEE ICC 2025 conference in Montreal" width="1200" height="900" loading="lazy" decoding="async"></div>
+          <div><img src={url('assets/img/group-03.webp')} alt="Lab members outside the Thompson Engineering Building" width="1200" height="1600" loading="lazy" decoding="async"></div>
         </div>
       </div>
 
       <div class="research" data-reveal>
-        <img src="assets/img/qubit-efficient.webp" alt="Diagram of the lab's qubit-efficient QAOA: the dynamics stay inside one block of the full Hilbert space, which is mapped to a smaller qubit register" width="900" height="506" loading="lazy" decoding="async">
+        <img src={url('assets/img/qubit-efficient.webp')} alt="Diagram of the lab's qubit-efficient QAOA: the dynamics stay inside one block of the full Hilbert space, which is mapped to a smaller qubit register" width="900" height="506" loading="lazy" decoding="async">
         <div>
           <h3>Where lecture 6 leads: QAOA with fewer qubits</h3>
           <p>When a combinatorial problem has symmetry, QAOA never leaves a small invariant subspace. The lab's framework maps that subspace onto fewer qubits, so the same optimisation runs on a smaller device. Lectures 5 and 6 give you the background to read this work.</p>
@@ -261,16 +208,9 @@
       </address>
     </div>
   </section>
-</main>
+</Base>
 
-<footer class="site-foot">
-  <div class="wrap">
-    <span>Quantum Computing Workshop, Q-AICON Lab, Western University</span>
-    <span><a href="#contact">Contact Dr. Fang</a></span>
-  </div>
-</footer>
-
-<script src="assets/js/art.js"></script>
-<script src="assets/js/home.js"></script>
-</body>
-</html>
+<script>
+  import '../scripts/art.js';
+  import '../scripts/home.js';
+</script>

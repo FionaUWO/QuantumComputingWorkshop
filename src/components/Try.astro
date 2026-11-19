@@ -1,0 +1,13 @@
+---
+// A "try it" box. Each run is a button that plays its steps on the page's main simulator.
+interface Props {
+  runs: { do: string; label: string }[];
+}
+const { runs } = Astro.props;
+---
+<div class="try">
+  <slot />
+  <div class="try-actions">
+    {runs.map((r) => <button class="btn btn-small" data-run={r.do}>{r.label}</button>)}
+  </div>
+</div>
