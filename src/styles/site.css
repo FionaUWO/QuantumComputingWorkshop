@@ -336,3 +336,7 @@ p { margin: 1rem 0 0; }
 .notes { counter-reset: sec; }
 .notes h2 { counter-increment: sec; scroll-margin-top: 1rem; }
 .notes h2::before { content: counter(sec) ". "; }
+.example { border-left: 3px solid var(--lilac); padding: 0.1rem 0 0.2rem 1.1rem; margin-top: 1.6rem; }
+.example p:first-child { margin-top: 0; }
+.notes h3 { font-size: 1.25rem; margin-top: 2.2rem; }
+.notes table { display: block; overflow-x: auto; }
