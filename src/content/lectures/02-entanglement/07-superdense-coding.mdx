@@ -1,0 +1,41 @@
+---
+title: "Superdense coding"
+---
+import Statement from '../../../components/Statement.astro';
+import Try from '../../../components/Try.astro';
+
+Teleportation spends one Bell pair and two classical bits to move one qubit. The same resource works in the other direction: one Bell pair and one transmitted qubit carry two classical bits.
+
+Alice and Bob share $|\beta_{00}\rangle = \tfrac{1}{\sqrt2}(|00\rangle + |11\rangle)$; Alice holds the first qubit. To send the bits $x$ and $y$ she applies $X^y$ and then $Z^x$ to her qubit, and nothing else.
+
+<Statement>
+**Proposition.** $\big(Z^x X^y \otimes I\big)\,|\beta_{00}\rangle = |\beta_{xy}\rangle$.
+</Statement>
+
+*Proof.* Applying $X^y$ to the first qubit turns $|00\rangle + |11\rangle$ into $|y, 0\rangle + |\bar y, 1\rangle$, which is $|0, y\rangle + |1, \bar y\rangle$ after reordering the two terms. Then $Z^x$ multiplies the term whose first qubit is $1$ by $(-1)^x$. The result is $\tfrac{1}{\sqrt2}\big(|0,y\rangle + (-1)^x|1,\bar y\rangle\big) = |\beta_{xy}\rangle$. $\qquad\blacksquare$
+
+| Bits $xy$ | Alice applies | Shared state |
+| --- | --- | --- |
+| $00$ | nothing | $\lvert\beta_{00}\rangle$ |
+| $01$ | $X$ | $\lvert\beta_{01}\rangle$ |
+| $10$ | $Z$ | $\lvert\beta_{10}\rangle$ |
+| $11$ | $X$, then $Z$ | $\lvert\beta_{11}\rangle$ |
+
+Alice acted on a single qubit, yet the pair has moved between four orthogonal states. She sends her qubit to Bob. He now holds both, runs the Bell circuit backwards (CNOT, then $H$ on the first qubit) and measures: the result is $x$ on the first qubit and $y$ on the second, with certainty.
+
+<Try runs={[
+  { do: 'reset,HA,CAB,XA,CAB,HA,sample', label: 'Send 01' },
+  { do: 'reset,HA,CAB,ZA,CAB,HA,sample', label: 'Send 10' },
+  { do: 'reset,HA,CAB,XA,ZA,CAB,HA,sample', label: 'Send 11' },
+]}>
+Each button shares a Bell pair, applies Alice's gate to qubit $A$, decodes, and measures a hundred copies. Every copy should give the same two bits.
+</Try>
+
+Two remarks. Someone who intercepts Alice's qubit learns nothing: on its own, one half of any Bell state gives a fair coin in every basis, whichever bits were encoded. And a qubit without shared entanglement cannot do this. One qubit, measured, yields at most one bit of information about how it was prepared. The Bell pair, distributed in advance, is what the second bit rides on.
+
+| Protocol | Uses | Transmits |
+| --- | --- | --- |
+| Teleportation | one Bell pair, two classical bits | one qubit |
+| Superdense coding | one Bell pair, one qubit | two classical bits |
+
+<p class="reading">Reading: Nielsen and Chuang, Section 2.3.</p>

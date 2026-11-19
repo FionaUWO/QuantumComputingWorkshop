@@ -4,7 +4,16 @@ board: false
 ---
 import Statement from '../../../components/Statement.astro';
 
-CNOT copies $|0\rangle$ and $|1\rangle$: it sends $|b\rangle|0\rangle$ to $|b\rangle|b\rangle$. It does not copy $|+\rangle$; it produced a Bell pair instead of $|+\rangle|+\rangle$. This is not a defect of CNOT.
+CNOT copies $|0\rangle$ and $|1\rangle$: it sends $|b\rangle|0\rangle$ to $|b\rangle|b\rangle$. It does not copy $|+\rangle$; it produced a Bell pair instead of $|+\rangle|+\rangle$. In general, for $|\psi\rangle = \alpha|0\rangle + \beta|1\rangle$,
+
+$$
+\begin{aligned}
+\mathrm{CNOT}\,\big(|\psi\rangle \otimes |0\rangle\big) &= \alpha|00\rangle + \beta|11\rangle, \\[0.4em]
+|\psi\rangle \otimes |\psi\rangle &= \alpha^2|00\rangle + \alpha\beta|01\rangle + \alpha\beta|10\rangle + \beta^2|11\rangle ,
+\end{aligned}
+$$
+
+and the two agree only when $\alpha\beta = 0$. This is not a defect of CNOT.
 
 <Statement>
 **Theorem (no cloning).** There is no unitary $U$ with $U\big(|\psi\rangle \otimes |0\rangle\big) = |\psi\rangle \otimes |\psi\rangle$ for every state $|\psi\rangle$.
@@ -18,4 +27,8 @@ $$
 
 Hence $\langle\psi|\phi\rangle$ is $0$ or $1$: the two states are orthogonal or equal. A machine can copy an orthonormal basis and nothing more. $\qquad\blacksquare$
 
+The same argument works if the blank qubit starts in any fixed state $|s\rangle$ instead of $|0\rangle$, and it is the reason non-orthogonal states cannot be told apart reliably: a device that identified them could then prepare fresh copies.
+
 The consequences are large. Quantum information cannot be backed up, a single unknown qubit cannot be measured repeatedly to learn its amplitudes, and error correction (lectures 7 and 8) has to work without ever looking at the data.
+
+<p class="reading">Reading: Nielsen and Chuang, Section 1.3.5 and Box 12.1.</p>

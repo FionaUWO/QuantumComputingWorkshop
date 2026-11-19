@@ -1,6 +1,7 @@
 ---
 title: "Measuring one qubit"
 ---
+import Statement from '../../../components/Statement.astro';
 import Try from '../../../components/Try.astro';
 
 Measuring only qubit $A$ gives outcome $0$ with probability $|a_{00}|^2 + |a_{01}|^2$, the total weight of the basis states that agree with it. The state then collapses onto those terms and is rescaled to unit length:
@@ -20,9 +21,45 @@ For the Bell state each row has a single non-zero entry. Alice's result is a fai
 Measure $A$ on a Bell pair and watch what happens to $B$. Then look at the statistics over a hundred pairs.
 </Try>
 
-Two people who share a classical coin flip would see the same agreement, so this alone proves nothing. The difference shows when both rotate before measuring. Because $(H \otimes H)|\Phi^+\rangle = |\Phi^+\rangle$, the results still always agree, although each side is now asking a different question. No shared coin can answer every such pair of questions consistently; that is the content of Bell's theorem, which we state but do not prove.
+Two people who share a classical coin flip would see the same agreement, so this alone proves nothing. The difference shows when both rotate before measuring. Because $(H \otimes H)|\Phi^+\rangle = |\Phi^+\rangle$, the results still always agree, although each side is now asking a different question. No shared coin can answer every such pair of questions consistently; that is the content of Bell's theorem, made precise at the end of this section.
 
 <Try runs={[
   { do: 'reset,HA,CAB,HA,HB,sample', label: 'Bell pair, H on both, measure 100 copies' },
   { do: 'reset,HA,CAB,HA,sample', label: 'Bell pair, H on A only, measure 100 copies' },
 ]} />
+
+### The CHSH inequality
+
+Here is the precise statement, in the form due to Clauser, Horne, Shimony and Holt. Alice measures one of two quantities, $Q$ or $R$, and Bob one of two, $S$ or $T$. Every result is $+1$ or $-1$, and each chooses which to measure at random, far apart.
+
+Suppose the four values exist before anyone measures, as they would for any pair of classical objects. Then
+
+$$
+QS + RS + RT - QT = (Q + R)\,S + (R - Q)\,T = \pm 2 ,
+$$
+
+because one of $Q + R$ and $R - Q$ is zero and the other is $\pm 2$. Averaging over many runs:
+
+<Statement>
+**CHSH inequality.** If the outcomes are fixed in advance, however they are distributed,
+
+$$
+\big|\,\mathbb{E}[QS] + \mathbb{E}[RS] + \mathbb{E}[RT] - \mathbb{E}[QT]\,\big| \le 2 .
+$$
+</Statement>
+
+Now let Alice and Bob share the Bell state $|\beta_{11}\rangle = \tfrac{1}{\sqrt2}(|01\rangle - |10\rangle)$, for which measurements along the Bloch axes $\vec a$ and $\vec b$ have correlation $\langle(\vec a\cdot\vec\sigma) \otimes (\vec b\cdot\vec\sigma)\rangle = -\,\vec a\cdot\vec b$. Take the observables
+
+$$
+Q = Z, \qquad R = X, \qquad S = \frac{-Z - X}{\sqrt2}, \qquad T = \frac{Z - X}{\sqrt2} .
+$$
+
+Each of $\mathbb{E}[QS]$, $\mathbb{E}[RS]$, $\mathbb{E}[RT]$ equals $\tfrac{1}{\sqrt2}$ and $\mathbb{E}[QT] = -\tfrac{1}{\sqrt2}$, so the combination is
+
+$$
+\tfrac{1}{\sqrt2} + \tfrac{1}{\sqrt2} + \tfrac{1}{\sqrt2} + \tfrac{1}{\sqrt2} = 2\sqrt2 \;>\; 2 .
+$$
+
+Experiments violate the bound and come close to $2\sqrt2$. The assumption that failed is that the four values exist before the measurement: the outcomes of measurements on an entangled pair are not read off from properties each qubit carries on its own.
+
+<p class="reading">Reading: Nielsen and Chuang, Sections 1.2.1 and 2.6.</p>

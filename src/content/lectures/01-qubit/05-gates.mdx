@@ -23,6 +23,16 @@ Equivalently, the columns of $U$ form an orthonormal basis, and $U$ preserves al
 | $S$ | $\begin{pmatrix} 1 & 0 \\ 0 & i \end{pmatrix}$ | quarter turn about the $z$-axis |
 | $T$ | $\begin{pmatrix} 1 & 0 \\ 0 & e^{i\pi/4} \end{pmatrix}$ | eighth turn about the $z$-axis |
 
+$X$, $Y$ and $Z$ are the Pauli matrices again, now used as gates. $S$ is called the *phase gate* and $T$ the *$\pi/8$ gate*; the odd name comes from writing $T = e^{i\pi/8}\begin{pmatrix} e^{-i\pi/8} & 0 \\ 0 & e^{i\pi/8} \end{pmatrix}$. They are related by $T^2 = S$ and $S^2 = Z$, and $H = \tfrac{1}{\sqrt2}(X + Z)$.
+
+A sequence of gates is drawn as a *circuit*, a wire read from left to right:
+
+$$
+|0\rangle \;\text{---}\; \boxed{H} \;\text{---}\; \boxed{Z} \;\text{---}\; \boxed{H} \;\text{---}
+$$
+
+The matrix product is written the other way round, because the first gate applied stands next to the state: the circuit "$A$, then $B$" is the matrix $BA$. For the palindrome $HZH$ the order makes no difference, but for "$H$, then $T$" the matrix is $TH$.
+
 The Hadamard gate $H$ is the change of basis between $\{|0\rangle, |1\rangle\}$ and $\{|+\rangle, |-\rangle\}$: its columns are $|+\rangle$ and $|-\rangle$, so $H|0\rangle = |+\rangle$, $H|1\rangle = |-\rangle$, and $H^2 = I$ sends them back. Conjugating by $H$ therefore exchanges the roles of the $x$- and $z$-axes:
 
 $$
@@ -73,4 +83,30 @@ S = e^{i\pi/4} R_z\big(\tfrac\pi2\big), \qquad T = e^{i\pi/8} R_z\big(\tfrac\pi4
 \end{gathered}
 $$
 
+### Building gates from rotations
+
+Rotations about two axes are enough to reach every gate.
+
+<Statement>
+**Theorem (Z-Y decomposition).** For every $2 \times 2$ unitary $U$ there are real numbers $\alpha, \beta, \gamma, \delta$ with
+
+$$
+U = e^{i\alpha}\, R_z(\beta)\, R_y(\gamma)\, R_z(\delta).
+$$
+</Statement>
+
+This is the matrix form of Euler angles: any rotation of the sphere is a turn about $z$, then about $y$, then about $z$ again. For example, since $R_y(\tfrac\pi2) = \tfrac{1}{\sqrt2}\begin{pmatrix} 1 & -1 \\ 1 & 1 \end{pmatrix}$ and $R_x(\pi) = -iX$,
+
+$$
+H = i\, R_x(\pi)\, R_y\big(\tfrac\pi2\big),
+$$
+
+a quarter turn about the $y$-axis followed by a half turn about the $x$-axis. Try it on the sphere with your hand: the result is the same as the single half turn about the diagonal axis.
+
+A real device cannot implement a continuum of angles exactly. It does not need to: products of $H$ and $T$ alone come arbitrarily close to any single-qubit gate, up to global phase. We will use this fact without proof.
+
+### The group behind the sphere
+
 In the language of groups: the matrices $R_{\hat n}(\theta)$ make up $SU(2)$, and the theorem describes a surjective homomorphism $SU(2) \to SO(3)$. It is two-to-one, since $R_{\hat n}(2\pi) = -I$: a full turn of the sphere is the identity rotation but the matrix $-I$, which differs from $I$ by a global phase only. Topologically $SU(2) \cong S^3$ is the double cover of $SO(3)$.
+
+<p class="reading">Reading: Nielsen and Chuang, Sections 1.3.1, 2.2.2 (Postulate 2) and 4.2.</p>

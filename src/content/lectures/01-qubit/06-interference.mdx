@@ -3,7 +3,7 @@ title: "Interference"
 ---
 import Try from '../../../components/Try.astro';
 
-The states $|+\rangle$ and $|-\rangle$ differ only in a relative phase, and a standard-basis measurement cannot tell them apart: both give $0$ and $1$ with probability $\tfrac12$. A coin flip would do the same.
+The states $|+\rangle$ and $|-\rangle$ differ only in a relative phase, and a computational-basis measurement cannot tell them apart: both give $0$ and $1$ with probability $\tfrac12$. A coin flip would do the same.
 
 But apply $H$ before measuring. Since $H|+\rangle = |0\rangle$ and $H|-\rangle = |1\rangle$, the outcome is now certain and distinguishes the two states perfectly. Follow the amplitudes through two Hadamards applied to $|0\rangle$:
 
@@ -52,3 +52,5 @@ The relative phase, invisible to a direct measurement, has been converted into a
 ]}>
 Predict each count from the table before you press the button, and remember that $100$ copies only pin the probability down to about $\pm 0.05$.
 </Try>
+
+<p class="reading">Reading: Nielsen and Chuang, Sections 1.4.2 and 1.4.3, where the same cancellation drives Deutsch's algorithm.</p>

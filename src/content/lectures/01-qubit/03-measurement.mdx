@@ -8,23 +8,23 @@ import Try from '../../../components/Try.astro';
 We cannot read $\alpha$ and $\beta$ off a qubit. The only way to get information out is to measure it, and a measurement returns a single classical bit.
 
 <Statement>
-**Born rule.** Measuring $\alpha|0\rangle + \beta|1\rangle$ in the standard basis gives outcome $0$ with probability $|\alpha|^2$ and outcome $1$ with probability $|\beta|^2$. Afterwards the state is $|0\rangle$ or $|1\rangle$, matching the outcome.
+**Born rule.** Measuring $\alpha|0\rangle + \beta|1\rangle$ in the computational basis gives outcome $0$ with probability $|\alpha|^2$ and outcome $1$ with probability $|\beta|^2$. Afterwards the state is $|0\rangle$ or $|1\rangle$, matching the outcome.
 </Statement>
 
 The normalisation condition is exactly what makes these probabilities sum to one. Measurement is destructive: one copy of a state yields one bit, and the amplitudes are gone.
 
 ### Measuring in another basis
 
-Nothing singles out the standard basis. For any orthonormal basis $\{|b_0\rangle, |b_1\rangle\}$ there is a measurement with
+Nothing singles out the computational basis. For any orthonormal basis $\{|b_0\rangle, |b_1\rangle\}$ there is a measurement with
 
 $$
 P(i) = |\langle b_i|\psi\rangle|^2, \qquad \text{state afterwards: } |b_i\rangle .
 $$
 
-By Parseval these are non-negative and sum to one, so the rule is consistent. The standard-basis rule is the special case $\langle 0|\psi\rangle = \alpha$, $\langle 1|\psi\rangle = \beta$.
+By Parseval these are non-negative and sum to one, so the rule is consistent. The computational-basis rule is the special case $\langle 0|\psi\rangle = \alpha$, $\langle 1|\psi\rangle = \beta$.
 
 <Example>
-**Example.** Take $|\psi\rangle = \tfrac{1}{\sqrt3}\big(|0\rangle + (1+i)|1\rangle\big)$ from before. In the standard basis, $P(0) = \tfrac13$ and $P(1) = \tfrac23$. In the basis $\{|+\rangle, |-\rangle\}$,
+**Example.** Take $|\psi\rangle = \tfrac{1}{\sqrt3}\big(|0\rangle + (1+i)|1\rangle\big)$ from before. In the computational basis, $P(0) = \tfrac13$ and $P(1) = \tfrac23$. In the basis $\{|+\rangle, |-\rangle\}$,
 
 $$
 \begin{aligned}
@@ -34,6 +34,24 @@ $$
 $$
 
 so $P(+) = \tfrac56$ and $P(-) = \tfrac16$. The phase of $\beta$ played no part in the first measurement and decided the second.
+</Example>
+
+### Observables
+
+It is often convenient to attach numbers to the outcomes. An *observable* is a Hermitian matrix $M$. By the spectral theorem it has real eigenvalues and an orthonormal basis of eigenvectors,
+
+$$
+M = m_0\,|b_0\rangle\langle b_0| + m_1\,|b_1\rangle\langle b_1| ,
+$$
+
+and "measuring $M$" means measuring in that basis and reporting the eigenvalue $m_i$. The average of the reported value has a compact form:
+
+$$
+\mathbb{E}[M] = \sum_i m_i\,|\langle b_i|\psi\rangle|^2 = \sum_i m_i\,\langle\psi|b_i\rangle\langle b_i|\psi\rangle = \langle\psi|M|\psi\rangle .
+$$
+
+<Example>
+**Example.** The matrix $Z = |0\rangle\langle 0| - |1\rangle\langle 1|$ is the observable that reports $+1$ for outcome $0$ and $-1$ for outcome $1$, so $\langle\psi|Z|\psi\rangle = P(0) - P(1)$. The matrix $X = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$ has eigenvectors $|+\rangle$ and $|-\rangle$ with eigenvalues $+1$ and $-1$, so $\langle\psi|X|\psi\rangle = P(+) - P(-)$. For the running example these are $-\tfrac13$ and $\tfrac23$.
 </Example>
 
 ### How many copies?
@@ -52,3 +70,5 @@ With $N = 100$ the standard deviation can be as large as $0.05$, so a count of $
 ]}>
 The state $|+\rangle$ should give each outcome half the time. Prepare it and measure. Run the 100-copy button several times and watch how far the count strays from $50$.
 </Try>
+
+<p class="reading">Reading: Nielsen and Chuang, Sections 1.3.3, 2.2.3 and 2.2.5 (Postulate 3).</p>

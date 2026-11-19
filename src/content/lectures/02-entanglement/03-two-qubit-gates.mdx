@@ -17,6 +17,30 @@ $$
 |00\rangle \xrightarrow{\;H \otimes I\;} \tfrac{1}{\sqrt2}\big(|00\rangle + |10\rangle\big) \xrightarrow{\;\mathrm{CNOT}\;} \tfrac{1}{\sqrt2}\big(|00\rangle + |11\rangle\big).
 $$
 
+### The Bell basis
+
+Feed the other three basis states through the same circuit, $H$ on the first qubit and then CNOT. Writing $\bar y = 1 \oplus y$, the input $|xy\rangle$ comes out as
+
+$$
+|\beta_{xy}\rangle = \frac{|0, y\rangle + (-1)^x\,|1, \bar y\rangle}{\sqrt2} .
+$$
+
+| Input | Output | Other name |
+| --- | --- | --- |
+| $\lvert 00\rangle$ | $\lvert\beta_{00}\rangle = \tfrac{1}{\sqrt2}\big(\lvert 00\rangle + \lvert 11\rangle\big)$ | $\lvert\Phi^+\rangle$ |
+| $\lvert 01\rangle$ | $\lvert\beta_{01}\rangle = \tfrac{1}{\sqrt2}\big(\lvert 01\rangle + \lvert 10\rangle\big)$ | $\lvert\Psi^+\rangle$ |
+| $\lvert 10\rangle$ | $\lvert\beta_{10}\rangle = \tfrac{1}{\sqrt2}\big(\lvert 00\rangle - \lvert 11\rangle\big)$ | $\lvert\Phi^-\rangle$ |
+| $\lvert 11\rangle$ | $\lvert\beta_{11}\rangle = \tfrac{1}{\sqrt2}\big(\lvert 01\rangle - \lvert 10\rangle\big)$ | $\lvert\Psi^-\rangle$ |
+
+These are the four *Bell states*. A unitary sends an orthonormal basis to an orthonormal basis, so they form a basis of $\mathbb{C}^4$, the *Bell basis*, and every one of them is entangled with $|\det M| = \tfrac12$. The bit $y$ says whether the two qubits agree or disagree; the bit $x$ is a relative sign. Running the circuit backwards, CNOT and then $H$, turns a Bell state back into $|xy\rangle$, which is how one measures in the Bell basis.
+
+<Try runs={[
+  { do: 'reset,XB,HA,CAB', label: 'Prepare β₀₁ from |01⟩' },
+  { do: 'reset,XA,HA,CAB', label: 'Prepare β₁₀ from |10⟩' },
+  { do: 'reset,XA,XB,HA,CAB', label: 'Prepare β₁₁ from |11⟩' },
+  { do: 'reset,XA,XB,HA,CAB,CAB,HA', label: 'Prepare β₁₁, then undo the circuit' },
+]} />
+
 Single-qubit gates together with CNOT generate every unitary on $n$ qubits. We will use that fact without proof.
 
 <Try runs={[
@@ -26,3 +50,5 @@ Single-qubit gates together with CNOT generate every unitary on $n$ qubits. We w
 ]}>
 CNOT does nothing interesting to $|00\rangle$, copies a classical bit, and entangles a superposition.
 </Try>
+
+<p class="reading">Reading: Nielsen and Chuang, Sections 1.3.2, 1.3.6 and 4.3.</p>

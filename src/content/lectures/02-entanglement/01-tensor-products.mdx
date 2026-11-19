@@ -19,4 +19,44 @@ $$
 \begin{pmatrix} \alpha \\ \beta \end{pmatrix} \otimes \begin{pmatrix} \gamma \\ \delta \end{pmatrix} = \begin{pmatrix} \alpha\gamma \\ \alpha\delta \\ \beta\gamma \\ \beta\delta \end{pmatrix}.
 $$
 
+### Rules for computing
+
+Three rules cover everything we will do with tensor products.
+
+**Vectors.** The product is bilinear: scalars move freely, $(z|v\rangle) \otimes |w\rangle = |v\rangle \otimes (z|w\rangle) = z\,(|v\rangle \otimes |w\rangle)$, and it distributes over sums in each factor. So
+
+$$
+|+\rangle \otimes |0\rangle = \tfrac{1}{\sqrt2}\big(|0\rangle + |1\rangle\big) \otimes |0\rangle = \tfrac{1}{\sqrt2}\big(|00\rangle + |10\rangle\big).
+$$
+
+**Inner products** multiply factor by factor:
+
+$$
+\big(\langle a| \otimes \langle b|\big)\big(|c\rangle \otimes |d\rangle\big) = \langle a|c\rangle\,\langle b|d\rangle .
+$$
+
+In particular the four vectors $|ij\rangle$ are orthonormal, and a product of unit vectors is a unit vector.
+
+**Operators.** If $A$ acts on the first qubit and $B$ on the second, $A \otimes B$ is defined by $(A \otimes B)(|v\rangle \otimes |w\rangle) = A|v\rangle \otimes B|w\rangle$ and linearity. Its matrix is the Kronecker product, built from blocks:
+
+$$
+A \otimes B = \begin{pmatrix} a_{11}B & a_{12}B \\ a_{21}B & a_{22}B \end{pmatrix},
+\qquad
+X \otimes Z = \begin{pmatrix} 0 & Z \\ Z & 0 \end{pmatrix} = \begin{pmatrix} 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & -1 \\ 1 & 0 & 0 & 0 \\ 0 & -1 & 0 & 0 \end{pmatrix}.
+$$
+
+Products compose factor by factor, $(A \otimes B)(C \otimes D) = AC \otimes BD$, so the tensor product of unitaries is unitary.
+
+### Many qubits
+
+We write $|\psi\rangle^{\otimes n}$ for $n$ copies of a state and $U^{\otimes n}$ for the same gate on every qubit. One identity will open almost every algorithm in this workshop. Since $H|0\rangle = \tfrac{1}{\sqrt2}(|0\rangle + |1\rangle)$, expanding the product gives every bit string exactly once:
+
+$$
+H^{\otimes n}\,|0\rangle^{\otimes n} = \frac{1}{\sqrt{2^n}} \sum_{x \in \{0,1\}^n} |x\rangle .
+$$
+
+A circuit of $n$ gates prepares an equal superposition of all $2^n$ basis states.
+
 With $n$ qubits the space is $(\mathbb{C}^2)^{\otimes n}$, of dimension $2^n$. Thirty qubits already need a billion amplitudes. That exponential growth is the reason classical simulation becomes hard, and the resource quantum algorithms try to use.
+
+<p class="reading">Reading: Nielsen and Chuang, Sections 1.2.1, 2.1.7 and 2.2.8 (Postulate 4).</p>

@@ -1,0 +1,16 @@
+---
+title: "Exercises"
+---
+1. Compute $|{+}\rangle \otimes |{-}\rangle$ as a vector in $\mathbb{C}^4$ and check that $\det M = 0$.
+2. Write out the $4 \times 4$ matrices $H \otimes I$ and $I \otimes H$, and verify $(A \otimes B)(C \otimes D) = AC \otimes BD$ for $2 \times 2$ matrices.
+3. Show that $(U \otimes V)$ acts on the amplitude matrix by $M \mapsto U M V^{\mathsf T}$, and deduce that local gates preserve $|\det M|$.
+4. Check directly that the four Bell states $|\beta_{xy}\rangle$ are orthonormal and that $|\det M| = \tfrac12$ for each. Which single-qubit gate on $A$ turns $|\beta_{00}\rangle$ into each of the others?
+5. Verify that $(H \otimes H)|\Phi^+\rangle = |\Phi^+\rangle$. More generally, show that $(U \otimes \bar U)|\Phi^+\rangle = |\Phi^+\rangle$ for every unitary $U$.
+6. What is the largest possible value of $|\det M|$ for a unit vector, and which states attain it?
+7. For the state $|\beta_{11}\rangle$, show that $\langle Z \otimes Z\rangle = \langle X \otimes X\rangle = -1$ and $\langle Z \otimes X\rangle = 0$. Then prove the general formula $\langle(\vec a\cdot\vec\sigma) \otimes (\vec b\cdot\vec\sigma)\rangle = -\,\vec a\cdot\vec b$ used for the CHSH inequality.
+8. In the CHSH argument, find outcomes fixed in advance that reach the value $2$. Why can no assignment reach $4$?
+9. Prove the teleportation identity by expanding the right-hand side.
+10. In superdense coding, suppose an eavesdropper measures Alice's qubit in transit, in any basis. Show that both outcomes have probability $\tfrac12$ for each of the four messages.
+11. Three CNOTs with alternating directions swap two qubits. Check this on the simulator, then prove it on basis states.
+
+<p class="reading">Reading: many of these follow Nielsen and Chuang, Sections 2.1.7, 2.3 and 2.6.</p>
