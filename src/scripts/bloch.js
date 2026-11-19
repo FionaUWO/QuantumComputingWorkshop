@@ -99,13 +99,12 @@
         '<span>P(0)</span><div class="bar"><i data-bar="0"></i></div><span class="num" data-num="0"></span>' +
         '<span>P(1)</span><div class="bar"><i data-bar="1"></i></div><span class="num" data-num="1"></span>' +
         '</div>' +
-        '<div class="row" role="group" aria-label="Apply a gate">' +
+        '<div class="row gates" role="group" aria-label="Apply a gate">' +
         Object.keys(GATES).map((g) => '<button type="button" data-do="' + g + '" aria-label="Apply ' + g + ' gate">' + g + '</button>').join('') +
         '</div>' +
-        '<div class="row">' +
+        '<div class="row pair">' +
         '<button type="button" class="measure" data-do="measure">Measure once</button>' +
         '<button type="button" class="measure" data-do="sample">Measure 100 copies</button>' +
-        '<button type="button" data-do="reset">Reset to |0⟩</button>' +
         '</div>' +
         (this.opts.sliders
           ? '<div class="sliders">' +
@@ -113,7 +112,15 @@
             '<label for="bl-phi">φ</label><input id="bl-phi" type="range" min="0" max="360" step="1" value="0"><span class="num" data-out="phi"></span>' +
             '</div>'
           : '') +
-        '<p class="circuit"></p>' +
+        '<div class="trace"><p class="circuit"></p><button type="button" class="reset" data-do="reset" aria-label="Reset to |0⟩">Reset</button></div>' +
+        '<div class="shots" hidden aria-hidden="true">' +
+        '<p class="shots-title">100 copies, each measured once</p>' +
+        '<div class="shots-grid">' + '<i></i>'.repeat(100) + '</div>' +
+        '<div class="tally">' +
+        '<div><span class="key"><i class="o0"></i>Outcome 0</span><b data-tally="0">0</b></div>' +
+        '<div><span class="key"><i class="o1"></i>Outcome 1</span><b data-tally="1">0</b></div>' +
+        '</div>' +
+        '</div>' +
         '<p class="result" aria-live="polite"></p>';
       this.canvas = root.querySelector('canvas');
       this.ctx = this.canvas.getContext('2d');
@@ -121,6 +128,9 @@
         state: root.querySelector('.state'),
         circuit: root.querySelector('.circuit'),
         result: root.querySelector('.result'),
+        shots: root.querySelector('.shots'),
+        dots: Array.from(root.querySelectorAll('.shots-grid i')),
+        tally: [root.querySelector('[data-tally="0"]'), root.querySelector('[data-tally="1"]')],
         bars: [root.querySelector('[data-bar="0"]'), root.querySelector('[data-bar="1"]')],
         nums: [root.querySelector('[data-num="0"]'), root.querySelector('[data-num="1"]')],
         theta: root.querySelector('#bl-theta'),
@@ -158,7 +168,7 @@
           this.state = [[Math.cos(th / 2), 0], [Math.sin(th / 2) * Math.cos(ph), Math.sin(th / 2) * Math.sin(ph)]];
           this.history = ['|ψ(θ, φ)⟩'];
           this.trail = [];
-          this.el.result.textContent = '';
+          this.clearResult();
           this.refresh(true);
         };
         this.el.theta.addEventListener('input', onSlide);
@@ -190,7 +200,7 @@
     gate(name) {
       const g = GATES[name];
       const start = this.state;
-      this.el.result.textContent = '';
+      this.clearResult();
       this.history.push(name);
       this.trail = [blochVector(start)];
       const finish = () => { this.state = apply(g.m, start); this.refresh(); };
@@ -218,29 +228,65 @@
       this.state = outcome ? KET1() : KET0();
       this.history = ['|' + outcome + '⟩'];
       this.trail = [];
+      this.clearResult();
       this.refresh();
       this.el.result.textContent = 'Outcome ' + outcome + '. The state collapsed to |' + outcome + '⟩.';
     }
 
+    /* Measure 100 fresh copies. The outcomes appear one dot at a time, in the order they were drawn. */
     sample() {
       const p0 = abs2(this.state[0]);
-      let zeros = 0;
-      for (let i = 0; i < 100; i++) if (Math.random() < p0) zeros++;
-      this.el.result.textContent =
-        '100 fresh copies of this state, each measured once: outcome 0 came up ' + zeros + ' times, outcome 1 ' + (100 - zeros) + ' times.';
+      const outcomes = Array.from({ length: 100 }, () => (Math.random() < p0 ? 0 : 1));
+      const count = [0, 0];
+      let shown = 0;
+      this.clearResult();
+      this.el.shots.hidden = false;
+      this.el.result.classList.add('sr'); // the panel shows the counts; the sentence is for screen readers
+      // The results sit at the bottom of the widget, which can be below the fold.
+      this.el.shots.scrollIntoView({ block: 'nearest' });
+      const show = (upTo) => {
+        for (; shown < upTo; shown++) {
+          this.el.dots[shown].className = 'o' + outcomes[shown];
+          count[outcomes[shown]]++;
+        }
+        this.el.tally[0].textContent = count[0];
+        this.el.tally[1].textContent = count[1];
+      };
+      const finish = () => {
+        show(100);
+        this.el.result.textContent =
+          '100 fresh copies, each measured once: ' + count[0] + ' gave 0 and ' + count[1] + ' gave 1.';
+      };
+      if (reducedMotion() || document.hidden) { finish(); return Promise.resolve(); }
+      return new Promise((resolve) => {
+        const t0 = performance.now();
+        const frame = (now) => {
+          const upTo = Math.min(100, Math.floor((now - t0) / 16) + 1);
+          if (upTo < 100) { show(upTo); requestAnimationFrame(frame); }
+          else { finish(); resolve(); }
+        };
+        requestAnimationFrame(frame);
+      });
+    }
+
+    clearResult() {
+      this.el.result.textContent = '';
+      this.el.result.classList.remove('sr');
+      this.el.shots.hidden = true;
+      this.el.dots.forEach((d) => { d.className = ''; });
     }
 
     reset() {
       this.state = KET0();
       this.history = ['|0⟩'];
       this.trail = [];
-      this.el.result.textContent = '';
+      this.clearResult();
       this.refresh();
     }
 
     refresh(fromSlider) {
       this.vec = blochVector(this.state);
-      const p0 = abs2(this.state[0]), p = [p0, 1 - p0];
+      const p0 = Math.min(1, abs2(this.state[0])), p = [p0, 1 - p0]; // clamp so rounding never prints −0.000
       this.el.state.textContent = stateText(this.state);
       p.forEach((v, i) => {
         this.el.bars[i].style.width = (v * 100).toFixed(1) + '%';

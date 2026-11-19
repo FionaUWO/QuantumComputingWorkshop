@@ -4,6 +4,8 @@ title: "Gates"
 import Statement from '../../../components/Statement.astro';
 import Try from '../../../components/Try.astro';
 
+The states a computational measurement cannot separate lie on the equator of the sphere. To get at them we have to move the state before measuring, so we need to know which moves are allowed.
+
 An operation on a qubit must be linear, and it must send unit vectors to unit vectors.
 
 <Statement>
@@ -105,8 +107,12 @@ a quarter turn about the $y$-axis followed by a half turn about the $x$-axis. Tr
 
 A real device cannot implement a continuum of angles exactly. It does not need to: products of $H$ and $T$ alone come arbitrarily close to any single-qubit gate, up to global phase. We will use this fact without proof.
 
-### The group behind the sphere
+### Aside: the group behind the sphere
 
 In the language of groups: the matrices $R_{\hat n}(\theta)$ make up $SU(2)$, and the theorem describes a surjective homomorphism $SU(2) \to SO(3)$. It is two-to-one, since $R_{\hat n}(2\pi) = -I$: a full turn of the sphere is the identity rotation but the matrix $-I$, which differs from $I$ by a global phase only. Topologically $SU(2) \cong S^3$ is the double cover of $SO(3)$.
+
+### Back to the two buttons
+
+Half of the puzzle is now solved by geometry. $H$ is a half turn about the axis midway between $x$ and $z$. It carries the north pole $|0\rangle$ to the point $|+\rangle$ on the equator, where the outcome is a coin flip, and a second half turn about the same axis carries it home. What the sphere does not show is why a coin cannot make the same round trip. For that we follow the amplitudes themselves, in the next section.
 
 <p class="reading">Reading: Nielsen and Chuang, Sections 1.3.1, 2.2.2 (Postulate 2) and 4.2.</p>

@@ -18,7 +18,7 @@ export interface LectureInfo {
 export const lectures: LectureInfo[] = [
   { num: 1, slug: '01-qubit', part: 'Foundations', title: 'A qubit is a unit vector in ℂ²', blurb: 'States, the Born rule, the Bloch sphere, single-qubit gates.', art: 'bloch',
     heading: 'A qubit is a unit vector in ℂ²',
-    lede: 'This lecture develops the linear-algebraic description of a single qubit. It introduces the three components of the theory: states as unit vectors in ℂ², measurement governed by the Born rule, and gates as unitary operators.',
+    lede: 'Flip a coin twice and the result is still random. Apply the Hadamard gate to a qubit twice and the result is certain. This lecture explains why, and on the way sets up the three components of the theory: states as unit vectors in ℂ², measurement governed by the Born rule, and gates as unitary operators.',
     board: 'bloch', boardLabel: 'Interactive Bloch sphere' },
   { num: 2, slug: '02-entanglement', part: 'Foundations', title: 'Multiple qubits and entanglement', blurb: 'Tensor products, Bell states, no-cloning, teleportation.', art: 'entangle',
     heading: 'Two qubits live in ℂ² ⊗ ℂ²',

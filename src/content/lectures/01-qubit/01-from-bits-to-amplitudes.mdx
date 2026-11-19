@@ -1,7 +1,23 @@
 ---
 title: "From bits to amplitudes"
-board: false
 ---
+import Try from '../../../components/Try.astro';
+
+Flip a fair coin and you get a random bit. Flip it again and you still have a random bit. No amount of further flipping makes the outcome any easier to predict.
+
+A qubit behaves differently. There is a gate, written $H$, that takes a qubit in a definite state and makes its measurement outcome a fair coin flip. Apply $H$ a second time and the outcome is certain again.
+
+<Try runs={[
+  { do: 'reset,H,sample', label: 'Apply H, then measure 100 copies' },
+  { do: 'reset,H,H,sample', label: 'Apply H twice, then measure 100 copies' },
+]}>
+Run both before reading on. The first gives roughly fifty of each outcome. The second gives $0$ a hundred times out of a hundred.
+</Try>
+
+Where did the randomness go? This lecture is the answer, and it takes six sections to give it. We begin by checking that ordinary probability cannot produce this behaviour.
+
+### A random bit
+
 A classical bit is an element of $\{0,1\}$. If we are unsure which, we describe it by a probability vector
 
 $$
@@ -17,6 +33,16 @@ $$
 
 So the theory of a random bit is: vectors with non-negative entries and unit $1$-norm, $\lVert p \rVert_1 = \sum_i |p_i| = 1$, acted on by the linear maps that preserve those two properties.
 
+No such map can play the part of $H$. Suppose a stochastic matrix $M$ turns the bit $0$ into a fair coin, $M e_0 = \tfrac12 e_0 + \tfrac12 e_1$. Applying it again,
+
+$$
+M^2 e_0 = \tfrac12\, M e_0 + \tfrac12\, M e_1 = \begin{pmatrix} \tfrac14 \\[0.2em] \tfrac14 \end{pmatrix} + \tfrac12\, M e_1 .
+$$
+
+The entries of $M e_1$ are non-negative, so outcome $1$ keeps probability at least $\tfrac14$. Certainty does not come back, because nothing in a probability vector can cancel.
+
+### Two changes
+
 Quantum theory changes two things. The entries become complex numbers, called *amplitudes*, and the norm that is preserved is the Euclidean $2$-norm. The whole lecture follows from that swap:
 
 | | Random bit | Qubit |
@@ -24,5 +50,7 @@ Quantum theory changes two things. The entries become complex numbers, called *a
 | State | $p \in \mathbb{R}^2$, $p_i \ge 0$, $\lVert p \rVert_1 = 1$ | $\psi \in \mathbb{C}^2$, $\lVert \psi \rVert_2 = 1$ |
 | Operations | stochastic matrices | unitary matrices |
 | Reading it out | look at the bit | measure, with probabilities $\lvert\psi_i\rvert^2$ |
+
+The first change is the one that matters for the two buttons above: an amplitude can be negative, and a negative number can cancel a positive one. The next four sections set up what we need to follow that cancellation, namely states, measurement, a picture of a qubit, and gates. Section 6 then returns to the experiment.
 
 <p class="reading">Reading: Nielsen and Chuang, Section 1.2.</p>

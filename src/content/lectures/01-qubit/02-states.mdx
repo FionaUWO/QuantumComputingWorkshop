@@ -4,6 +4,8 @@ title: "States"
 import Statement from '../../../components/Statement.astro';
 import Example from '../../../components/Example.astro';
 
+The experiment of the last section needs numbers that can cancel. This section says precisely what they are.
+
 <Statement>
 **Definition.** A state of a qubit is a unit vector in $\mathbb{C}^2$:
 
@@ -52,6 +54,8 @@ $$
 |\pm\rangle = \tfrac{1}{\sqrt2}\big(|0\rangle \pm |1\rangle\big), \qquad |{\pm i}\rangle = \tfrac{1}{\sqrt2}\big(|0\rangle \pm i|1\rangle\big).
 $$
 
+Look at the minus sign in $|-\rangle$. A probability vector could never carry one, and it is the first thing in this lecture that a random bit cannot imitate.
+
 A direct computation gives $\langle +|-\rangle = \tfrac12(1 - 1) = 0$ and $\langle +|+\rangle = \langle -|-\rangle = 1$, so $\{|+\rangle, |-\rangle\}$ is an orthonormal basis of $\mathbb{C}^2$, just as good as the computational one. The same holds for $\{|{+i}\rangle, |{-i}\rangle\}$. In any orthonormal basis $\{|b_0\rangle, |b_1\rangle\}$ the coordinates of a state are inner products:
 
 $$
@@ -62,5 +66,7 @@ $$
 $$
 
 The second identity is Parseval's: the norm of a vector does not depend on the orthonormal basis used to compute it.
+
+A state, then, carries signs and phases as well as sizes. The next question is how much of that a measurement lets us see.
 
 <p class="reading">Reading: Nielsen and Chuang, Sections 1.2, 2.1.4 and 2.2.1 (Postulate 1).</p>

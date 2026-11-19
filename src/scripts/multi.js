@@ -102,22 +102,34 @@
         '<p class="verdict" aria-live="polite"></p>' +
         '<div class="row"><span class="lab">A</span>' + this.btns('A') + '</div>' +
         '<div class="row"><span class="lab">B</span>' + this.btns('B') + '</div>' +
-        '<div class="row">' +
+        '<div class="row pair">' +
         '<button type="button" data-do="CAB">CNOT, A controls B</button>' +
         '<button type="button" data-do="CBA">CNOT, B controls A</button></div>' +
-        '<div class="row">' +
+        '<div class="row pair">' +
         '<button type="button" class="measure" data-do="MA">Measure A</button>' +
         '<button type="button" class="measure" data-do="MB">Measure B</button>' +
-        '<button type="button" class="measure" data-do="sample">Measure both, 100 copies</button>' +
-        '<button type="button" data-do="reset">Reset to |00⟩</button></div>' +
-        '<p class="circuit"></p>' +
+        '<button type="button" class="measure wide" data-do="sample">Measure both, 100 copies</button></div>' +
+        '<div class="trace"><p class="circuit"></p><button type="button" class="reset" data-do="reset" aria-label="Reset to |00⟩">Reset</button></div>' +
+        // One dot per copy: the left half shows qubit A, the right half qubit B.
+        '<div class="shots" hidden aria-hidden="true">' +
+        '<p class="shots-title">100 fresh copies, both qubits measured</p>' +
+        '<div class="shots-grid">' + '<i></i>'.repeat(100) + '</div>' +
+        '<div class="tally">' + [0, 1, 2, 3].map((i) =>
+          '<div><span class="key"><i class="p' + i + '"></i>' + i.toString(2).padStart(2, '0') + '</span><b data-tally="' + i + '">0</b></div>').join('') + '</div>' +
+        '<p class="shots-note">The two bits agreed <b data-agree>0</b> times.</p>' +
+        '</div>' +
         '<p class="result" aria-live="polite"></p>';
       this.el = {
         amps: root.querySelector('.amps'),
         verdict: root.querySelector('.verdict'),
         circuit: root.querySelector('.circuit'),
         result: root.querySelector('.result'),
+        shots: root.querySelector('.shots'),
+        dots: Array.from(root.querySelectorAll('.shots-grid i')),
+        tally: Array.from(root.querySelectorAll('[data-tally]')),
+        agree: root.querySelector('[data-agree]'),
       };
+      this.sampling = 0; // bumped whenever a running sample animation must stop
       root.addEventListener('click', (e) => {
         const b = e.target.closest('button[data-do]');
         if (b) this.run([b.dataset.do]);
@@ -132,8 +144,16 @@
     reset() {
       this.reg = new Register(2);
       this.history = ['|00⟩'];
-      this.el.result.textContent = '';
+      this.clearResult();
       this.render();
+    }
+
+    clearResult() {
+      this.sampling++;
+      this.el.result.textContent = '';
+      this.el.result.classList.remove('sr');
+      this.el.shots.hidden = true;
+      this.el.dots.forEach((d) => { d.className = ''; });
     }
 
     /* Steps: HA XA ZA HB XB ZB, CAB, CBA, MA, MB, sample, reset. */
@@ -141,7 +161,7 @@
       steps.forEach((s) => {
         if (s === 'reset') return this.reset();
         if (s === 'sample') return this.sample();
-        this.el.result.textContent = '';
+        this.clearResult();
         if (s === 'CAB') { this.reg.cnot(0, 1); this.history.push('CNOT(A→B)'); }
         else if (s === 'CBA') { this.reg.cnot(1, 0); this.history.push('CNOT(B→A)'); }
         else if (s[0] === 'M') {
@@ -156,11 +176,40 @@
       });
     }
 
+    /* Measure both qubits on 100 fresh copies. The outcomes appear one dot at a time, in the order drawn. */
     sample() {
+      const outcomes = Array.from({ length: 100 }, () => this.reg.sample());
       const c = [0, 0, 0, 0];
-      for (let i = 0; i < 100; i++) c[this.reg.sample()]++;
-      this.el.result.textContent = '100 fresh copies, both qubits measured. 00: ' + c[0] + ', 01: ' + c[1] + ', 10: ' + c[2] + ', 11: ' + c[3] +
-        '. The two bits agreed ' + (c[0] + c[3]) + ' times.';
+      let shown = 0;
+      this.clearResult();
+      const run = this.sampling;
+      this.el.shots.hidden = false;
+      this.el.result.classList.add('sr'); // the panel shows the counts; the sentence is for screen readers
+      // The results sit at the bottom of the widget, which can be below the fold.
+      this.el.shots.scrollIntoView({ block: 'nearest' });
+      const show = (upTo) => {
+        for (; shown < upTo; shown++) {
+          this.el.dots[shown].className = 'p' + outcomes[shown];
+          c[outcomes[shown]]++;
+        }
+        c.forEach((n, i) => { this.el.tally[i].textContent = n; });
+        this.el.agree.textContent = c[0] + c[3];
+      };
+      const finish = () => {
+        show(100);
+        this.el.result.textContent = '100 fresh copies, both qubits measured. 00: ' + c[0] + ', 01: ' + c[1] + ', 10: ' + c[2] + ', 11: ' + c[3] +
+          '. The two bits agreed ' + (c[0] + c[3]) + ' times.';
+      };
+      // Animation frames do not fire in a hidden tab, so skip straight to the result there.
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.hidden) return finish();
+      const t0 = performance.now();
+      const frame = (now) => {
+        if (run !== this.sampling) return; // another step took over
+        const upTo = Math.min(100, Math.floor((now - t0) / 16) + 1);
+        if (upTo < 100) { show(upTo); requestAnimationFrame(frame); }
+        else finish();
+      };
+      requestAnimationFrame(frame);
     }
 
     render() {

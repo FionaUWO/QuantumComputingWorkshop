@@ -3,6 +3,8 @@ title: "Interference"
 ---
 import Try from '../../../components/Try.astro';
 
+We return to the two buttons of section 1: one $H$ gives a coin flip, two give certainty.
+
 The states $|+\rangle$ and $|-\rangle$ differ only in a relative phase, and a computational-basis measurement cannot tell them apart: both give $0$ and $1$ with probability $\tfrac12$. A coin flip would do the same.
 
 But apply $H$ before measuring. Since $H|+\rangle = |0\rangle$ and $H|-\rangle = |1\rangle$, the outcome is now certain and distinguishes the two states perfectly. Follow the amplitudes through two Hadamards applied to $|0\rangle$:
@@ -16,7 +18,9 @@ $$
 
 There are two paths to the outcome $1$, through $|0\rangle$ and through $|1\rangle$, with amplitudes $+\tfrac12$ and $-\tfrac12$. They cancel. The two paths to $0$ both have amplitude $+\tfrac12$ and add to $1$.
 
-Now do the same with probabilities. The stochastic matrix for a fair coin flip is
+That is where the randomness went. It was never lost: the state after one $H$ still held a sign, and the second $H$ used it.
+
+Now do the same with probabilities. Section 1 showed that no stochastic matrix can restore certainty. For the fair coin flip itself the matrix is
 
 $$
 F = \begin{pmatrix} \tfrac12 & \tfrac12 \\ \tfrac12 & \tfrac12 \end{pmatrix}, \qquad F^2 = F .
@@ -52,5 +56,11 @@ The relative phase, invisible to a direct measurement, has been converted into a
 ]}>
 Predict each count from the table before you press the button, and remember that $100$ copies only pin the probability down to about $\pm 0.05$.
 </Try>
+
+### What comes next
+
+Everything in this lecture fits on one sphere. A single qubit is a point on it, a gate is a rotation, and a classical computer can keep track of both with two angles. If that were the whole story, quantum computing would offer nothing new.
+
+Two qubits are not two points on two spheres. Most states of a pair cannot be described one qubit at a time, and the number of amplitudes doubles with every qubit added. Lecture 2 starts there.
 
 <p class="reading">Reading: Nielsen and Chuang, Sections 1.4.2 and 1.4.3, where the same cancellation drives Deutsch's algorithm.</p>

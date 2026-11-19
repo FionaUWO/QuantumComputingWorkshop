@@ -6,6 +6,7 @@ interface Props {
 const { runs } = Astro.props;
 ---
 <div class="try">
+  <p class="try-label">Try it on the simulator</p>
   <slot />
   <div class="try-actions">
     {runs.map((r) => <button class="btn btn-small" data-run={r.do}>{r.label}</button>)}

@@ -5,6 +5,8 @@ import Statement from '../../../components/Statement.astro';
 import Example from '../../../components/Example.astro';
 import Try from '../../../components/Try.astro';
 
+If amplitudes can be negative or complex, why does a qubit after one $H$ look exactly like a coin? The reason is in how information leaves it.
+
 We cannot read $\alpha$ and $\beta$ off a qubit. The only way to get information out is to measure it, and a measurement returns a single classical bit.
 
 <Statement>
@@ -70,5 +72,7 @@ With $N = 100$ the standard deviation can be as large as $0.05$, so a count of $
 ]}>
 The state $|+\rangle$ should give each outcome half the time. Prepare it and measure. Run the 100-copy button several times and watch how far the count strays from $50$.
 </Try>
+
+This explains the first button of section 1. One $H$ turns $|0\rangle$ into $|+\rangle$, whose amplitudes both have squared modulus $\tfrac12$, and a computational-basis measurement sees nothing else. It does not explain the second button. The sign that separates $|+\rangle$ from $|-\rangle$ is still in the state, out of reach of this measurement. The next section draws a picture of everything a qubit holds, the hidden part included.
 
 <p class="reading">Reading: Nielsen and Chuang, Sections 1.3.3, 2.2.3 and 2.2.5 (Postulate 3).</p>

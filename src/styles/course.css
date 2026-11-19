@@ -55,7 +55,9 @@ p.menu-lecture.waiting small { grid-column: 2; font-size: 0.78rem; }
 .course-body .board-col { max-width: 30rem; }
 @media (min-width: 1280px) {
   .course-body.has-board { grid-template-columns: minmax(0, 1fr) clamp(19rem, 32%, 22rem); gap: 3rem; align-items: start; }
-  .course-body.has-board .board-col { position: sticky; top: 1.25rem; order: 2; max-width: none; }
+  .course-body.has-board .board-col { position: sticky; top: 1.25rem; order: 2; max-width: none; max-height: calc(100vh - 2.5rem); overflow-y: auto; border-radius: 14px; }
+  /* Keep the sphere small enough that the measurement results fit below it without scrolling. */
+  .course-body.has-board .bloch canvas { width: min(100%, 32vh); }
 }
 
 .pager { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.8rem; margin-top: 3.2rem; padding-top: 1.6rem; border-top: 1px solid var(--lavender-2); }
