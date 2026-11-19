@@ -1,0 +1,25 @@
+---
+title: "Locality"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+
+Why was the answer for one edge independent of the rest of the graph? Write the edge term in the Heisenberg picture:
+
+$$
+\langle\vec\gamma, \vec\beta|\,Z_u Z_v\,|\vec\gamma, \vec\beta\rangle = \langle +|^{\otimes n}\; W^\dagger\, Z_u Z_v\, W\;|+\rangle^{\otimes n}, \qquad W = U_B(\beta_p) U_C(\gamma_p) \cdots U_B(\beta_1) U_C(\gamma_1) .
+$$
+
+Conjugate $Z_u Z_v$ by the layers one at a time, from the inside out. Gates that act on other qubits commute with the operator and cancel against their inverses. The mixer on qubits $u$ and $v$ survives. In the cost layer, only edges touching $u$ or $v$ survive, and they spread the operator to the neighbours of $u$ and $v$. Each further layer extends it by one more step in the graph.
+
+<Statement>
+**Proposition (light cone).** At depth $p$, the expectation of the term for edge $(u,v)$ depends only on the subgraph of $G$ induced by the vertices within distance $p$ of $u$ or $v$.
+</Statement>
+
+Two consequences pull in opposite directions.
+
+**Good.** If the degree is bounded, each such neighbourhood has bounded size whatever $n$ is. The score $F_p$ is a sum of $|E|$ terms, each computable classically on a small subgraph, and edges with isomorphic neighbourhoods contribute equally. Good angles can be found on a classical computer and the quantum computer is needed only to sample strings.
+
+**Bad.** A circuit of depth $p$ cannot see structure beyond distance $p$. In a large sparse graph with few short cycles every neighbourhood looks like the same tree, so the algorithm treats all edges alike and cannot coordinate the two sides of the cut across the graph. Results of this kind show that for some families of graphs constant-depth QAOA stays bounded away from the optimum, and that $p$ has to grow with $n$.
+
+<p class="reading">Reading: Farhi, Goldstone and Gutmann (2014), Section 2. For limitations, see E. Farhi, D. Gamarnik and S. Gutmann, "The quantum approximate optimization algorithm needs to see the whole graph: a typical case", arXiv:2004.09002 (2020).</p>

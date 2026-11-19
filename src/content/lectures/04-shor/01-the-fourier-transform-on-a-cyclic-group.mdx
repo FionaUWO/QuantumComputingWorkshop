@@ -1,0 +1,38 @@
+---
+title: "The Fourier transform on a cyclic group"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+import Example from '../../../components/Example.astro';
+
+The discrete Fourier transform takes a vector $(x_0, \dots, x_{N-1}) \in \mathbb{C}^N$ to the vector with entries
+
+$$
+y_k = \frac{1}{\sqrt N} \sum_{j=0}^{N-1} x_j\, e^{2\pi i jk/N} .
+$$
+
+The *quantum Fourier transform* is the same linear map, applied to amplitudes. On the basis states $|0\rangle, \dots, |N-1\rangle$ of an $N$-dimensional space,
+
+$$
+\mathrm{QFT}_N\,|j\rangle = \frac{1}{\sqrt N} \sum_{k=0}^{N-1} \omega^{jk}\,|k\rangle, \qquad \omega = e^{2\pi i/N} .
+$$
+
+For a mathematician this is the change of basis from the point masses on the group $\mathbb{Z}_N$ to its characters $k \mapsto \omega^{jk}$.
+
+<Statement>
+**Proposition.** $\mathrm{QFT}_N$ is unitary.
+</Statement>
+
+*Proof.* The inner product of the images of $|j\rangle$ and $|j'\rangle$ is $\tfrac1N \sum_k \omega^{(j' - j)k}$. For $j = j'$ every term is $1$. Otherwise it is a geometric sum with ratio $\omega^{j'-j} \ne 1$, equal to $\tfrac{1}{N}\cdot\tfrac{\omega^{(j'-j)N} - 1}{\omega^{j'-j} - 1} = 0$. $\qquad\blacksquare$
+
+The fact used here, that the $N$-th roots of unity sum to zero, is the source of all interference in this lecture.
+
+<Example>
+**Example.** For $N = 2$, $\omega = -1$ and the transform is the Hadamard gate. For $N = 4$, $\omega = i$ and
+
+$$
+\mathrm{QFT}_4 = \frac12 \begin{pmatrix} 1 & 1 & 1 & 1 \\ 1 & i & -1 & -i \\ 1 & -1 & 1 & -1 \\ 1 & -i & -1 & i \end{pmatrix}.
+$$
+</Example>
+
+<p class="reading">Reading: Nielsen and Chuang, Section 5.1.</p>

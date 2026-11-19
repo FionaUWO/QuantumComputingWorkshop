@@ -40,6 +40,7 @@ const next = i < l.sections.length - 1
   <header class="section-head">
     <p class="kicker">Lecture {l.num} · Section {s.num} of {l.sections.length}</p>
     <h1>{s.title}</h1>
+    {l.draft && <p class="draft-note">First draft. These notes have not been reviewed yet and may contain errors.</p>}
   </header>
 
   <div class:list={['course-body', { 'has-board': showBoard }]}>

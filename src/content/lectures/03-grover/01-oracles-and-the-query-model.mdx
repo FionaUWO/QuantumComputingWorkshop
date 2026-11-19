@@ -1,0 +1,31 @@
+---
+title: "Oracles and the query model"
+board: false
+---
+The first quantum algorithms are stated in a setting where costs are easy to count. We are given a function
+
+$$
+f : \{0,1\}^n \to \{0,1\}
+$$
+
+as a black box, called an *oracle*, and we want to learn some property of $f$. The cost of an algorithm is the number of times it calls the box, its *query complexity*. Everything else is free.
+
+A classical box takes $x$ and returns $f(x)$. A quantum box has to be a unitary, hence reversible, and $x \mapsto f(x)$ is not. The standard repair is to keep the input and write the answer into a second register by addition modulo $2$:
+
+$$
+U_f\,|x\rangle|y\rangle = |x\rangle|y \oplus f(x)\rangle, \qquad x \in \{0,1\}^n, \; y \in \{0,1\} .
+$$
+
+$U_f$ permutes the computational basis states and is its own inverse, so it is unitary. Any classical circuit for $f$ can be turned into a quantum circuit for $U_f$ of comparable size; we take that for granted and count calls to $U_f$.
+
+### Quantum parallelism
+
+Apply $U_f$ to an equal superposition of all inputs, prepared with $H^{\otimes n}$ as in lecture 2:
+
+$$
+U_f \Big( \frac{1}{\sqrt{2^n}} \sum_x |x\rangle \Big)|0\rangle = \frac{1}{\sqrt{2^n}} \sum_x |x\rangle|f(x)\rangle .
+$$
+
+One call, and the state contains every value of $f$. This is called *quantum parallelism*, and on its own it is useless: measuring gives one random pair $(x, f(x))$, which a classical call would also give. The values are in the amplitudes and we cannot read amplitudes. An algorithm must make the values *interfere* so that a global property of $f$ ends up in a measurement outcome.
+
+<p class="reading">Reading: Nielsen and Chuang, Sections 1.4.1 and 1.4.2.</p>

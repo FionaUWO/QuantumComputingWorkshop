@@ -1,0 +1,23 @@
+---
+title: "The phase flip code"
+board: false
+---
+The bit flip code does nothing against $Z$ errors. Worse, a phase flip on any one of the three qubits sends $\alpha|000\rangle + \beta|111\rangle$ to $\alpha|000\rangle - \beta|111\rangle$, so the encoded qubit is now three times as exposed.
+
+But $Z$ acts on the basis $\{|+\rangle, |-\rangle\}$ exactly as $X$ acts on $\{|0\rangle, |1\rangle\}$: it swaps the two. Since $HZH = X$, changing basis with Hadamards converts one problem into the other. The *phase flip code* is
+
+$$
+|0_L\rangle = |{+}{+}{+}\rangle, \qquad |1_L\rangle = |{-}{-}{-}\rangle ,
+$$
+
+obtained from the bit flip code by applying $H$ to every qubit. Its syndrome observables are the conjugates of the earlier ones,
+
+$$
+X_1 X_2 \qquad\text{and}\qquad X_2 X_3 ,
+$$
+
+which compare the signs of neighbouring qubits. A phase flip on qubit $j$ is corrected by applying $Z_j$. The analysis is identical, and so is the failure probability.
+
+This code in turn offers no protection against bit flips. We need both at once.
+
+<p class="reading">Reading: Nielsen and Chuang, Section 10.1.2.</p>

@@ -1,0 +1,58 @@
+---
+title: "Search is a rotation"
+---
+import Statement from '../../../components/Statement.astro';
+import Example from '../../../components/Example.astro';
+import Try from '../../../components/Try.astro';
+
+The whole computation takes place in a plane. Define the normalised superpositions of the non-solutions and of the solutions,
+
+$$
+|\alpha\rangle = \frac{1}{\sqrt{N - M}} \sum_{f(x) = 0} |x\rangle, \qquad
+|\beta\rangle = \frac{1}{\sqrt{M}} \sum_{f(x) = 1} |x\rangle .
+$$
+
+They are orthonormal, and the starting state lies in their span:
+
+$$
+|s\rangle = \sqrt{\tfrac{N-M}{N}}\,|\alpha\rangle + \sqrt{\tfrac{M}{N}}\,|\beta\rangle = \cos\tfrac\theta2\,|\alpha\rangle + \sin\tfrac\theta2\,|\beta\rangle,
+\qquad \sin\tfrac\theta2 = \sqrt{\tfrac{M}{N}} .
+$$
+
+In this plane the oracle is the reflection across the line through $|\alpha\rangle$, because it negates $|\beta\rangle$ and fixes $|\alpha\rangle$. The diffusion operator is the reflection across the line through $|s\rangle$. The plane is invariant under both.
+
+<Statement>
+**Theorem.** The product of two reflections of a plane, across lines meeting at angle $\tfrac\theta2$, is a rotation by $\theta$. Hence $G = D\,O$ rotates the plane spanned by $|\alpha\rangle$ and $|\beta\rangle$ by $\theta$ towards $|\beta\rangle$, and
+
+$$
+G^k|s\rangle = \cos\!\big(\tfrac{2k+1}{2}\theta\big)\,|\alpha\rangle + \sin\!\big(\tfrac{2k+1}{2}\theta\big)\,|\beta\rangle .
+$$
+</Statement>
+
+The probability of measuring a solution after $k$ iterations is therefore
+
+$$
+P_k = \sin^2\!\big(\tfrac{2k+1}{2}\theta\big).
+$$
+
+It is close to $1$ when $(2k+1)\tfrac\theta2 \approx \tfrac\pi2$. For $M \ll N$ we have $\tfrac\theta2 \approx \sqrt{M/N}$, so the right number of iterations is
+
+$$
+k \approx \frac{\pi}{4}\sqrt{\frac{N}{M}} .
+$$
+
+The rotation does not stop at the target. Iterating further turns the state away from $|\beta\rangle$ again and the success probability falls: with Grover's algorithm, doing more work can make the answer worse.
+
+<Example>
+**Example.** Take $N = 4$ and $M = 1$. Then $\sin\tfrac\theta2 = \tfrac12$, so $\tfrac\theta2 = \tfrac\pi6$, and after one iteration the angle is $3 \cdot \tfrac\pi6 = \tfrac\pi2$: the state is exactly $|\beta\rangle$. One query finds one item among four with certainty, where a classical search needs $2.25$ queries on average.
+</Example>
+
+<Try runs={[
+  { do: 'reset,HA,HB', label: 'Prepare |s⟩' },
+  { do: 'reset,HA,HB,HB,CAB,HB', label: '|s⟩, then the oracle for |11⟩' },
+  { do: 'reset,HA,HB,HB,CAB,HB,HA,HB,XA,XB,HB,CAB,HB,XA,XB,HA,HB,sample', label: 'One full iteration, then measure 100 copies' },
+]}>
+The two-qubit simulator can run the example. The oracle marking $|11\rangle$ is a controlled-$Z$, built as $H$ on $B$, CNOT, $H$ on $B$. The diffusion operator is Hadamards, then a sign flip on $|00\rangle$ made from $X$ gates around another controlled-$Z$, then Hadamards. After the oracle the amplitude of $|11\rangle$ is negative; after diffusion it is the only one left.
+</Try>
+
+<p class="reading">Reading: Nielsen and Chuang, Sections 6.1.3 and 6.1.4.</p>

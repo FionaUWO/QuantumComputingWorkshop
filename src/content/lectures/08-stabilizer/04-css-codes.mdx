@@ -1,0 +1,27 @@
+---
+title: "CSS codes"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+
+The Shor and Steane codes share a feature: every check is made only of $X$s or only of $Z$s. Such codes are called *CSS codes*, after Calderbank, Shor and Steane, and they can be built from classical codes.
+
+A classical linear code of length $n$ is the kernel of a parity check matrix over the field $\mathbb{F}_2$. Take two such matrices, $H_X$ and $H_Z$, each with $n$ columns. Let every row of $H_X$ define an $X$-type check and every row of $H_Z$ a $Z$-type check.
+
+<Statement>
+**Proposition.** The checks commute if and only if
+
+$$
+H_X H_Z^{\mathsf T} = 0 \pmod 2 .
+$$
+
+In that case they define a stabilizer code with $k = n - \operatorname{rank} H_X - \operatorname{rank} H_Z$ logical qubits.
+</Statement>
+
+*Proof.* An $X$-type and a $Z$-type check anticommute once for each qubit on which both act, so they commute exactly when their rows overlap in an even number of positions, that is when their inner product over $\mathbb{F}_2$ vanishes. Checks of the same type always commute. $\qquad\blacksquare$
+
+The two kinds of error are then handled separately by classical decoding. $Z$-type checks detect $X$ errors, with syndrome $H_Z e$ for the pattern $e \in \mathbb{F}_2^n$ of bit flips; $X$-type checks detect $Z$ errors, with syndrome $H_X e'$. A $Y$ error shows up in both.
+
+For the Steane code $H_X = H_Z = H$, and the condition $H H^{\mathsf T} = 0$ says that the Hamming code contains its dual. Classical coding theory thus provides quantum codes, subject to one extra orthogonality constraint.
+
+<p class="reading">Reading: Nielsen and Chuang, Sections 10.4.1 and 10.4.2.</p>

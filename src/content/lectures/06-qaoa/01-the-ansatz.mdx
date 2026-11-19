@@ -1,0 +1,51 @@
+---
+title: "The ansatz"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+
+The Quantum Approximate Optimization Algorithm, QAOA, is a variational algorithm in the sense of lecture 5, with an ansatz built from the problem itself. We describe it for MaxCut on a graph $G = (V, E)$ with $n$ vertices; it applies to any cost function on bit strings.
+
+Two Hamiltonians are involved. The *cost Hamiltonian* is diagonal and encodes the objective,
+
+$$
+H_C = \sum_{(i,j) \in E} \tfrac12\big(I - Z_i Z_j\big), \qquad H_C|z\rangle = C(z)|z\rangle ,
+$$
+
+and the *mixer* is
+
+$$
+H_B = \sum_{j=1}^{n} X_j .
+$$
+
+They generate two families of unitaries, with angles $\gamma$ and $\beta$:
+
+$$
+U_C(\gamma) = e^{-i\gamma H_C}, \qquad U_B(\beta) = e^{-i\beta H_B} .
+$$
+
+<Statement>
+**Definition.** For a depth $p \ge 1$ and angles $\vec\gamma = (\gamma_1, \dots, \gamma_p)$, $\vec\beta = (\beta_1, \dots, \beta_p)$, the QAOA state is
+
+$$
+|\vec\gamma, \vec\beta\rangle = U_B(\beta_p)\,U_C(\gamma_p) \cdots U_B(\beta_1)\,U_C(\gamma_1)\,|+\rangle^{\otimes n} ,
+$$
+
+and its score is $F_p(\vec\gamma, \vec\beta) = \langle\vec\gamma, \vec\beta|\,H_C\,|\vec\gamma, \vec\beta\rangle$, the average cut size of a measured string.
+</Statement>
+
+The algorithm is the hybrid loop of lecture 5: prepare the state, measure in the computational basis to get strings $z$, average $C(z)$ to estimate $F_p$, and let a classical optimiser adjust the $2p$ angles to maximise it. Write $M_p = \max F_p$.
+
+### What each layer does
+
+$U_C(\gamma)$ is diagonal: it multiplies the amplitude of $|z\rangle$ by $e^{-i\gamma C(z)}$. It changes no probabilities; it marks each string with a phase proportional to its cost, as Grover's oracle marks solutions with a sign.
+
+$U_B(\beta)$ is a product of single-qubit rotations $e^{-i\beta X}$. Each one mixes $|0\rangle$ and $|1\rangle$ on its qubit, so the layer moves amplitude between strings that differ by bit flips, and the phases written by the cost layer make that transfer interfere. With $\gamma = 0$ or $\beta = 0$ nothing happens: the cost layer alone is invisible, and the mixer alone fixes $|+\rangle^{\otimes n}$ up to phase.
+
+<Statement>
+**Proposition.** $\tfrac12|E| = M_0 \le M_1 \le M_2 \le \dots \le C_{\max}$, and $M_p \to C_{\max}$ as $p \to \infty$.
+</Statement>
+
+*Proof sketch.* With no layers the state is $|+\rangle^{\otimes n}$, a uniformly random cut, with average $\tfrac12|E|$. Setting $\gamma_{p+1} = \beta_{p+1} = 0$ reduces depth $p+1$ to depth $p$, so $M_{p+1} \ge M_p$. The upper bound is the variational principle. The limit follows from the adiabatic theorem, as explained below. $\qquad\blacksquare$
+
+<p class="reading">Reading: QAOA is not covered in Nielsen and Chuang. The source is E. Farhi, J. Goldstone and S. Gutmann, "A Quantum Approximate Optimization Algorithm", arXiv:1411.4028 (2014).</p>

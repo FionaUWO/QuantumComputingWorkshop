@@ -1,0 +1,15 @@
+---
+title: "Exercises"
+board: false
+---
+1. Show that $U_C(\gamma)$ leaves all measurement probabilities of a state unchanged, and that $U_B(\beta)|+\rangle^{\otimes n} = e^{-i\beta n}|+\rangle^{\otimes n}$.
+2. Verify the lemma $e^{-i\theta Z \otimes Z/2} = \mathrm{CNOT}(I \otimes R_z(\theta))\mathrm{CNOT}$ by comparing the diagonal entries of both sides.
+3. For a single edge, compute $|\gamma, \beta\rangle$ at $\gamma = \tfrac\pi2$, $\beta = \tfrac\pi8$ explicitly and confirm that it is a Bell state up to phase.
+4. Derive $F_1 = \tfrac12 + \tfrac12 \sin 4\beta \sin\gamma$ for a single edge. Hint: conjugate $Z \otimes Z$ by $e^{-i\beta X}$ on each qubit first, then use $\langle +|Y|+\rangle = \langle +|Z|+\rangle = 0$.
+5. Maximise $\sin\gamma\cos^{d-1}\gamma$ and reproduce the entries of the table for $d = 2$ and $d = 3$.
+6. Count the gates and estimate the depth of a $p = 2$ QAOA circuit for the $4$-cycle.
+7. For a $3$-regular graph, how many vertices can the light cone of one edge contain at $p = 1$ and at $p = 2$?
+8. Find the orbits of the dihedral group acting on bit strings for the $4$-cycle, and hence $\dim\mathcal{H}^\Gamma$. How many qubits are needed for the invariant subspace?
+9. With two-qubit error rate $\epsilon = 5 \times 10^{-3}$, estimate the probability that a depth-$p$ QAOA circuit on a $3$-regular graph with $20$ vertices runs without any two-qubit error, for $p = 1, 2, 5$.
+
+<p class="reading">Reading: Farhi, Goldstone and Gutmann (2014) works several of these out.</p>

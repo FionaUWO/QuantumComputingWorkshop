@@ -1,0 +1,21 @@
+---
+title: "Three reasons it looks impossible"
+board: false
+---
+Classical information is protected by redundancy. The *repetition code* stores each bit three times,
+
+$$
+0 \mapsto 000, \qquad 1 \mapsto 111 ,
+$$
+
+and decodes by majority vote. If each bit flips independently with probability $p$, the vote fails only when two or three bits flip, with probability $3p^2(1-p) + p^3 = 3p^2 - 2p^3$. That is less than $p$ whenever $p \lt \tfrac12$.
+
+Three obstacles seem to block the quantum version.
+
+1. **No cloning.** We cannot store $|\psi\rangle$ three times as $|\psi\rangle|\psi\rangle|\psi\rangle$; lecture 2 proved that no unitary does this.
+2. **Measurement destroys.** A majority vote requires looking at the bits. Measuring a qubit collapses the superposition we are trying to protect.
+3. **Errors are continuous.** A bit is either flipped or not. A qubit can be off by any small rotation, and identifying the exact error would seem to need infinite precision.
+
+Each of these has an answer, and all three answers are already visible in the smallest example.
+
+<p class="reading">Reading: Nielsen and Chuang, Section 10.1.</p>

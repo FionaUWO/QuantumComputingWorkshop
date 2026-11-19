@@ -1,0 +1,43 @@
+---
+title: "Errors are discrete"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+
+The claim "arbitrary error" needs justification. The Pauli matrices together with the identity form a basis of the $2 \times 2$ complex matrices. So any operator $E$ acting on one qubit, unitary or not, can be written
+
+$$
+E = e_0\,I + e_1\,X + e_2\,Z + e_3\,XZ .
+$$
+
+Applied to an encoded state $|\psi_L\rangle$ it gives the superposition
+
+$$
+E|\psi_L\rangle = e_0\,|\psi_L\rangle + e_1\,X|\psi_L\rangle + e_2\,Z|\psi_L\rangle + e_3\,XZ|\psi_L\rangle .
+$$
+
+For a code that corrects $X$, $Z$ and $XZ$ on that qubit, the four terms have four different syndromes. Measuring the syndrome collapses the superposition onto one term, and the recovery for that syndrome returns $|\psi_L\rangle$. The coefficients $e_k$ affect only the probabilities of the syndromes, never the recovered state.
+
+<Statement>
+**Theorem (discretisation of errors).** If a code and recovery procedure correct each error in a set $\{E_i\}$, they also correct every linear combination of the $E_i$. In particular, a code that corrects $X$, $Y$ and $Z$ on any single qubit corrects every single-qubit error.
+</Statement>
+
+This is why quantum error correction is possible at all. Although errors form a continuum, it is enough to handle a finite set, and the syndrome measurement does the discretising for us.
+
+### When can a set of errors be corrected?
+
+Let $P$ be the projector onto the code space.
+
+<Statement>
+**Theorem (error-correction conditions).** There is a recovery procedure correcting the errors $\{E_i\}$ if and only if
+
+$$
+P\,E_i^\dagger E_j\,P = \alpha_{ij}\,P
+$$
+
+for some Hermitian matrix of numbers $(\alpha_{ij})$.
+</Statement>
+
+Read it in two parts. For $i \ne j$ with $\alpha_{ij} = 0$, the errors $E_i$ and $E_j$ send the code space to orthogonal subspaces, so a measurement can tell them apart. And the right-hand side is a multiple of $P$ that does not depend on the encoded state, so the environment, and our syndrome measurement, learn nothing about $\alpha$ and $\beta$. A non-zero $\alpha_{ij}$ is the degenerate case: two errors that act identically on the code.
+
+<p class="reading">Reading: Nielsen and Chuang, Sections 10.3 and 10.3.1.</p>

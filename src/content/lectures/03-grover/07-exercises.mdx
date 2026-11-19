@@ -1,0 +1,15 @@
+---
+title: "Exercises"
+board: false
+---
+1. Show that $U_f$ is unitary and that $U_f^2 = I$. Write $U_f$ as a $4 \times 4$ matrix for each of the four functions on one bit.
+2. Prove the formula $H^{\otimes n}|x\rangle = 2^{-n/2}\sum_z (-1)^{x \cdot z}|z\rangle$ by induction on $n$.
+3. In the Deutsch-Jozsa algorithm, what is the probability of measuring $|0\rangle^{\otimes n}$ if $f(x) = 1$ on exactly a quarter of the inputs?
+4. (Bernstein-Vazirani.) Suppose $f(x) = a \cdot x$ for an unknown string $a \in \{0,1\}^n$. Show that the Deutsch-Jozsa circuit returns $a$ with certainty after one query. How many classical queries are needed?
+5. Verify that $D = 2|s\rangle\langle s| - I$ sends the amplitude $a_x$ to $2\bar a - a_x$.
+6. Prove that the composition of the reflections across two lines through the origin of $\mathbb{R}^2$ meeting at angle $\varphi$ is a rotation by $2\varphi$.
+7. For $N = 8$ and $M = 1$, compute the success probability after $1$, $2$ and $3$ iterations. Which is best?
+8. Show that for $M = N/4$ a single Grover iteration succeeds with certainty, and that for $M = N/2$ the algorithm is no better than guessing.
+9. Check by multiplying matrices that $X \otimes X$, then controlled-$Z$, then $X \otimes X$ equals $I - 2|00\rangle\langle 00|$. Why does the overall sign not matter for Grover's algorithm?
+
+<p class="reading">Reading: more problems of this kind are in Nielsen and Chuang, Chapter 6.</p>

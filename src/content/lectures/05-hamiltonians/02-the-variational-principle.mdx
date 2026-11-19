@@ -1,0 +1,40 @@
+---
+title: "The variational principle"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+import Example from '../../../components/Example.astro';
+
+A Hamiltonian is also an observable, in the sense of lecture 1: measuring it returns an energy $E_k$ with probability $|\langle E_k|\psi\rangle|^2$, and the average is $\langle\psi|H|\psi\rangle$.
+
+<Statement>
+**Theorem (variational principle).** For every unit vector $|\psi\rangle$,
+
+$$
+E_0 \;\le\; \langle\psi|H|\psi\rangle \;\le\; E_{\max} ,
+$$
+
+with equality on the left exactly when $|\psi\rangle$ is a ground state.
+</Statement>
+
+*Proof.* Expand $|\psi\rangle = \sum_k c_k|E_k\rangle$ with $\sum_k |c_k|^2 = 1$. Then $\langle\psi|H|\psi\rangle = \sum_k |c_k|^2 E_k$ is a weighted average of the eigenvalues. It lies between the smallest and the largest, and equals $E_0$ only if all the weight is on eigenvectors with eigenvalue $E_0$. $\qquad\blacksquare$
+
+In the language of linear algebra, $E_0$ is the minimum of the Rayleigh quotient. The principle turns an eigenvalue problem into an optimisation problem,
+
+$$
+E_0 = \min_{\lVert\psi\rVert = 1} \langle\psi|H|\psi\rangle ,
+$$
+
+and gives a guarantee that is rare in numerical work: *any* state we manage to prepare yields an upper bound on $E_0$. A family of trial states cannot undershoot.
+
+<Example>
+**Example.** Let $H = X + Z$ on one qubit. Its eigenvalues are $\pm\sqrt2$. Try the family $|\psi(\theta)\rangle = R_y(\theta)|0\rangle = \cos\tfrac\theta2|0\rangle + \sin\tfrac\theta2|1\rangle$, whose Bloch vector is $(\sin\theta, 0, \cos\theta)$. Then
+
+$$
+\langle\psi(\theta)|H|\psi(\theta)\rangle = \sin\theta + \cos\theta = \sqrt2\,\sin\!\big(\theta + \tfrac\pi4\big),
+$$
+
+which is minimised at $\theta = \tfrac{5\pi}{4}$ with value $-\sqrt2$. This family happens to contain the ground state, so the bound is tight.
+</Example>
+
+<p class="reading">Reading: Nielsen and Chuang, Section 2.2.5 for observables and averages.</p>

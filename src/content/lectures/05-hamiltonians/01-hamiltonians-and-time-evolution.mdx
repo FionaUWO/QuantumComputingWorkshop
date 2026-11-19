@@ -1,0 +1,48 @@
+---
+title: "Hamiltonians and time evolution"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+import Example from '../../../components/Example.astro';
+
+So far a gate has been a unitary matrix handed to us. Physically, unitaries arise by letting a system evolve for some time, and what an experimenter controls is the generator of that evolution.
+
+<Statement>
+**Postulate (Schrödinger equation).** The state of a closed quantum system evolves according to
+
+$$
+i\,\frac{d}{dt}|\psi(t)\rangle = H\,|\psi(t)\rangle ,
+$$
+
+where $H$ is a Hermitian matrix called the *Hamiltonian* of the system. (We use units in which Planck's constant $\hbar$ equals $1$.)
+</Statement>
+
+For constant $H$ this linear differential equation has the solution
+
+$$
+|\psi(t)\rangle = e^{-iHt}\,|\psi(0)\rangle .
+$$
+
+The matrix $U(t) = e^{-iHt}$ is unitary because $H$ is Hermitian: $U(t)^\dagger = e^{iHt} = U(t)^{-1}$. Conversely every unitary is $e^{-iK}$ for some Hermitian $K$. So "unitary gates" and "evolution under Hamiltonians" describe the same thing.
+
+### Energies
+
+By the spectral theorem,
+
+$$
+H = \sum_k E_k\,|E_k\rangle\langle E_k| ,
+$$
+
+with real eigenvalues $E_k$, the *energies*, and an orthonormal basis of eigenvectors, the *energy eigenstates*. The smallest eigenvalue $E_0$ is the *ground energy* and its eigenvectors are *ground states*. Evolution is diagonal in this basis:
+
+$$
+e^{-iHt} = \sum_k e^{-iE_k t}\,|E_k\rangle\langle E_k| .
+$$
+
+An eigenstate only picks up a global phase, so it does not change at all. A superposition changes through the relative phases $e^{-i(E_k - E_l)t}$.
+
+<Example>
+**Example.** For one qubit take $H = \tfrac{\omega}{2} Z$. Its eigenstates are $|0\rangle$ and $|1\rangle$ with energies $\pm\tfrac\omega2$, and $e^{-iHt} = R_z(\omega t)$: the Bloch vector turns about the $z$-axis at angular speed $\omega$. Likewise $H = \tfrac{\omega}{2} X$ generates $R_x(\omega t)$. The rotation gates of lecture 1 are evolution under Pauli Hamiltonians for a chosen time.
+</Example>
+
+<p class="reading">Reading: Nielsen and Chuang, Section 2.2.2.</p>

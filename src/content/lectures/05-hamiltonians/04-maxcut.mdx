@@ -1,0 +1,34 @@
+---
+title: "MaxCut"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+import Example from '../../../components/Example.astro';
+
+Let $G = (V, E)$ be a graph with vertices $1, \dots, n$. A *cut* is a partition of the vertices into two sets, recorded as a bit string $z \in \{0,1\}^n$ with $z_i$ naming the side of vertex $i$. An edge is *cut* if its endpoints lie on different sides. The *MaxCut* problem asks for the largest number of edges that can be cut:
+
+$$
+C(z) = \sum_{(i,j) \in E} [\,z_i \ne z_j\,], \qquad C_{\max} = \max_{z} C(z) .
+$$
+
+Put $s_i = (-1)^{z_i} \in \{+1, -1\}$. Then $s_i s_j = -1$ exactly when the edge is cut, so $[z_i \ne z_j] = \tfrac12(1 - s_i s_j)$. Replacing $s_i$ by the operator $Z_i$ gives the *cost Hamiltonian*
+
+$$
+H_C = \sum_{(i,j) \in E} \tfrac12\big(I - Z_i Z_j\big), \qquad H_C|z\rangle = C(z)\,|z\rangle .
+$$
+
+<Statement>
+**Proposition.** $H_C$ is diagonal in the computational basis with eigenvalues $C(z)$. Its largest eigenvalue is $C_{\max}$, attained by the maximum cuts. Equivalently, the maximum cuts are the ground states of the Ising Hamiltonian $\sum_{(i,j) \in E} Z_i Z_j$, with ground energy $|E| - 2C_{\max}$.
+</Statement>
+
+Flipping every bit swaps the two sides and leaves the cut unchanged: $C(\bar z) = C(z)$. In operator terms, $H_C$ commutes with $X^{\otimes n}$. Optimal solutions therefore come in pairs.
+
+<Example>
+**Example.** For the triangle, at most two of the three edges can be cut, and the six strings other than $000$ and $111$ all achieve it: $C_{\max} = 2$. For the $4$-cycle, the alternating strings $0101$ and $1010$ cut all four edges: $C_{\max} = 4$. In general a graph has a cut containing every edge exactly when it is bipartite.
+</Example>
+
+### Hardness
+
+MaxCut is NP-hard: an efficient algorithm for it would give one for every problem in NP. Approximation is the realistic goal. A uniformly random cut already cuts each edge with probability $\tfrac12$, so it achieves $\tfrac12|E| \ge \tfrac12 C_{\max}$ on average. The best known efficient classical algorithm, due to Goemans and Williamson, guarantees a cut of at least $0.878\,C_{\max}$, using a relaxation to a semidefinite programme. Any quantum method has to be judged against that number.
+
+<p class="reading">Reading: this topic is not covered in Nielsen and Chuang. See M. Goemans and D. Williamson, "Improved approximation algorithms for maximum cut and satisfiability problems using semidefinite programming", Journal of the ACM 42 (1995).</p>

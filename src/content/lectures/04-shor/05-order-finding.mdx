@@ -1,0 +1,46 @@
+---
+title: "Order finding"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+import Example from '../../../components/Example.astro';
+
+Let $N$ be a positive integer and $x$ an integer coprime to $N$. The *order* of $x$ modulo $N$ is the least $r \ge 1$ with $x^r \equiv 1 \pmod N$, the order of $x$ in the group $(\mathbb{Z}/N\mathbb{Z})^\times$. No efficient classical algorithm for computing $r$ is known. Write $L = \lceil \log_2 N \rceil$.
+
+Multiplication by $x$ is a permutation of the residues, so
+
+$$
+U\,|y\rangle = |xy \bmod N\rangle, \qquad 0 \le y \lt N,
+$$
+
+is unitary on $L$ qubits (acting as the identity on $y \ge N$). Its eigenvectors can be written down. For $0 \le s \lt r$ let
+
+$$
+|u_s\rangle = \frac{1}{\sqrt r} \sum_{k=0}^{r-1} e^{-2\pi i sk/r}\,|x^k \bmod N\rangle .
+$$
+
+<Statement>
+**Proposition.** $U|u_s\rangle = e^{2\pi i s/r}|u_s\rangle$, and $\displaystyle \frac{1}{\sqrt r}\sum_{s=0}^{r-1}|u_s\rangle = |1\rangle$.
+</Statement>
+
+*Proof.* $U$ shifts $k$ to $k+1$ in the sum, and $x^r \equiv x^0$, so the sum is reproduced with an extra factor $e^{2\pi i s/r}$. For the second claim, the coefficient of $|x^k\rangle$ in $\sum_s |u_s\rangle$ is $\tfrac{1}{\sqrt r}\sum_s e^{-2\pi i sk/r}$, which is $\sqrt r$ for $k = 0$ and $0$ otherwise. $\qquad\blacksquare$
+
+The eigenvalues encode $s/r$, and we do not need to prepare any $|u_s\rangle$: the easy state $|1\rangle$ is an equal superposition of all of them. Phase estimation on $U$ with the second register in $|1\rangle$ returns an approximation to $s/r$ for a uniformly random $s$.
+
+The powers $U^{2^j}$ are multiplications by $x^{2^j} \bmod N$, computed by repeated squaring. The whole modular exponentiation takes $O(L^3)$ gates, and that dominates the cost.
+
+### From a decimal to a fraction
+
+The measurement gives a number $\tilde\varphi$ with $t$ binary digits, close to $s/r$. To extract $r$ we use the continued fraction expansion.
+
+<Statement>
+**Theorem.** If $s/r$ is a rational number with $\big|\tfrac{s}{r} - \tilde\varphi\big| \le \tfrac{1}{2r^2}$, then $s/r$ is a convergent of the continued fraction of $\tilde\varphi$.
+</Statement>
+
+Since $r \le N$, taking $t = 2L + 1$ digits of accuracy meets the hypothesis. The convergents are computed by the Euclidean algorithm in $O(L^3)$ steps. If $s$ and $r$ happen to share a factor we obtain a divisor of $r$ instead; repeating a few times and taking a least common multiple fixes that.
+
+<Example>
+**Example.** Let $N = 15$ and $x = 7$, with $t = 11$ control qubits, so outcomes lie in $0, \dots, 2047$. Suppose the measurement gives $1536$. Then $\tilde\varphi = 1536/2048 = 3/4$, whose continued fraction is $[0; 1, 3]$ with convergents $1$ and $3/4$. The candidate $r = 4$ checks out: $7^4 = 2401 \equiv 1 \pmod{15}$.
+</Example>
+
+<p class="reading">Reading: Nielsen and Chuang, Section 5.3.1 and Box 5.3.</p>

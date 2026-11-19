@@ -1,0 +1,39 @@
+---
+title: "A circuit for the transform"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+
+Take $N = 2^n$ and write $j$ in binary, $j = j_1 j_2 \dots j_n = j_1 2^{n-1} + \dots + j_n 2^0$. We also use binary fractions: $0.j_l j_{l+1} \dots j_m = j_l/2 + j_{l+1}/4 + \dots + j_m/2^{m-l+1}$.
+
+<Statement>
+**Proposition (product form).**
+
+$$
+\mathrm{QFT}\,|j_1 \dots j_n\rangle = \frac{\big(|0\rangle + e^{2\pi i\,0.j_n}|1\rangle\big) \otimes \big(|0\rangle + e^{2\pi i\,0.j_{n-1}j_n}|1\rangle\big) \otimes \dots \otimes \big(|0\rangle + e^{2\pi i\,0.j_1 j_2 \dots j_n}|1\rangle\big)}{2^{n/2}} .
+$$
+</Statement>
+
+*Proof.* Write $k = k_1 \dots k_n$, so $k/2^n = \sum_l k_l 2^{-l}$. Then
+
+$$
+\frac{1}{2^{n/2}} \sum_k e^{2\pi i jk/2^n}|k\rangle
+= \frac{1}{2^{n/2}} \bigotimes_{l=1}^{n} \sum_{k_l \in \{0,1\}} e^{2\pi i j k_l 2^{-l}}|k_l\rangle
+= \frac{1}{2^{n/2}} \bigotimes_{l=1}^{n} \big(|0\rangle + e^{2\pi i j 2^{-l}}|1\rangle\big),
+$$
+
+and $e^{2\pi i j 2^{-l}}$ depends only on the fractional part of $j/2^l$, which is $0.j_{n-l+1} \dots j_n$. $\qquad\blacksquare$
+
+The output is a product state: no entanglement, only a relative phase on each qubit. That is what makes an efficient circuit possible. Let
+
+$$
+R_k = \begin{pmatrix} 1 & 0 \\ 0 & e^{2\pi i/2^k} \end{pmatrix},
+$$
+
+so $R_1 = Z$, $R_2 = S$ and $R_3 = T$. Apply $H$ to the first qubit: it becomes $|0\rangle + e^{2\pi i\,0.j_1}|1\rangle$, since $e^{2\pi i\,0.j_1} = (-1)^{j_1}$. Then apply $R_2$ controlled by the second qubit, $R_3$ controlled by the third, and so on; each adds one more binary digit to the phase, ending with $|0\rangle + e^{2\pi i\,0.j_1 \dots j_n}|1\rangle$. Repeat on the second qubit with the qubits after it as controls, and continue down the register. Finally reverse the order of the qubits with swaps.
+
+The number of gates is $n + (n-1) + \dots + 1 = \tfrac{n(n+1)}{2}$, plus at most $n/2$ swaps: $O(n^2)$ gates for a transform on $2^n$ amplitudes. The classical fast Fourier transform takes about $n 2^n$ operations on the same vector.
+
+This is not a faster way to compute Fourier transforms. The input amplitudes cannot be loaded cheaply in general, and the output amplitudes cannot be read. What the circuit gives is the ability to *sample* from the Fourier transform of a state we were able to prepare, and the rest of the lecture is about states for which one sample is informative.
+
+<p class="reading">Reading: Nielsen and Chuang, Section 5.1.</p>

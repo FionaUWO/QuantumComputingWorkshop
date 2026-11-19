@@ -1,0 +1,48 @@
+---
+title: "The surface code"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+
+The codes above have checks that involve qubits far apart, and their distance is fixed. The surface code, in its original form the *toric code*, is a family of CSS codes of growing distance in which every check touches four neighbouring qubits on a two-dimensional grid. It is the leading candidate for building a large quantum computer.
+
+### Definition
+
+Take an $L \times L$ square lattice with periodic boundary conditions, a torus. Place one qubit on each edge: $n = 2L^2$. There is one check for each vertex $v$ and one for each face $f$:
+
+$$
+A_v = \prod_{e \ni v} X_e, \qquad B_f = \prod_{e \in \partial f} Z_e ,
+$$
+
+the product of $X$ over the four edges meeting at $v$, and the product of $Z$ over the four edges around $f$.
+
+<Statement>
+**Proposition.** All the checks commute. They satisfy exactly two relations, $\prod_v A_v = I$ and $\prod_f B_f = I$. Hence the toric code has $2L^2 - 2$ independent checks and encodes $k = 2$ logical qubits.
+</Statement>
+
+*Proof.* A vertex and a face share either no edges or exactly two, so $A_v$ and $B_f$ commute. Each edge has two endpoints, so in the product of all $A_v$ every $X_e$ appears twice and cancels; likewise each edge borders two faces. $\qquad\blacksquare$
+
+### Errors are chains
+
+Apply $Z$ errors to a set of edges forming a path. A vertex check $A_v$ anticommutes with the error exactly when an odd number of the path's edges meet $v$, which happens only at the two ends. So the syndrome sees the *endpoints* of error chains and nothing else. In topological language, the syndrome is the boundary of the chain. $X$ errors behave the same way on the dual lattice, with endpoints on faces.
+
+A closed loop of errors has no endpoints and so no syndrome. There are two kinds:
+
+- A loop that bounds a region is a product of the face checks inside it. It is an element of $S$ and does nothing.
+- A loop that winds around the torus is not a product of checks. It is a logical operator.
+
+The torus has two independent non-contractible loops, and they give the logical $Z$ operators of the two encoded qubits; the logical $X$ operators are the corresponding loops on the dual lattice. The shortest such loop has length $L$.
+
+<Statement>
+**Theorem.** The toric code on an $L \times L$ lattice is a $[[2L^2, 2, L]]$ code.
+</Statement>
+
+For a mathematician: the code space is the first homology of the torus with $\mathbb{F}_2$ coefficients. Checks are boundaries, undetected errors are cycles, and logical operators are cycles modulo boundaries.
+
+### Decoding and the planar version
+
+The decoder is given the endpoints and must guess the chains. It pairs up the syndrome points by short paths and applies the corresponding correction. If the guess differs from the true error by a contractible loop, the code state is restored exactly; it fails only if error plus correction winds around the torus, which requires about $L/2$ errors lined up. Pairing points at minimum total distance is a classical matching problem solvable in polynomial time.
+
+A torus is awkward to build. Cutting it open gives the *planar surface code* on a patch with two kinds of boundary, which encodes one logical qubit, and in its most economical layout uses $d^2$ data qubits for distance $d$.
+
+<p class="reading">Reading: the surface code is not covered in Nielsen and Chuang. See A. Kitaev, "Fault-tolerant quantum computation by anyons", Annals of Physics 303 (2003), and E. Dennis, A. Kitaev, A. Landahl and J. Preskill, "Topological quantum memory", Journal of Mathematical Physics 43 (2002).</p>

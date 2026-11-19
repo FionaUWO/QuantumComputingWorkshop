@@ -1,0 +1,37 @@
+---
+title: "The search problem"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+
+Let $N = 2^n$ and suppose $f(x) = 1$ for exactly $M$ of the $N$ inputs, the *solutions*, with $1 \le M \le N$. The task is to find one. Nothing else is known about $f$; this is *unstructured search*.
+
+Classically there is nothing better than trying inputs. Finding a solution with probability $\tfrac12$ takes on the order of $N/M$ queries. Grover's algorithm does it with on the order of $\sqrt{N/M}$.
+
+The algorithm uses two reflections. The first is the phase oracle, which flips the sign of every solution:
+
+$$
+O\,|x\rangle = (-1)^{f(x)}|x\rangle .
+$$
+
+The second does not involve $f$. Let $|s\rangle = \tfrac{1}{\sqrt N}\sum_x |x\rangle$ be the equal superposition. The *diffusion operator* is
+
+$$
+D = 2|s\rangle\langle s| - I .
+$$
+
+It fixes $|s\rangle$ and negates everything orthogonal to it. On amplitudes it acts as *inversion about the mean*: if $\bar a$ is the average of the amplitudes $a_x$, then $D$ sends $a_x$ to $2\bar a - a_x$. Since $|s\rangle = H^{\otimes n}|0\rangle^{\otimes n}$, it can be built as
+
+$$
+D = H^{\otimes n}\,\big(2|0\rangle\langle 0|^{\otimes n} - I\big)\,H^{\otimes n},
+$$
+
+a layer of Hadamards on each side of a gate that flips the sign of every basis state except $|0 \dots 0\rangle$.
+
+<Statement>
+**Grover's algorithm.** Prepare $|s\rangle$. Apply the *Grover iteration* $G = D\,O$ a suitable number $k$ of times. Measure in the computational basis.
+</Statement>
+
+One iteration costs one query. Watch what it does to the amplitudes when $M = 1$: the oracle makes the solution's amplitude negative, which lowers the mean slightly; inversion about the mean then pushes the solution well above the others. Each round moves a little more weight onto the solution.
+
+<p class="reading">Reading: Nielsen and Chuang, Sections 6.1.1 and 6.1.2.</p>

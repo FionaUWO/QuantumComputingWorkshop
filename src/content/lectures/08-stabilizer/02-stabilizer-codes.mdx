@@ -1,0 +1,42 @@
+---
+title: "Stabilizer codes"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+import Example from '../../../components/Example.astro';
+
+<Statement>
+**Definition.** An $[[n, k]]$ *stabilizer code* is the space $V_S$ for an abelian subgroup $S \subset G_n$ with $n - k$ independent generators and $-I \notin S$. It encodes $k$ logical qubits in $n$ physical qubits. The generators are the *checks* of the code.
+</Statement>
+
+The bit flip code is the stabilizer code with $S = \langle Z_1 Z_2, Z_2 Z_3\rangle$: here $n = 3$, $n - k = 2$, and $V_S$ is spanned by $|000\rangle$ and $|111\rangle$.
+
+### Syndromes
+
+Let $E \in G_n$ be an error and $|\psi\rangle \in V_S$. For each generator, $E$ either commutes or anticommutes with $g_i$:
+
+$$
+g_i\,E|\psi\rangle = \pm\,E\,g_i|\psi\rangle = \pm\,E|\psi\rangle .
+$$
+
+So $E|\psi\rangle$ is an eigenvector of every check, with eigenvalue $-1$ exactly for the checks that anticommute with $E$. Measuring the $n - k$ generators yields the *syndrome*, a string of $n - k$ bits recording which checks $E$ anticommutes with. This is linear algebra over the field with two elements: the syndrome of a product of errors is the sum of their syndromes.
+
+### Three kinds of error
+
+Let $N(S)$ be the set of Pauli elements that commute with every element of $S$.
+
+- If $E \in S$, then $E|\psi\rangle = |\psi\rangle$. Nothing happened.
+- If $E \notin N(S)$, the syndrome is non-zero and the error is *detected*.
+- If $E \in N(S)$ but $E \notin S$, the syndrome is zero, yet $E$ acts non-trivially on the code space. This is an undetectable *logical error*. The elements of $N(S)$ outside $S$ are the *logical operators* of the code: they are how one computes on encoded qubits, and also how the code fails.
+
+<Statement>
+**Theorem.** A set of errors $\{E_j\} \subset G_n$ is correctable by the stabilizer code $S$ if $E_j^\dagger E_k \notin N(S) \setminus S$ for all $j$ and $k$.
+</Statement>
+
+The *distance* $d$ of the code is the smallest weight of an element of $N(S) \setminus S$, the size of the smallest logical error. A code with distance $d$ detects any error of weight less than $d$ and corrects any error of weight at most $\lfloor (d-1)/2 \rfloor$. An $[[n, k]]$ code of distance $d$ is written $[[n, k, d]]$.
+
+<Example>
+**Example.** For the bit flip code, $X_1 X_2 X_3$ commutes with both checks and exchanges $|000\rangle$ and $|111\rangle$: it is the logical $X$. And $Z_1$ commutes with both checks and is not in $S$: it is a logical $Z$ of weight one. So the distance is $1$. The code corrects one bit flip but not a general single-qubit error, in agreement with lecture 7.
+</Example>
+
+<p class="reading">Reading: Nielsen and Chuang, Sections 10.5.1 and 10.5.5.</p>

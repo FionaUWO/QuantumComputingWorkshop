@@ -1,0 +1,41 @@
+---
+title: "Thresholds"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+
+Error correction uses more qubits and more gates, all of them faulty, including the ones that measure syndromes. Does it help or does it make matters worse?
+
+### Concatenation
+
+Suppose a code corrects one error, and its circuits are designed so that a single fault anywhere causes at most one error per code block; such designs are called *fault-tolerant*. Then an encoded gate fails only if two faults occur, with probability about $c\,p^2$ where $p$ is the physical error rate and $c$ counts the pairs of places where faults can do harm. Encode each qubit of that code again, and again, $k$ times:
+
+$$
+p \;\to\; c\,p^2 \;\to\; c\,(c\,p^2)^2 \;\to\; \dots \;\to\; \frac{(c\,p)^{2^k}}{c} .
+$$
+
+If $c\,p \lt 1$ the error falls doubly exponentially in $k$, while the number of physical qubits per logical qubit grows only exponentially in $k$.
+
+<Statement>
+**Threshold theorem.** There is a constant $p_{\mathrm{th}} \gt 0$ such that, if every physical component fails with probability below $p_{\mathrm{th}}$, a quantum circuit with $T$ gates can be simulated to any accuracy $\epsilon$ using a number of physical gates that is larger by a factor polynomial in $\log(T/\epsilon)$.
+</Statement>
+
+So below the threshold, arbitrarily long quantum computations are possible with modest overhead, and above it error correction makes things worse. The value of $p_{\mathrm{th}}$ depends on the code and the noise.
+
+### The surface code in practice
+
+For the surface code one does not concatenate; one increases the distance. Below threshold the logical error rate per round behaves like
+
+$$
+p_L \approx A \Big( \frac{p}{p_{\mathrm{th}}} \Big)^{(d+1)/2} ,
+$$
+
+since $\tfrac{d+1}{2}$ errors are needed to fool the decoder. Its threshold is about $1\%$ under realistic circuit noise, far higher than for concatenated codes, and it needs only nearest-neighbour gates on a planar chip. Those two properties are why most hardware roadmaps are built around it.
+
+The cost is in qubits. With physical error rates around $10^{-3}$, reaching the logical error rates that Shor's algorithm needs takes a distance in the twenties, on the order of a thousand physical qubits for each logical one. Experiments have now shown the key behaviour on real devices: the logical error rate of a surface code memory decreasing as the distance grows from $3$ to $5$ to $7$. Lowering the overhead, with better codes and better decoders, is an active area of research.
+
+### Where the workshop ends
+
+Lecture 1 began with a unit vector in $\mathbb{C}^2$. We have seen how interference turns such vectors into algorithms, how optimisation problems become questions about eigenvalues, and how abelian subgroups of the Pauli group protect all of it from noise. Each of these is a place where the lab works, and a place to start.
+
+<p class="reading">Reading: Nielsen and Chuang, Section 10.6. For the surface code, see A. Fowler, M. Mariantoni, J. Martinis and A. Cleland, "Surface codes: towards practical large-scale quantum computation", Physical Review A 86 (2012).</p>

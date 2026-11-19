@@ -1,0 +1,25 @@
+---
+title: "How fast, and no faster"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+
+### Cost
+
+Grover's algorithm uses $O\big(\sqrt{N/M}\big)$ queries, against $\Theta(N/M)$ classically. Each iteration also needs $O(n)$ elementary gates for the diffusion operator. The speed-up is quadratic. For a search over $2^{60}$ candidates that is the difference between $10^{18}$ and $10^{9}$ evaluations.
+
+If $M$ is unknown the number of iterations cannot be chosen in advance. Two remedies exist: estimate $\theta$, and hence $M$, by applying phase estimation to $G$ (*quantum counting*, lecture 4 supplies the tool), or try iteration counts drawn at random from a growing range, which still costs $O\big(\sqrt{N/M}\big)$ in expectation.
+
+### Optimality
+
+<Statement>
+**Theorem.** Any quantum algorithm that finds a marked item among $N$ with probability at least $\tfrac12$, using only the oracle, makes $\Omega\big(\sqrt N\big)$ queries.
+</Statement>
+
+So Grover's algorithm is optimal up to a constant, and a quantum computer cannot solve unstructured search in $\mathrm{polylog}(N)$ steps. The consequence for hard problems is sobering. An NP-complete problem with $n$ variables can be attacked as a search over $2^n$ candidates, and Grover reduces that to $2^{n/2}$, still exponential. Exponential quantum speed-ups need structure in the problem, such as the periodicity that lecture 4 exploits.
+
+### Where this leaves us
+
+The two reflections of Grover's algorithm will return in lecture 6. There, a cost layer applies phases that depend on the objective, and a mixing layer moves amplitude between bit strings; QAOA alternates them just as Grover alternates $O$ and $D$.
+
+<p class="reading">Reading: Nielsen and Chuang, Sections 6.3, 6.4 and 6.6.</p>

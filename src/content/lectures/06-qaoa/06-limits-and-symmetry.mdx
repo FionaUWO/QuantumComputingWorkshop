@@ -1,0 +1,44 @@
+---
+title: "Limits and symmetry"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+import Example from '../../../components/Example.astro';
+
+### What limits QAOA today
+
+**Noise.** A depth-$p$ circuit contains $2p|E|$ two-qubit gates. If each fails with probability $\epsilon$, the chance that none fails is about $(1 - \epsilon)^{2p|E|}$. With $\epsilon = 10^{-3}$ and a graph of a few hundred edges, that probability is already small at $p = 2$ or $3$. More layers give a better state in theory and a worse one on the device, and the best depth is a compromise.
+
+**Optimisation.** The landscape $F_p$ is not convex, and each evaluation costs many circuit repetitions. The number of local optima grows quickly with $p$.
+
+**Classical competition.** At small $p$ the light cone makes $F_p$ classically computable, and good classical algorithms exist for MaxCut. Whether QAOA at practical depth outperforms the best classical heuristics on problems of interest is an open question.
+
+**Qubits.** The standard encoding uses one qubit per binary variable. Problems with thousands of variables do not fit on present devices.
+
+### Symmetry shrinks the problem
+
+The last limitation can sometimes be removed, and this is where the lab's research enters. Suppose a permutation $\sigma$ of the vertices is an automorphism of the graph. Let $P_\sigma$ be the unitary that permutes the qubits accordingly. Relabelling vertices maps edges to edges, so
+
+$$
+P_\sigma H_C P_\sigma^\dagger = H_C, \qquad P_\sigma H_B P_\sigma^\dagger = H_B, \qquad P_\sigma\,|+\rangle^{\otimes n} = |+\rangle^{\otimes n} .
+$$
+
+<Statement>
+**Proposition.** Let $\Gamma$ be a group of automorphisms of $G$. For all angles and all $p$, the QAOA state lies in the invariant subspace
+
+$$
+\mathcal{H}^\Gamma = \{\,|\psi\rangle : P_\sigma|\psi\rangle = |\psi\rangle \text{ for all } \sigma \in \Gamma\,\} ,
+$$
+
+whose dimension is the number of orbits of $\Gamma$ acting on the bit strings $\{0,1\}^n$.
+</Statement>
+
+*Proof.* The starting state is invariant, and each layer commutes with every $P_\sigma$, so it maps invariant vectors to invariant vectors. A basis of $\mathcal{H}^\Gamma$ is given by the uniform superpositions over the orbits. $\qquad\blacksquare$
+
+<Example>
+**Example.** For the complete graph $K_n$ every permutation is an automorphism. The orbits of $S_n$ on bit strings are the sets of strings with a given number of ones, so $\dim\mathcal{H}^\Gamma = n + 1$ instead of $2^n$. The whole QAOA evolution takes place in a space that $\lceil\log_2(n+1)\rceil$ qubits can hold.
+</Example>
+
+The bit-flip symmetry $X^{\otimes n}$ of MaxCut halves the dimension again. When the invariant subspace is small, one can represent it directly on a smaller register and run the same optimisation there. Making that mapping explicit and efficient is the idea behind the lab's qubit-efficient QAOA.
+
+<p class="reading">Reading: for the lab's work on this, see the Q-AICON Lab website linked from the home page.</p>

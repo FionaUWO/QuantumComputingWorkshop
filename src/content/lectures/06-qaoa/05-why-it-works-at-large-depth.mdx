@@ -1,0 +1,21 @@
+---
+title: "Why it works at large depth"
+board: false
+---
+The alternating form is that of a Trotterised adiabatic sweep. To fit the conventions of this lecture, where we *maximise*, sweep from $H_B$ to $H_C$ and follow the *highest* eigenvalue instead of the lowest:
+
+$$
+H(t) = \Big(1 - \frac{t}{T}\Big)\,H_B + \frac{t}{T}\,H_C .
+$$
+
+The top eigenvector of $H_B = \sum_j X_j$ is $|+\rangle^{\otimes n}$, the QAOA starting state, and the top eigenvectors of $H_C$ are the maximum cuts. Cutting the sweep into $p$ steps and applying the Trotter formula to each gives a product of the form
+
+$$
+\cdots\; e^{-i\beta_2 H_B}\, e^{-i\gamma_2 H_C}\; e^{-i\beta_1 H_B}\, e^{-i\gamma_1 H_C}\,|+\rangle^{\otimes n}
+$$
+
+with small angles, $\gamma_l$ increasing and $\beta_l$ decreasing along the sweep. For large $T$ and $p$ the adiabatic theorem says this reaches the maximum cuts, which proves $M_p \to C_{\max}$.
+
+QAOA is therefore at least as good as a discretised adiabatic algorithm with the same number of steps, and it may be better, since the angles are optimised and need not follow a slow sweep. In practice, optimised angles often do resemble a smooth ramp, and angles found for one instance tend to work well for other instances of similar type. That observation is used to initialise the optimiser.
+
+<p class="reading">Reading: lecture 5 of this workshop for the adiabatic theorem, and Nielsen and Chuang, Section 4.7.2 for the Trotter formula.</p>

@@ -1,0 +1,43 @@
+---
+title: "The circuit"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+
+Both layers compile into gates we already know.
+
+**Mixer.** The terms $X_j$ act on different qubits and commute, so
+
+$$
+U_B(\beta) = \prod_{j=1}^{n} e^{-i\beta X_j} = R_x(2\beta)^{\otimes n} ,
+$$
+
+one rotation per qubit.
+
+**Cost layer.** The edge terms are all diagonal, so they commute too, and $U_C(\gamma)$ is a product over edges of
+
+$$
+e^{-i\gamma(I - Z_i Z_j)/2} = e^{-i\gamma/2}\; e^{\,i\gamma Z_i Z_j/2} .
+$$
+
+The first factor is a global phase. For the second we use an identity for two qubits.
+
+<Statement>
+**Lemma.** $\;e^{-i\theta\, Z \otimes Z/2} = \mathrm{CNOT}\,\big(I \otimes R_z(\theta)\big)\,\mathrm{CNOT}$.
+</Statement>
+
+*Proof.* On $|a, b\rangle$ the first CNOT writes the parity $a \oplus b$ into the second qubit, $R_z(\theta)$ multiplies by $e^{-i\theta/2}$ if the parity is $0$ and by $e^{i\theta/2}$ if it is $1$, and the second CNOT restores $b$. The left side multiplies $|a,b\rangle$ by $e^{-i\theta(-1)^{a+b}/2}$, the same phases. $\qquad\blacksquare$
+
+So each edge costs two CNOTs and one rotation, with $\theta = -\gamma$.
+
+<Statement>
+**Cost of one run.** A depth-$p$ QAOA circuit for a graph with $n$ vertices and $|E|$ edges uses $n$ Hadamards, $2p|E|$ CNOTs and $p(|E| + n)$ single-qubit rotations.
+</Statement>
+
+Because the edge gates commute they may be applied in any order, and gates on disjoint edges can run at the same time. The number of time steps per cost layer is the number of colours needed to colour the edges of $G$, at most one more than the maximum degree. On hardware where only neighbouring qubits interact, routing adds further overhead.
+
+### Angle ranges
+
+For MaxCut the eigenvalues of $H_C$ are integers, so $U_C(\gamma)$ has period $2\pi$ in $\gamma$. And $e^{-i\pi X} = -I$, so $U_B(\beta)$ has period $\pi$ up to a global phase. The search can be restricted to $\gamma_l \in [0, 2\pi)$, $\beta_l \in [0, \pi)$. Complex conjugation gives one more symmetry, $F_p(-\vec\gamma, -\vec\beta) = F_p(\vec\gamma, \vec\beta)$.
+
+<p class="reading">Reading: Nielsen and Chuang, Section 4.3 for controlled gates and Section 4.7.2 for circuits that simulate Hamiltonians.</p>

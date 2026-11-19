@@ -1,0 +1,27 @@
+---
+title: "Adiabatic evolution"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+
+There is a second route to ground states, which motivates the ansatz of the next lecture. Take two Hamiltonians on $n$ qubits: an easy one,
+
+$$
+H_B = -\sum_{j=1}^{n} X_j ,
+$$
+
+whose unique ground state is $|+\rangle^{\otimes n}$, the equal superposition of all bit strings; and the problem Hamiltonian $H_P$ whose ground state we want. Interpolate slowly between them over a total time $T$:
+
+$$
+H(t) = \Big(1 - \frac{t}{T}\Big)\,H_B + \frac{t}{T}\,H_P, \qquad 0 \le t \le T .
+$$
+
+<Statement>
+**Adiabatic theorem (informal).** Start in the ground state of $H(0)$. If the ground state of $H(t)$ stays separated from the rest of the spectrum by a gap of at least $\Delta$ for all $t$, and $T$ is large compared with $1/\Delta^2$, then the state at time $T$ is close to the ground state of $H(T) = H_P$.
+</Statement>
+
+So a slow enough sweep solves the optimisation problem. The catch is the gap. For hard instances $\Delta$ is expected to close exponentially fast in $n$ somewhere along the path, making the required time exponential, in agreement with the lower bound for unstructured search in lecture 3.
+
+To run the sweep on a gate-based computer, cut $[0, T]$ into $p$ short steps and apply the Trotter formula on each: the evolution becomes an alternation of $e^{-i\gamma H_P}$ and $e^{-i\beta H_B}$ with small angles that vary gradually from step to step. Lecture 6 keeps this alternating structure and lets the angles be free parameters.
+
+<p class="reading">Reading: this topic is not covered in Nielsen and Chuang. See E. Farhi, J. Goldstone, S. Gutmann and M. Sipser, "Quantum computation by adiabatic evolution", arXiv:quant-ph/0001106 (2000).</p>

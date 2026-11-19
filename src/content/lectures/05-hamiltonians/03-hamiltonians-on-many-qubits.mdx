@@ -1,0 +1,47 @@
+---
+title: "Hamiltonians on many qubits"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+
+On $n$ qubits a Hamiltonian is a $2^n \times 2^n$ matrix, far too large to write down. The ones that occur in nature, and the ones we will build, are sums of terms that each touch only a few qubits. Write
+
+$$
+Z_j = I \otimes \dots \otimes Z \otimes \dots \otimes I
+$$
+
+for $Z$ on qubit $j$ and the identity elsewhere, and similarly $X_j$, $Y_j$. Operators on different qubits commute. A Hamiltonian of the form
+
+$$
+H = \sum_{j} h_j Z_j + \sum_{i \lt j} J_{ij}\, Z_i Z_j
+$$
+
+is specified by $O(n^2)$ real numbers. It is called an *Ising Hamiltonian*.
+
+### Diagonal Hamiltonians are cost functions
+
+Every $Z_j$ is diagonal in the computational basis, with $Z_j|z\rangle = (-1)^{z_j}|z\rangle$ for a bit string $z = z_1 \dots z_n$. Products and sums of diagonal matrices are diagonal, so
+
+$$
+H|z\rangle = E(z)\,|z\rangle, \qquad E(z) = \sum_j h_j (-1)^{z_j} + \sum_{i \lt j} J_{ij} (-1)^{z_i + z_j} .
+$$
+
+The eigenvectors are the bit strings and the eigenvalues are the values of a function $E : \{0,1\}^n \to \mathbb{R}$. Finding the ground state of an Ising Hamiltonian is the same as minimising $E$ over bit strings: a combinatorial optimisation problem in disguise.
+
+### Sums that do not commute
+
+For terms that commute, $e^{-i(A+B)t} = e^{-iAt}e^{-iBt}$, and each factor acts on a few qubits, so the evolution is a short circuit. When $A$ and $B$ do not commute this fails, but only slightly for short times.
+
+<Statement>
+**Theorem (Trotter formula).** For Hermitian $A$ and $B$,
+
+$$
+e^{-i(A+B)t} = \lim_{m \to \infty} \big(e^{-iAt/m}\,e^{-iBt/m}\big)^m ,
+$$
+
+and for finite $m$ the error is $O(t^2/m)$.
+</Statement>
+
+The reason is that $e^{-iA\delta}e^{-iB\delta} = e^{-i(A+B)\delta} + O(\delta^2)$, with the correction proportional to the commutator $[A, B] = AB - BA$. Evolution under a sum of local terms can thus be approximated by alternating short evolutions under each term. This is how a quantum computer simulates a physical system, and the alternating pattern is the skeleton of QAOA.
+
+<p class="reading">Reading: Nielsen and Chuang, Sections 4.7.1 and 4.7.2.</p>

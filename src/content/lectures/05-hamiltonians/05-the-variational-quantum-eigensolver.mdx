@@ -1,0 +1,23 @@
+---
+title: "The variational quantum eigensolver"
+board: false
+---
+The variational principle suggests a way to use a small quantum computer.
+
+1. Choose a parametrised circuit $U(\vec\theta)$, the *ansatz*, and let $|\psi(\vec\theta)\rangle = U(\vec\theta)|0\rangle^{\otimes n}$.
+2. On the quantum computer, estimate $F(\vec\theta) = \langle\psi(\vec\theta)|H|\psi(\vec\theta)\rangle$.
+3. On a classical computer, update $\vec\theta$ to lower $F$. Repeat.
+
+By the variational principle $F(\vec\theta) \ge E_0$ throughout, and the final value is an upper bound on the ground energy. This hybrid loop is the *variational quantum eigensolver*. The quantum computer is used only for what is hard classically: preparing a state in a $2^n$-dimensional space and sampling from it.
+
+### Estimating an average
+
+The energy is not measured in one shot. Write $H = \sum_a w_a P_a$ as a combination of products of Pauli matrices. Each $\langle P_a\rangle$ is estimated separately, by rotating the relevant qubits to the computational basis, measuring, and averaging the $\pm 1$ results over many repetitions. As in lecture 1, $N$ repetitions give a standard deviation of order $1/\sqrt N$, so precision $\epsilon$ costs on the order of $1/\epsilon^2$ repetitions per term.
+
+For a diagonal Hamiltonian such as $H_C$ no rotation is needed. Measure all qubits to get a bit string $z$, compute $C(z)$ classically, and average. There is a bonus: every sample is itself a candidate solution, so one can simply keep the best $z$ seen.
+
+### What can go wrong
+
+The method is heuristic and there are three separate ways for it to fail. The ansatz may not contain any state close to the ground state. The optimiser may stall, since $F$ is not convex and for generic deep circuits its gradients become exponentially small in $n$. And noise in the device shifts the measured value. Choosing an ansatz adapted to the problem addresses the first two, and that is what QAOA does for combinatorial optimisation.
+
+<p class="reading">Reading: this topic is not covered in Nielsen and Chuang. See A. Peruzzo et al., "A variational eigenvalue solver on a photonic quantum processor", Nature Communications 5 (2014).</p>

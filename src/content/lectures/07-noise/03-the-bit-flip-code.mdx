@@ -1,0 +1,48 @@
+---
+title: "The bit flip code"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+
+Encode one qubit into three by
+
+$$
+\alpha|0\rangle + \beta|1\rangle \;\longmapsto\; \alpha|000\rangle + \beta|111\rangle .
+$$
+
+This is not cloning: the output is an entangled state, not $|\psi\rangle^{\otimes 3}$. It is produced by two CNOTs from the first qubit onto two fresh qubits in $|0\rangle$, a linear operation defined on the basis and extended by linearity. The two-dimensional subspace spanned by $|0_L\rangle = |000\rangle$ and $|1_L\rangle = |111\rangle$ is the *code space*.
+
+### Measuring the error without measuring the state
+
+Suppose at most one of the three qubits suffers a bit flip. Instead of measuring the qubits, measure the two observables
+
+$$
+Z_1 Z_2 \qquad\text{and}\qquad Z_2 Z_3 .
+$$
+
+$Z_1 Z_2$ has eigenvalue $+1$ on basis states whose first two bits agree and $-1$ when they differ. It compares two qubits without revealing either. Both $|000\rangle$ and $|111\rangle$ give $+1$, so a state in the code space is an eigenvector and is not disturbed. After a single bit flip the state is again an eigenvector of both observables, with eigenvalues that depend only on which qubit flipped:
+
+| Error | State | $Z_1 Z_2$ | $Z_2 Z_3$ | Recovery |
+| --- | --- | --- | --- | --- |
+| none | $\alpha\lvert 000\rangle + \beta\lvert 111\rangle$ | $+1$ | $+1$ | nothing |
+| $X_1$ | $\alpha\lvert 100\rangle + \beta\lvert 011\rangle$ | $-1$ | $+1$ | apply $X_1$ |
+| $X_2$ | $\alpha\lvert 010\rangle + \beta\lvert 101\rangle$ | $-1$ | $-1$ | apply $X_2$ |
+| $X_3$ | $\alpha\lvert 001\rangle + \beta\lvert 110\rangle$ | $+1$ | $-1$ | apply $X_3$ |
+
+The pair of outcomes is the *error syndrome*. It identifies the error and says nothing about $\alpha$ and $\beta$, so the superposition survives the measurement. That answers the second obstacle. In a circuit, each parity is copied onto an extra *ancilla* qubit with two CNOTs and the ancilla is measured.
+
+<Statement>
+**Proposition.** If each qubit suffers a bit flip independently with probability $p$, the three-qubit code with syndrome measurement and recovery fails with probability $3p^2 - 2p^3$, which is less than $p$ when $p \lt \tfrac12$.
+</Statement>
+
+### Small rotations
+
+Now let the first qubit suffer the continuous error $\cos\epsilon\,I - i\sin\epsilon\,X_1$. The encoded state becomes
+
+$$
+\cos\epsilon\,\big(\alpha|000\rangle + \beta|111\rangle\big) - i\sin\epsilon\,\big(\alpha|100\rangle + \beta|011\rangle\big) ,
+$$
+
+a superposition of "no error" and "flip on qubit one". These two terms are eigenvectors of $Z_1 Z_2$ with different eigenvalues. Measuring the syndrome collapses the state onto one of them: with probability $\cos^2\epsilon$ we find no error and the state is exactly restored, and with probability $\sin^2\epsilon$ we find the syndrome of $X_1$ and correct it. The measurement has turned a continuous error into a discrete one. That answers the third obstacle.
+
+<p class="reading">Reading: Nielsen and Chuang, Section 10.1.1.</p>

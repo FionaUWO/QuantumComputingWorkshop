@@ -1,0 +1,49 @@
+---
+title: "Depth one by hand"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+
+For $p = 1$ the score can be computed in closed form. By linearity it is a sum over edges,
+
+$$
+F_1(\gamma, \beta) = \sum_{(u,v) \in E} \langle\gamma, \beta|\,\tfrac12(I - Z_u Z_v)\,|\gamma, \beta\rangle ,
+$$
+
+so it is enough to understand one edge at a time.
+
+### A single edge
+
+Let the graph be one edge on two qubits. The computation is a pleasant exercise with Pauli matrices, and the result is
+
+$$
+F_1(\gamma, \beta) = \tfrac12 + \tfrac12\,\sin 4\beta\,\sin\gamma .
+$$
+
+At $\gamma = \tfrac\pi2$, $\beta = \tfrac\pi8$ this equals $1$: the state is $\tfrac{1}{\sqrt2}\big(|01\rangle + |10\rangle\big)$ up to phase, an equal superposition of the two maximum cuts. Depth one solves a single edge exactly. Notice that the output is a Bell state: QAOA reaches good cuts through entangled states.
+
+### Regular graphs without triangles
+
+<Statement>
+**Theorem.** Let $G$ be a $d$-regular graph with no triangles. For every edge,
+
+$$
+\langle\gamma, \beta|\,\tfrac12(I - Z_u Z_v)\,|\gamma, \beta\rangle = \tfrac12 + \tfrac12\,\sin 4\beta\,\sin\gamma\,\cos^{d-1}\gamma ,
+$$
+
+so $F_1 = |E|\,\big(\tfrac12 + \tfrac12 \sin 4\beta \sin\gamma \cos^{d-1}\gamma\big)$.
+</Statement>
+
+The factor $\cos^{d-1}\gamma$ comes from the $d - 1$ other edges at each endpoint: their phases partly wash out the signal. Maximising, $\beta = \tfrac\pi8$ and $\tan^2\gamma = \tfrac{1}{d-1}$.
+
+| Graph | $d$ | Best $F_1/\lvert E\rvert$ |
+| --- | --- | --- |
+| single edge | $1$ | $1$ |
+| cycle | $2$ | $\tfrac34$ |
+| $3$-regular, no triangles | $3$ | $\tfrac12 + \tfrac{1}{3\sqrt3} \approx 0.6924$ |
+
+For the even cycle $C_{\max} = |E|$, so depth one reaches three quarters of the optimum. For cycles it is known that depth $p$ reaches $\tfrac{2p+1}{2p+2}$.
+
+For $3$-regular graphs in general, depth one guarantees a cut of at least $0.6924\,C_{\max}$. That is a genuine worst-case guarantee, and it is well below the $0.878$ of the classical Goemans-Williamson algorithm. Depth one does not beat classical methods; the question is what happens as $p$ grows.
+
+<p class="reading">Reading: Farhi, Goldstone and Gutmann (2014), Sections 3 to 5. The general depth-one formula is in Z. Wang, S. Hadfield, Z. Jiang and E. Rieffel, "Quantum approximate optimization algorithm for MaxCut: a fermionic view", Physical Review A 97 (2018).</p>

@@ -1,0 +1,47 @@
+---
+title: "Phase estimation"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+
+A unitary $U$ has eigenvalues of modulus $1$. Suppose we can prepare an eigenvector $|u\rangle$,
+
+$$
+U|u\rangle = e^{2\pi i\varphi}|u\rangle, \qquad 0 \le \varphi \lt 1 ,
+$$
+
+and can apply controlled versions of $U^{2^j}$. The goal is to estimate $\varphi$.
+
+### One bit
+
+Lecture 1 ended with the circuit $H$, phase, $H$. Do the same with a control qubit: prepare $|+\rangle|u\rangle$ and apply controlled-$U$. The eigenvalue is kicked back onto the control,
+
+$$
+\tfrac{1}{\sqrt2}\big(|0\rangle + |1\rangle\big)|u\rangle \;\longmapsto\; \tfrac{1}{\sqrt2}\big(|0\rangle + e^{2\pi i\varphi}|1\rangle\big)|u\rangle ,
+$$
+
+and a final $H$ gives outcome $0$ with probability $\cos^2(\pi\varphi)$. That is one noisy bit about $\varphi$.
+
+### Many bits
+
+Use $t$ control qubits, each in $|+\rangle$, and let the $j$-th of them control $U^{2^j}$. The $j$-th qubit picks up the phase $e^{2\pi i\,2^j\varphi}$, and the control register ends in
+
+$$
+\frac{1}{2^{t/2}} \bigotimes_{j=0}^{t-1} \big(|0\rangle + e^{2\pi i\,2^j\varphi}|1\rangle\big) = \frac{1}{2^{t/2}} \sum_{k=0}^{2^t - 1} e^{2\pi i\varphi k}\,|k\rangle .
+$$
+
+Compare with the definition of the Fourier transform. If $\varphi = a/2^t$ for an integer $a$, this state is exactly $\mathrm{QFT}\,|a\rangle$, so applying the inverse transform and measuring returns $a$, hence $\varphi$, with certainty.
+
+<Statement>
+**Theorem (phase estimation).** For general $\varphi$, to obtain $\varphi$ accurate to $n$ bits with probability at least $1 - \epsilon$ it suffices to use
+
+$$
+t = n + \Big\lceil \log_2\Big(2 + \frac{1}{2\epsilon}\Big) \Big\rceil
+$$
+
+control qubits. The circuit uses $2^t - 1$ applications of controlled-$U$ in total, arranged as the powers $U^{2^j}$, and $O(t^2)$ further gates.
+</Statement>
+
+If the second register holds a superposition $\sum_u c_u|u\rangle$ of eigenvectors instead of a single one, the procedure returns an estimate of $\varphi_u$ with probability $|c_u|^2$, by linearity. We will use this.
+
+<p class="reading">Reading: Nielsen and Chuang, Section 5.2.</p>

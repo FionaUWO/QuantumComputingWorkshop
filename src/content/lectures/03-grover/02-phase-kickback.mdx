@@ -1,0 +1,33 @@
+---
+title: "Phase kickback"
+board: false
+---
+import Statement from '../../../components/Statement.astro';
+
+The trick that makes interference possible is to put the answer qubit in the state $|-\rangle = \tfrac{1}{\sqrt2}(|0\rangle - |1\rangle)$.
+
+<Statement>
+**Lemma (phase kickback).** For every $x$,
+
+$$
+U_f\,|x\rangle|-\rangle = (-1)^{f(x)}\,|x\rangle|-\rangle .
+$$
+</Statement>
+
+*Proof.* If $f(x) = 0$ nothing happens. If $f(x) = 1$ the answer qubit is flipped, and $X|-\rangle = \tfrac{1}{\sqrt2}(|1\rangle - |0\rangle) = -|-\rangle$. $\qquad\blacksquare$
+
+The answer qubit is left unchanged and the value $f(x)$ has become a sign on the input register. Since the second register never changes we can drop it and work with the *phase oracle*
+
+$$
+O_f\,|x\rangle = (-1)^{f(x)}\,|x\rangle ,
+$$
+
+a diagonal matrix with entries $\pm 1$. On a basis state this sign is a global phase and invisible. On a superposition it is a pattern of relative phases, and those are what interference detects.
+
+We also need the Hadamard transform of a general basis state. From $H|x\rangle = \tfrac{1}{\sqrt2}\big(|0\rangle + (-1)^x|1\rangle\big)$ for a single bit,
+
+$$
+H^{\otimes n}\,|x\rangle = \frac{1}{\sqrt{2^n}} \sum_{z \in \{0,1\}^n} (-1)^{x \cdot z}\,|z\rangle, \qquad x \cdot z = x_1 z_1 + \dots + x_n z_n \bmod 2 .
+$$
+
+<p class="reading">Reading: Nielsen and Chuang, Section 1.4.3.</p>

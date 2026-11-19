@@ -1,0 +1,43 @@
+---
+title: "Deutsch and Deutsch-Jozsa"
+---
+import Statement from '../../../components/Statement.astro';
+import Try from '../../../components/Try.astro';
+
+### One bit
+
+There are four functions $f : \{0,1\} \to \{0,1\}$. Two are *constant* and two are *balanced*, meaning $f(0) \ne f(1)$. Classically, deciding which kind $f$ is takes two calls. Deutsch's algorithm takes one:
+
+$$
+|0\rangle \xrightarrow{\;H\;} \tfrac{1}{\sqrt2}\big(|0\rangle + |1\rangle\big)
+\xrightarrow{\;O_f\;} \tfrac{1}{\sqrt2}\big((-1)^{f(0)}|0\rangle + (-1)^{f(1)}|1\rangle\big)
+\xrightarrow{\;H\;} \pm\,|f(0) \oplus f(1)\rangle .
+$$
+
+After the oracle the state is $\pm|+\rangle$ if $f$ is constant and $\pm|-\rangle$ if it is balanced, and the last Hadamard turns those into $|0\rangle$ and $|1\rangle$. The measurement returns $f(0) \oplus f(1)$, a property of both values, although $f$ was evaluated once. This is the interference circuit of lecture 1 with the oracle in the middle.
+
+<Try runs={[
+  { do: 'reset,XB,HA,HB,HA,sample', label: 'Constant f(x) = 0' },
+  { do: 'reset,XB,HA,HB,CAB,HA,sample', label: 'Balanced f(x) = x' },
+  { do: 'reset,XB,HA,HB,XB,HA,sample', label: 'Constant f(x) = 1' },
+]}>
+On the simulator, qubit $A$ is the input and qubit $B$ the answer qubit, prepared in $|-\rangle$ by $X$ then $H$. For $f(x) = x$ the box $U_f$ is a CNOT; for $f(x) = 1$ it is $X$ on $B$. Read the first bit of each outcome: it is $0$ for the constant functions and $1$ for the balanced one, every time. The second bit is the answer qubit, which carries no information.
+</Try>
+
+### Many bits
+
+Now let $f : \{0,1\}^n \to \{0,1\}$ and suppose we are promised that $f$ is either constant or balanced, taking each value on exactly half of the inputs. Run the same three steps on $n$ qubits:
+
+$$
+|0\rangle^{\otimes n} \xrightarrow{\;H^{\otimes n}\;} \frac{1}{\sqrt{2^n}} \sum_x |x\rangle
+\xrightarrow{\;O_f\;} \frac{1}{\sqrt{2^n}} \sum_x (-1)^{f(x)}|x\rangle
+\xrightarrow{\;H^{\otimes n}\;} \sum_z \Big( \frac{1}{2^n} \sum_x (-1)^{f(x) + x \cdot z} \Big)|z\rangle .
+$$
+
+<Statement>
+**Theorem (Deutsch-Jozsa).** The amplitude of $|0\rangle^{\otimes n}$ in the final state is $\tfrac{1}{2^n}\sum_x (-1)^{f(x)}$. It is $\pm 1$ if $f$ is constant and $0$ if $f$ is balanced. So one query decides between the two cases with certainty.
+</Statement>
+
+A deterministic classical algorithm needs $2^{n-1} + 1$ queries in the worst case, since the first $2^{n-1}$ answers might all agree. That is an exponential separation, with a caveat: a classical algorithm that samples a few random inputs is wrong only with tiny probability. The separation is against exact classical computation. Its value is as a template: superpose, query once, interfere.
+
+<p class="reading">Reading: Nielsen and Chuang, Sections 1.4.3 and 1.4.4.</p>
