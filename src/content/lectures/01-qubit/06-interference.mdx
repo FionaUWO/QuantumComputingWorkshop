@@ -1,0 +1,54 @@
+---
+title: "Interference"
+---
+import Try from '../../../components/Try.astro';
+
+The states $|+\rangle$ and $|-\rangle$ differ only in a relative phase, and a standard-basis measurement cannot tell them apart: both give $0$ and $1$ with probability $\tfrac12$. A coin flip would do the same.
+
+But apply $H$ before measuring. Since $H|+\rangle = |0\rangle$ and $H|-\rangle = |1\rangle$, the outcome is now certain and distinguishes the two states perfectly. Follow the amplitudes through two Hadamards applied to $|0\rangle$:
+
+$$
+\begin{aligned}
+|0\rangle \;&\xrightarrow{\;H\;}\; \tfrac{1}{\sqrt2}|0\rangle + \tfrac{1}{\sqrt2}|1\rangle \\[0.4em]
+&\xrightarrow{\;H\;}\; \tfrac12\big(|0\rangle + |1\rangle\big) + \tfrac12\big(|0\rangle - |1\rangle\big) = |0\rangle .
+\end{aligned}
+$$
+
+There are two paths to the outcome $1$, through $|0\rangle$ and through $|1\rangle$, with amplitudes $+\tfrac12$ and $-\tfrac12$. They cancel. The two paths to $0$ both have amplitude $+\tfrac12$ and add to $1$.
+
+Now do the same with probabilities. The stochastic matrix for a fair coin flip is
+
+$$
+F = \begin{pmatrix} \tfrac12 & \tfrac12 \\ \tfrac12 & \tfrac12 \end{pmatrix}, \qquad F^2 = F .
+$$
+
+Flipping twice is the same as flipping once, because the entries are non-negative and nothing can cancel. Probabilities add; amplitudes can cancel. This is *interference*, and every quantum algorithm in the coming lectures is an arrangement for wrong answers to cancel.
+
+### Dialling the phase
+
+Put a phase gate $P(\varphi) = \begin{pmatrix} 1 & 0 \\ 0 & e^{i\varphi} \end{pmatrix}$ between the two Hadamards. Then
+
+$$
+\begin{gathered}
+H\,P(\varphi)\,H\,|0\rangle = \frac{1 + e^{i\varphi}}{2}\,|0\rangle + \frac{1 - e^{i\varphi}}{2}\,|1\rangle, \\[0.6em]
+P(0) = \Big|\frac{1 + e^{i\varphi}}{2}\Big|^2 = \cos^2\frac\varphi2 .
+\end{gathered}
+$$
+
+The relative phase, invisible to a direct measurement, has been converted into a probability. This three-gate circuit is an interferometer, and it is the seed of phase estimation in lecture 4. The gates $Z$, $S$ and $T$ are $P(\pi)$, $P(\tfrac\pi2)$ and $P(\tfrac\pi4)$.
+
+| Middle gate | $\varphi$ | $P(0) = \cos^2\tfrac\varphi2$ |
+| --- | --- | --- |
+| none | $0$ | $1$ |
+| $T$ | $\pi/4$ | $\tfrac12\big(1 + \tfrac{1}{\sqrt2}\big) \approx 0.854$ |
+| $S$ | $\pi/2$ | $\tfrac12$ |
+| $Z$ | $\pi$ | $0$ |
+
+<Try runs={[
+  { do: 'reset,H,H,sample', label: 'H, H, then measure 100 copies' },
+  { do: 'reset,H,T,H,sample', label: 'H, T, H, then measure 100 copies' },
+  { do: 'reset,H,S,H,sample', label: 'H, S, H, then measure 100 copies' },
+  { do: 'reset,H,Z,H,sample', label: 'H, Z, H, then measure 100 copies' },
+]}>
+Predict each count from the table before you press the button, and remember that $100$ copies only pin the probability down to about $\pm 0.05$.
+</Try>

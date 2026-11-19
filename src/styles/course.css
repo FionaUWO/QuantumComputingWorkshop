@@ -1,0 +1,75 @@
+/* Lecture pages: contents menu on the left, one page of the lecture on the right. */
+
+.course-shell { display: grid; grid-template-columns: minmax(0, 1fr); }
+.course-main { min-width: 0; padding: 0 clamp(1rem, 4vw, 3.5rem) 5rem; }
+
+/* ---------- contents menu ---------- */
+.course-menu { background: var(--soft); font-size: var(--small); line-height: 1.35; padding: 1.4rem 0 3rem; overflow-y: auto; }
+.menu-title { font-family: var(--serif); font-size: 1.15rem; color: var(--purple-dark); margin: 0 1.25rem 0.9rem; }
+
+.menu-lecture { border-top: 1px solid var(--lavender-2); margin: 0; }
+.menu-lecture summary, p.menu-lecture { display: grid; grid-template-columns: 1.6rem minmax(0, 1fr); gap: 0.65rem; align-items: start; padding: 0.8rem 1.25rem; }
+.menu-lecture summary { cursor: pointer; list-style: none; font-weight: 600; color: var(--ink); }
+.menu-lecture summary::-webkit-details-marker { display: none; }
+.menu-lecture summary:hover { background: var(--lavender); }
+.menu-lecture .n { display: grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--purple); color: #fff; font-size: 0.78rem; font-weight: 600; font-variant-numeric: lining-nums; }
+.menu-lecture[open] summary { color: var(--purple); }
+p.menu-lecture.waiting { color: var(--muted); }
+p.menu-lecture.waiting .n { background: var(--lavender-2); color: var(--muted); }
+p.menu-lecture.waiting small { grid-column: 2; font-size: 0.78rem; }
+
+.course-menu ul { list-style: none; margin: 0; padding: 0 0 0.7rem; }
+.course-menu li a { display: block; padding: 0.45rem 1.25rem 0.45rem 3.5rem; color: var(--text); text-decoration: none; border-left: 4px solid transparent; }
+.course-menu li a:hover { background: var(--lavender); color: var(--purple-dark); }
+.course-menu li a[aria-current="page"] { border-left-color: var(--purple); background: var(--lavender); color: var(--purple-dark); font-weight: 600; }
+.course-menu li a.seen::after { content: "✓"; float: right; color: var(--purple); font-weight: 600; margin-left: 0.5rem; }
+.course-menu .menu-sub { padding: 0.15rem 0 0.35rem; }
+.course-menu .menu-sub a { padding: 0.3rem 1.25rem 0.3rem 4.4rem; font-size: 0.8rem; color: var(--muted); border-left-color: transparent; }
+
+/* ---------- bar and drawer on narrow screens ---------- */
+.course-bar { display: flex; align-items: center; gap: 0.9rem; position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--lavender-2); margin: 0 calc(-1 * clamp(1rem, 4vw, 3.5rem)); padding: 0.6rem clamp(1rem, 4vw, 3.5rem); font-size: var(--small); color: var(--muted); }
+.course-bar span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.menu-toggle { font: inherit; font-weight: 600; color: var(--purple-dark); background: var(--lavender); border: 0; border-radius: 999px; padding: 0.45rem 1rem; cursor: pointer; flex: none; }
+.menu-toggle:hover { background: var(--lavender-2); }
+.menu-scrim { display: none; }
+
+@media (max-width: 999px) {
+  .course-menu { position: fixed; inset: 0 auto 0 0; width: min(20rem, 86vw); z-index: 20; transform: translateX(-100%); transition: transform 0.25s var(--ease); visibility: hidden; }
+  .menu-open .course-menu { transform: none; visibility: visible; }
+  .menu-open .menu-scrim { display: block; position: fixed; inset: 0; z-index: 15; background: rgba(36, 18, 63, 0.45); }
+}
+@media (min-width: 1000px) {
+  .course-shell { grid-template-columns: 19rem minmax(0, 1fr); align-items: start; }
+  .course-menu { position: sticky; top: 0; height: 100vh; border-right: 1px solid var(--lavender-2); }
+  .course-bar { display: none; }
+}
+
+/* ---------- a section page ---------- */
+.section-head { padding: clamp(1.8rem, 4vw, 3rem) 0 1.4rem; border-bottom: 1px solid var(--lavender-2); margin-bottom: 2.2rem; }
+.section-head .kicker, .lecture-open .kicker { font-weight: 600; color: var(--purple); margin: 0 0 0.5rem; font-size: var(--small); }
+.section-head h1 { font-size: clamp(2rem, 4.2vw, 3.1rem); color: var(--purple-dark); }
+
+.course-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+.course-body .board-col { max-width: 30rem; }
+@media (min-width: 1280px) {
+  .course-body.has-board { grid-template-columns: minmax(0, 40rem) minmax(19rem, 24rem); gap: 3rem; justify-content: space-between; align-items: start; }
+  .course-body.has-board .board-col { position: sticky; top: 1.25rem; order: 2; max-width: none; }
+}
+
+.pager { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.8rem; margin-top: 3.2rem; padding-top: 1.6rem; border-top: 1px solid var(--lavender-2); }
+.pager-end { color: var(--muted); font-size: var(--small); }
+
+/* ---------- a lecture's opening page ---------- */
+.lecture-open { max-width: 44rem; padding-top: clamp(1.8rem, 4vw, 3rem); }
+.lecture-open .art { max-width: 20rem; margin-bottom: 1.8rem; border-radius: 14px; overflow: hidden; }
+.lecture-open h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); color: var(--purple-dark); }
+.lecture-open .lede { font-size: var(--lead); line-height: 1.45; margin: 1.1rem 0 1.8rem; }
+.lecture-open h2 { font-size: 1.5rem; margin-top: 3rem; }
+.section-list { list-style: none; counter-reset: sec; padding: 0; margin: 1rem 0 0; border-top: 1px solid var(--lavender-2); }
+.section-list li { counter-increment: sec; border-bottom: 1px solid var(--lavender-2); }
+.section-list a { display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); padding: 0.85rem 0.4rem; text-decoration: none; color: var(--ink); font-weight: 500; }
+.section-list a::before { content: counter(sec); color: var(--purple); font-weight: 600; font-variant-numeric: lining-nums; }
+.section-list a:hover { background: var(--soft); color: var(--purple); }
+
+/* The site header spans the full width here so its logo lines up with the menu. */
+body:has(.course-shell) .site-head .wrap { max-width: none; padding-left: 1.25rem; }

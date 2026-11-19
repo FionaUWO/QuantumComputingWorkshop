@@ -21,17 +21,31 @@ Pushing to `main` builds and publishes the site through GitHub Actions (`.github
 
 | Path | What it holds |
 | --- | --- |
-| `src/content/lectures/*.mdx` | Lecture notes, in Markdown with LaTeX between `$` signs |
-| `src/data/lectures.ts` | The list of eight lectures shown on the home page |
-| `src/pages/` | Home page, playground, and the template for lecture pages |
+| `src/content/lectures/<lecture>/*.mdx` | Lecture notes, one file per section, in Markdown with LaTeX between dollar signs |
+| `src/data/lectures.ts` | The list of eight lectures: titles, opening text, which simulator each uses |
+| `src/pages/` | Home page, playground, and the templates for lecture pages |
 | `src/layouts/Base.astro` | Header and footer shared by every page |
-| `src/components/` | `Statement`, `Try`, `Board` and `Teleport`, used inside lecture notes |
+| `src/layouts/Course.astro` | Lecture pages: contents menu on the left, one section on the right |
+| `src/components/` | `Statement`, `Example`, `Try`, `Board` and `Teleport`, used inside lecture notes |
 | `src/scripts/` | The simulators (Bloch sphere, two-qubit register) and home-page animation |
-| `src/styles/site.css` | All styles |
+| `src/styles/` | `site.css` for the whole site, `course.css` for the lecture pages |
 | `public/assets/img/` | Images, copied to the site as they are |
 
 ## Adding a lecture
 
-1. Create `src/content/lectures/<slug>.mdx`, using the `slug` already listed for that lecture in `src/data/lectures.ts` (for example `03-grover.mdx`). Copy the block between the `---` lines from an existing lecture and edit it.
-2. Write the notes in Markdown. Each `## Heading` becomes a numbered section and an entry in the table of contents.
-3. The home-page card and the "Next" link of the previous lecture pick the new page up on their own.
+Each lecture is a folder of section files. Every section becomes its own page, listed in the menu on the left.
+
+1. Create the folder `src/content/lectures/<slug>/`, using the `slug` already listed for that lecture in `src/data/lectures.ts` (for example `03-grover`).
+2. Add one file per section, named with a number prefix that sets the order: `01-oracles.mdx`, `02-deutsch-jozsa.mdx`, and so on. Each starts with
+
+   ```
+   ---
+   title: Oracles
+   ---
+   ```
+
+   followed by the notes in Markdown. Add `board: false` under the title to hide the simulator on that page. A `### Heading` becomes a subsection in the menu.
+3. In `src/data/lectures.ts`, give the lecture a `heading` and `lede` for its opening page, and a `board` if it has a simulator.
+4. The home-page card, the menu and the Back and Next buttons pick the new pages up on their own.
+
+The `katex` package must stay on the same version that `rehype-katex` uses (`npm ls katex` shows both); a mismatch leaves subscripts and superscripts unsized.

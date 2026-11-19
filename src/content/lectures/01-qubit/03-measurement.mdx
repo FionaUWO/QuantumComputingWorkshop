@@ -1,0 +1,54 @@
+---
+title: "Measurement"
+---
+import Statement from '../../../components/Statement.astro';
+import Example from '../../../components/Example.astro';
+import Try from '../../../components/Try.astro';
+
+We cannot read $\alpha$ and $\beta$ off a qubit. The only way to get information out is to measure it, and a measurement returns a single classical bit.
+
+<Statement>
+**Born rule.** Measuring $\alpha|0\rangle + \beta|1\rangle$ in the standard basis gives outcome $0$ with probability $|\alpha|^2$ and outcome $1$ with probability $|\beta|^2$. Afterwards the state is $|0\rangle$ or $|1\rangle$, matching the outcome.
+</Statement>
+
+The normalisation condition is exactly what makes these probabilities sum to one. Measurement is destructive: one copy of a state yields one bit, and the amplitudes are gone.
+
+### Measuring in another basis
+
+Nothing singles out the standard basis. For any orthonormal basis $\{|b_0\rangle, |b_1\rangle\}$ there is a measurement with
+
+$$
+P(i) = |\langle b_i|\psi\rangle|^2, \qquad \text{state afterwards: } |b_i\rangle .
+$$
+
+By Parseval these are non-negative and sum to one, so the rule is consistent. The standard-basis rule is the special case $\langle 0|\psi\rangle = \alpha$, $\langle 1|\psi\rangle = \beta$.
+
+<Example>
+**Example.** Take $|\psi\rangle = \tfrac{1}{\sqrt3}\big(|0\rangle + (1+i)|1\rangle\big)$ from before. In the standard basis, $P(0) = \tfrac13$ and $P(1) = \tfrac23$. In the basis $\{|+\rangle, |-\rangle\}$,
+
+$$
+\begin{aligned}
+\langle +|\psi\rangle &= \tfrac{1}{\sqrt6}\big(1 + (1+i)\big) = \tfrac{2+i}{\sqrt6}, \\[0.4em]
+\langle -|\psi\rangle &= \tfrac{1}{\sqrt6}\big(1 - (1+i)\big) = \tfrac{-i}{\sqrt6},
+\end{aligned}
+$$
+
+so $P(+) = \tfrac56$ and $P(-) = \tfrac16$. The phase of $\beta$ played no part in the first measurement and decided the second.
+</Example>
+
+### How many copies?
+
+To estimate $p = |\alpha|^2$ you need many identically prepared copies. Measuring $N$ of them gives independent bits, and the number $k$ of zeros is binomial. The estimate $\hat p = k/N$ satisfies
+
+$$
+\mathbb{E}[\hat p] = p, \qquad \operatorname{sd}(\hat p) = \sqrt{\frac{p(1-p)}{N}} \;\le\; \frac{1}{2\sqrt N} .
+$$
+
+With $N = 100$ the standard deviation can be as large as $0.05$, so a count of $44$ or $57$ out of $100$ is entirely consistent with $p = \tfrac12$. Each further decimal digit of precision costs a factor of $100$ in copies.
+
+<Try runs={[
+  { do: 'reset,H,sample', label: 'Prepare |+⟩ and measure 100 copies' },
+  { do: 'reset,H,measure', label: 'Prepare |+⟩ and measure once' },
+]}>
+The state $|+\rangle$ should give each outcome half the time. Prepare it and measure. Run the 100-copy button several times and watch how far the count strays from $50$.
+</Try>

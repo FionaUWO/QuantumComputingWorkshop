@@ -1,0 +1,38 @@
+---
+// Opening page of a lecture: what it is about and the list of its sections.
+import Course from '../../../layouts/Course.astro';
+import { getCourse } from '../../../lib/course';
+import { lectures } from '../../../data/lectures';
+
+export async function getStaticPaths() {
+  const course = await getCourse();
+  return course.filter((l) => l.sections.length).map((l) => ({ params: { lecture: l.slug }, props: { course, slug: l.slug } }));
+}
+
+const { course, slug } = Astro.props;
+const l = course.find((x) => x.slug === slug)!;
+---
+<Course
+  title={`Lecture ${l.num}: ${l.title} | Quantum Computing Workshop`}
+  description={l.lede}
+  course={course}
+  lecture={l.slug}
+  crumb={`Lecture ${l.num}`}
+>
+  <div class="lecture-open">
+    <div class="art" data-art={l.art} aria-hidden="true"></div>
+    <p class="kicker">Lecture {l.num} of {lectures.length} · {l.part}</p>
+    <h1>{l.heading ?? l.title}</h1>
+    <p class="lede">{l.lede ?? l.blurb}</p>
+    <a class="btn" href={l.sections[0].href}>Start with section 1</a>
+
+    <h2>In this lecture</h2>
+    <ol class="section-list">
+      {l.sections.map((s) => <li><a href={s.href}>{s.title}</a></li>)}
+    </ol>
+  </div>
+</Course>
+
+<script>
+  import '../../../scripts/art.js';
+</script>

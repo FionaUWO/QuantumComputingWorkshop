@@ -1,0 +1,34 @@
+---
+title: "Product or entangled"
+---
+import Statement from '../../../components/Statement.astro';
+import Try from '../../../components/Try.astro';
+
+A state of the form $|\phi\rangle \otimes |\chi\rangle$ is a *product state*. Counting parameters shows that most states are not of this form: product states need two complex numbers per qubit, while a general state has four.
+
+There is a clean test. Arrange the amplitudes in a matrix
+
+$$
+M = \begin{pmatrix} a_{00} & a_{01} \\ a_{10} & a_{11} \end{pmatrix}.
+$$
+
+For a product state $M$ is the outer product of $(\alpha, \beta)$ and $(\gamma, \delta)$, so it has rank one. Conversely any rank-one matrix factors that way.
+
+<Statement>
+**Proposition.** A two-qubit state is a product state if and only if $\det M = a_{00}a_{11} - a_{01}a_{10} = 0$. Otherwise it is *entangled*.
+</Statement>
+
+The best known entangled state is the Bell state
+
+$$
+|\Phi^+\rangle = \tfrac{1}{\sqrt2}\big(|00\rangle + |11\rangle\big), \qquad \det M = \tfrac12.
+$$
+
+Neither qubit of a Bell pair has a state of its own. There is no vector in $\mathbb{C}^2$ that describes $A$ alone.
+
+<Try runs={[
+  { do: 'reset,HA,HB', label: 'Apply H to A and to B' },
+  { do: 'reset,HA,CAB', label: 'Make a Bell pair' },
+]}>
+The simulator shows the four amplitudes and the value of $|\det M|$. Put each qubit in superposition separately, then compare with a Bell pair.
+</Try>

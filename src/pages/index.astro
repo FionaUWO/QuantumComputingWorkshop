@@ -1,11 +1,11 @@
 ---
-import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { lectures } from '../data/lectures';
 import { url } from '../lib/url';
+import { getCourse } from '../lib/course';
 
-// A lecture card links to its page once the lecture's .mdx file exists.
-const ready = new Set((await getCollection('lectures')).map((e) => e.id));
+// A lecture card links to its pages once the lecture has section files.
+const ready = new Set((await getCourse()).filter((l) => l.sections.length).map((l) => l.slug));
 ---
 <Base
   title="Quantum Computing Workshop | Q-AICON Lab, Western University"

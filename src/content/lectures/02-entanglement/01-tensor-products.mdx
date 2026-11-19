@@ -1,0 +1,22 @@
+---
+title: "Tensor products"
+---
+import Statement from '../../../components/Statement.astro';
+
+A probability distribution over two bits is a vector with four entries, one for each of $00, 01, 10, 11$. The quantum rule is the same with amplitudes in place of probabilities.
+
+<Statement>
+**Definition.** A state of two qubits $A$ and $B$ is a unit vector in $\mathbb{C}^2 \otimes \mathbb{C}^2 \cong \mathbb{C}^4$:
+
+$$
+|\psi\rangle = a_{00}|00\rangle + a_{01}|01\rangle + a_{10}|10\rangle + a_{11}|11\rangle, \qquad \sum_{i,j} |a_{ij}|^2 = 1.
+$$
+</Statement>
+
+Here $|ij\rangle$ is shorthand for $|i\rangle \otimes |j\rangle$. If $A$ is in the state $\alpha|0\rangle + \beta|1\rangle$ and $B$ is in the state $\gamma|0\rangle + \delta|1\rangle$, with no relationship between them, the pair is described by the Kronecker product
+
+$$
+\begin{pmatrix} \alpha \\ \beta \end{pmatrix} \otimes \begin{pmatrix} \gamma \\ \delta \end{pmatrix} = \begin{pmatrix} \alpha\gamma \\ \alpha\delta \\ \beta\gamma \\ \beta\delta \end{pmatrix}.
+$$
+
+With $n$ qubits the space is $(\mathbb{C}^2)^{\otimes n}$, of dimension $2^n$. Thirty qubits already need a billion amplitudes. That exponential growth is the reason classical simulation becomes hard, and the resource quantum algorithms try to use.

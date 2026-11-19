@@ -1,0 +1,31 @@
+---
+// Two-pane layout for lecture pages: contents menu on the left, one page of the lecture on the right.
+import '../styles/course.css';
+import Base from './Base.astro';
+import CourseMenu from '../components/CourseMenu.astro';
+import type { Lecture } from '../lib/course';
+
+interface Props {
+  title: string;
+  description?: string;
+  course: Lecture[];
+  lecture: string;
+  section?: string;
+  subsections?: { slug: string; text: string }[];
+  crumb: string; // shown in the bar above the page on narrow screens
+}
+const { title, description, course, lecture, section, subsections, crumb } = Astro.props;
+---
+<Base title={title} description={description} current="lectures">
+  <div class="course-shell">
+    <CourseMenu course={course} lecture={lecture} section={section} subsections={subsections} />
+    <div class="menu-scrim"></div>
+    <div class="course-main">
+      <div class="course-bar">
+        <button type="button" class="menu-toggle" aria-controls="course-menu" aria-expanded="false">Contents</button>
+        <span>{crumb}</span>
+      </div>
+      <slot />
+    </div>
+  </div>
+</Base>

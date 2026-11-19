@@ -1,0 +1,26 @@
+---
+title: "From bits to amplitudes"
+board: false
+---
+A classical bit is an element of $\{0,1\}$. If we are unsure which, we describe it by a probability vector
+
+$$
+p = \begin{pmatrix} p_0 \\ p_1 \end{pmatrix}, \qquad p_0, p_1 \ge 0, \quad p_0 + p_1 = 1.
+$$
+
+An operation on a random bit is a linear map that sends probability vectors to probability vectors. Applying it to the two basis vectors shows what such a matrix must look like: each column is itself a probability vector. These are the *stochastic matrices*. Two examples are the NOT gate and a noisy channel that flips the bit with probability $\varepsilon$:
+
+$$
+\mathrm{NOT} = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}, \qquad
+N_\varepsilon = \begin{pmatrix} 1-\varepsilon & \varepsilon \\ \varepsilon & 1-\varepsilon \end{pmatrix}.
+$$
+
+So the theory of a random bit is: vectors with non-negative entries and unit $1$-norm, $\lVert p \rVert_1 = \sum_i |p_i| = 1$, acted on by the linear maps that preserve those two properties.
+
+Quantum theory changes two things. The entries become complex numbers, called *amplitudes*, and the norm that is preserved is the Euclidean $2$-norm. The whole lecture follows from that swap:
+
+| | Random bit | Qubit |
+| --- | --- | --- |
+| State | $p \in \mathbb{R}^2$, $p_i \ge 0$, $\lVert p \rVert_1 = 1$ | $\psi \in \mathbb{C}^2$, $\lVert \psi \rVert_2 = 1$ |
+| Operations | stochastic matrices | unitary matrices |
+| Reading it out | look at the bit | measure, with probabilities $\lvert\psi_i\rvert^2$ |

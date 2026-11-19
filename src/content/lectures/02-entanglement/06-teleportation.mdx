@@ -1,0 +1,23 @@
+---
+title: "Teleportation"
+board: false
+---
+import Teleport from '../../../components/Teleport.astro';
+
+Alice has a qubit $M$ in an unknown state $|\psi\rangle = \alpha|0\rangle + \beta|1\rangle$ and wants Bob to have it. She cannot measure it and send the result, and she cannot copy it. But if she and Bob already share a Bell pair, two classical bits are enough.
+
+1. Alice applies CNOT from $M$ to her half $A$ of the pair, then $H$ to $M$.
+2. She measures $M$ and $A$, getting bits $m$ and $a$, and sends them to Bob.
+3. Bob applies $X$ to his qubit if $a = 1$, then $Z$ if $m = 1$.
+
+Why it works is a single identity, obtained by expanding and regrouping:
+
+$$
+|\psi\rangle_M \otimes |\Phi^+\rangle_{AB} = \tfrac12 \sum_{m, a \in \{0,1\}} |\beta_{ma}\rangle_{MA} \otimes X^a Z^m |\psi\rangle_B,
+$$
+
+where the $|\beta_{ma}\rangle$ are the four Bell states. Alice's two gates rotate the Bell basis to the standard basis, so her measurement selects one term, and Bob undoes the leftover $X^a Z^m$.
+
+<Teleport />
+
+Three things are worth noticing. Each of Alice's four outcomes has probability $\tfrac14$ whatever $\alpha$ and $\beta$ are, so her bits reveal nothing about the message. Bob's qubit is useless until the classical bits arrive, so nothing moves faster than light. And Alice's copy is destroyed, so the no-cloning theorem is respected.

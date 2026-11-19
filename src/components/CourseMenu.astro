@@ -1,0 +1,66 @@
+---
+// Left-hand menu of the course pages: every lecture, its sections, and the
+// subsections of the page being read. Pages already opened get a tick.
+import type { Lecture } from '../lib/course';
+
+interface Props {
+  course: Lecture[];
+  lecture: string;                              // slug of the lecture being read
+  section?: string;                             // slug of the section being read, if any
+  subsections?: { slug: string; text: string }[];
+}
+const { course, lecture, section, subsections = [] } = Astro.props;
+---
+<nav class="course-menu" id="course-menu" aria-label="Course contents">
+  <p class="menu-title">Contents</p>
+  {course.map((l) => l.sections.length === 0 ? (
+    <p class="menu-lecture waiting"><span class="n">{l.num}</span><span set:html={l.title} /><small>In preparation</small></p>
+  ) : (
+    <details class="menu-lecture" open={l.slug === lecture}>
+      <summary><span class="n">{l.num}</span><span set:html={l.title} /></summary>
+      <ul>
+        <li><a href={l.href} aria-current={l.slug === lecture && !section ? 'page' : undefined}>Overview</a></li>
+        {l.sections.map((s) => {
+          const here = l.slug === lecture && s.slug === section;
+          return (
+            <li>
+              <a href={s.href} aria-current={here ? 'page' : undefined}>{s.title}</a>
+              {here && subsections.length > 0 && (
+                <ul class="menu-sub">
+                  {subsections.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+                </ul>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </details>
+  ))}
+</nav>
+
+<script>
+  // Remember which pages this visitor has opened and tick them in the menu.
+  const KEY = 'qcw-visited';
+  let seen: string[] = [];
+  try { seen = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { /* storage unavailable */ }
+  const here = location.pathname;
+  if (!seen.includes(here)) {
+    seen.push(here);
+    try { localStorage.setItem(KEY, JSON.stringify(seen)); } catch { /* storage unavailable */ }
+  }
+  document.querySelectorAll<HTMLAnchorElement>('.course-menu details > ul > li > a').forEach((a) => {
+    if (seen.includes(new URL(a.href).pathname)) a.classList.add('seen');
+  });
+
+  // On narrow screens the menu is a drawer opened from the bar above the page.
+  const shell = document.querySelector('.course-shell');
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  toggle?.addEventListener('click', () => {
+    const open = shell!.classList.toggle('menu-open');
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+  document.querySelector('.menu-scrim')?.addEventListener('click', () => {
+    shell!.classList.remove('menu-open');
+    toggle?.setAttribute('aria-expanded', 'false');
+  });
+</script>

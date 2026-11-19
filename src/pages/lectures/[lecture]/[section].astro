@@ -1,0 +1,63 @@
+---
+// One section of a lecture: notes on the left, the simulator beside them.
+import 'katex/dist/katex.min.css';
+import { render } from 'astro:content';
+import Course from '../../../layouts/Course.astro';
+import Board from '../../../components/Board.astro';
+import { getCourse } from '../../../lib/course';
+
+export async function getStaticPaths() {
+  const course = await getCourse();
+  return course.flatMap((l) => l.sections.map((s) => ({
+    params: { lecture: l.slug, section: s.slug },
+    props: { course, lectureSlug: l.slug, sectionSlug: s.slug },
+  })));
+}
+
+const { course, lectureSlug, sectionSlug } = Astro.props;
+const l = course.find((x) => x.slug === lectureSlug)!;
+const i = l.sections.findIndex((s) => s.slug === sectionSlug);
+const s = l.sections[i];
+const { Content, headings } = await render(s.entry);
+const subsections = headings.filter((h) => h.depth === 3).map((h) => ({ slug: h.slug, text: h.text }));
+const showBoard = s.entry.data.board && l.board;
+
+// Where "Back" and "Next" lead: neighbouring sections, then the lecture's opening page or the next lecture.
+const prev = i > 0 ? { href: l.sections[i - 1].href, label: l.sections[i - 1].title } : { href: l.href, label: 'Overview' };
+const nextLecture = course.find((x) => x.num === l.num + 1 && x.sections.length);
+const next = i < l.sections.length - 1
+  ? { href: l.sections[i + 1].href, label: l.sections[i + 1].title }
+  : nextLecture ? { href: nextLecture.href, label: `Lecture ${nextLecture.num}` } : null;
+---
+<Course
+  title={`${s.title} | Lecture ${l.num} | Quantum Computing Workshop`}
+  course={course}
+  lecture={l.slug}
+  section={s.slug}
+  subsections={subsections}
+  crumb={`Lecture ${l.num} · ${s.title}`}
+>
+  <header class="section-head">
+    <p class="kicker">Lecture {l.num} · Section {s.num} of {l.sections.length}</p>
+    <h1>{s.title}</h1>
+  </header>
+
+  <div class:list={['course-body', { 'has-board': showBoard }]}>
+    {showBoard && (
+      <aside class="board-col" aria-label={l.boardLabel}>
+        <Board kind={l.board!} main />
+      </aside>
+    )}
+
+    <article class="notes">
+      <Content />
+
+      <nav class="pager" aria-label="Section">
+        <a class="btn btn-quiet" href={prev.href}><span aria-hidden="true">←</span> {prev.label}</a>
+        {next
+          ? <a class="btn" href={next.href}>{next.label} <span aria-hidden="true">→</span></a>
+          : <span class="pager-end">Lecture {l.num + 1} is in preparation.</span>}
+      </nav>
+    </article>
+  </div>
+</Course>

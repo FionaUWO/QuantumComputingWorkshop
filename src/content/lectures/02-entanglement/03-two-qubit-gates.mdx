@@ -1,0 +1,28 @@
+---
+title: "Two-qubit gates"
+---
+import Try from '../../../components/Try.astro';
+
+Gates are still unitary matrices, now $4 \times 4$. Applying $U$ to qubit $A$ and leaving $B$ alone is the matrix $U \otimes I$; acting on $B$ alone is $I \otimes U$. Such gates never change $|\det M|$ (why?), so they cannot create entanglement.
+
+To entangle we need a gate that is not a tensor product. The standard one is the controlled-NOT, which flips the target qubit when the control is $|1\rangle$:
+
+$$
+\mathrm{CNOT} = \begin{pmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{pmatrix}, \qquad |a, b\rangle \mapsto |a, a \oplus b\rangle.
+$$
+
+On basis states it is a classical reversible gate. Its quantum character appears when the control is in superposition:
+
+$$
+|00\rangle \xrightarrow{\;H \otimes I\;} \tfrac{1}{\sqrt2}\big(|00\rangle + |10\rangle\big) \xrightarrow{\;\mathrm{CNOT}\;} \tfrac{1}{\sqrt2}\big(|00\rangle + |11\rangle\big).
+$$
+
+Single-qubit gates together with CNOT generate every unitary on $n$ qubits. We will use that fact without proof.
+
+<Try runs={[
+  { do: 'reset,CAB', label: 'CNOT on |00⟩' },
+  { do: 'reset,XA,CAB', label: 'CNOT on |10⟩' },
+  { do: 'reset,HA,CAB', label: 'CNOT on |+⟩|0⟩' },
+]}>
+CNOT does nothing interesting to $|00\rangle$, copies a classical bit, and entangles a superposition.
+</Try>

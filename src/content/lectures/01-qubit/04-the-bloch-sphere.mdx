@@ -1,0 +1,111 @@
+---
+title: "The Bloch sphere"
+---
+import Statement from '../../../components/Statement.astro';
+import Example from '../../../components/Example.astro';
+
+### Global phase
+
+For any real $\gamma$ and any basis vector $|b\rangle$,
+
+$$
+\big|\langle b|\,e^{i\gamma}\psi\rangle\big|^2 = |e^{i\gamma}|^2\,|\langle b|\psi\rangle|^2 = |\langle b|\psi\rangle|^2 .
+$$
+
+So $|\psi\rangle$ and $e^{i\gamma}|\psi\rangle$ give identical probabilities for every measurement, and they describe the same physical state. The factor $e^{i\gamma}$ is called a *global phase*. A *relative* phase, as in $|0\rangle + e^{i\varphi}|1\rangle$, is a different matter: the example above shows it changes probabilities.
+
+Count real parameters. $\mathbb{C}^2$ has four; normalisation removes one, leaving the sphere $S^3$; global phase removes another. A qubit state is a point of a two-dimensional space, namely the complex projective line $\mathbb{CP}^1 = S^3/U(1)$, and $\mathbb{CP}^1 \cong S^2$.
+
+### Coordinates
+
+Use the phase freedom to make $\alpha$ real and non-negative. Then $\alpha = \cos\tfrac\theta2$ for a unique $\theta \in [0, \pi]$, and $|\beta| = \sin\tfrac\theta2$, so every state has the form
+
+$$
+\begin{gathered}
+|\psi\rangle = \cos\tfrac{\theta}{2}\,|0\rangle + e^{i\varphi}\sin\tfrac{\theta}{2}\,|1\rangle, \\[0.4em]
+0 \le \theta \le \pi, \quad 0 \le \varphi \lt 2\pi .
+\end{gathered}
+$$
+
+We plot it at the point of the unit sphere with polar angle $\theta$ and azimuth $\varphi$:
+
+$$
+\vec n = (x, y, z) = (\sin\theta\cos\varphi,\; \sin\theta\sin\varphi,\; \cos\theta).
+$$
+
+This is the *Bloch vector* of the state. It can be computed without first fixing the phase, because $2\bar\alpha\beta = \sin\theta\, e^{i\varphi}$ is unchanged when $\alpha$ and $\beta$ are multiplied by the same $e^{i\gamma}$:
+
+$$
+x = 2\operatorname{Re}(\bar\alpha\beta), \quad y = 2\operatorname{Im}(\bar\alpha\beta), \quad z = |\alpha|^2 - |\beta|^2 .
+$$
+
+The map $S^3 \to S^2$, $(\alpha, \beta) \mapsto (x, y, z)$, is the Hopf fibration; its fibres are the circles of global phase.
+
+| State | $\lvert 0\rangle$ | $\lvert 1\rangle$ | $\lvert +\rangle$ | $\lvert -\rangle$ | $\lvert {+i}\rangle$ | $\lvert {-i}\rangle$ |
+| --- | --- | --- | --- | --- | --- | --- |
+| $\vec n$ | $(0,0,1)$ | $(0,0,-1)$ | $(1,0,0)$ | $(-1,0,0)$ | $(0,1,0)$ | $(0,-1,0)$ |
+
+<Example>
+**Example.** For $|\psi\rangle = \tfrac{1}{\sqrt3}\big(|0\rangle + (1+i)|1\rangle\big)$ we have $\bar\alpha\beta = \tfrac{1+i}{3}$, so
+
+$$
+\vec n = \big(\tfrac23,\; \tfrac23,\; -\tfrac13\big), \qquad \lVert\vec n\rVert^2 = \tfrac49 + \tfrac49 + \tfrac19 = 1 .
+$$
+
+The point lies a little below the equator, at azimuth $\varphi = \pi/4$.
+</Example>
+
+### The sphere through the Pauli matrices
+
+The three coordinates are expectation values of the *Pauli matrices*
+
+$$
+X = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}, \quad
+Y = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}, \quad
+Z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix},
+$$
+
+in the sense that $x = \langle\psi|X|\psi\rangle$, $y = \langle\psi|Y|\psi\rangle$ and $z = \langle\psi|Z|\psi\rangle$. Each Pauli matrix is Hermitian with trace zero, and they satisfy
+
+$$
+\begin{gathered}
+X^2 = Y^2 = Z^2 = I, \\[0.5em]
+XY = iZ, \quad YZ = iX, \quad ZX = iY, \\[0.5em]
+\operatorname{tr}(\sigma_j\sigma_k) = 2\delta_{jk},
+\end{gathered}
+$$
+
+writing $(\sigma_1, \sigma_2, \sigma_3) = (X, Y, Z)$. Together with $I$ they form a basis of the $2 \times 2$ Hermitian matrices, and the projector onto a state has a simple expansion in that basis:
+
+$$
+\begin{aligned}
+|\psi\rangle\langle\psi| &= \begin{pmatrix} |\alpha|^2 & \alpha\bar\beta \\ \bar\alpha\beta & |\beta|^2 \end{pmatrix} \\[0.4em]
+&= \tfrac12\big(I + xX + yY + zZ\big) = \tfrac12\big(I + \vec n\cdot\vec\sigma\big).
+\end{aligned}
+$$
+
+Check the entries: the diagonal is $\tfrac12(1 \pm z)$ and the lower-left corner is $\tfrac12(x + iy) = \bar\alpha\beta$.
+
+<Statement>
+**Proposition.** If $|\phi\rangle$ and $|\psi\rangle$ have Bloch vectors $\vec m$ and $\vec n$, then
+
+$$
+|\langle\phi|\psi\rangle|^2 = \frac{1 + \vec m\cdot\vec n}{2} .
+$$
+</Statement>
+
+*Proof.* Write $P_\phi = |\phi\rangle\langle\phi|$ and $P_\psi = |\psi\rangle\langle\psi|$. Then $\operatorname{tr}(P_\phi P_\psi) = \langle\phi|\psi\rangle\langle\psi|\phi\rangle = |\langle\phi|\psi\rangle|^2$. Expanding both projectors and using $\operatorname{tr} I = 2$, $\operatorname{tr}\sigma_j = 0$ and $\operatorname{tr}(\sigma_j\sigma_k) = 2\delta_{jk}$,
+
+$$
+\begin{aligned}
+\operatorname{tr}(P_\phi P_\psi) &= \tfrac14 \operatorname{tr}\big[(I + \vec m\cdot\vec\sigma)(I + \vec n\cdot\vec\sigma)\big] \\[0.4em]
+&= \tfrac14\big(2 + 2\,\vec m\cdot\vec n\big). \qquad\blacksquare
+\end{aligned}
+$$
+
+The proposition turns statements about $\mathbb{C}^2$ into geometry on the sphere:
+
+- **Orthogonal states are antipodal points**, not perpendicular ones: $\langle\phi|\psi\rangle = 0$ exactly when $\vec m\cdot\vec n = -1$. That is the price of the half-angle $\theta/2$. Each orthonormal basis is a diameter of the sphere.
+- **A measurement is a choice of axis.** Measuring in the basis with Bloch vectors $\pm\vec m$ gives the outcome $+\vec m$ with probability $\tfrac12(1 + \vec m\cdot\vec n)$, which depends only on the angle between the state and the axis.
+- For the standard basis $\vec m = (0,0,1)$, so $P(0) = \tfrac{1+z}{2} = \cos^2\tfrac\theta2$: the height of the point is the measurement statistics.
+- The $x$-axis is the $\{|+\rangle, |-\rangle\}$ measurement. For the running example $P(+) = \tfrac12\big(1 + \tfrac23\big) = \tfrac56$, as computed earlier.

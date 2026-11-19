@@ -1,0 +1,64 @@
+---
+title: "States"
+---
+import Statement from '../../../components/Statement.astro';
+import Example from '../../../components/Example.astro';
+
+<Statement>
+**Definition.** A state of a qubit is a unit vector in $\mathbb{C}^2$:
+
+$$
+|\psi\rangle = \begin{pmatrix} \alpha \\ \beta \end{pmatrix}, \qquad \alpha, \beta \in \mathbb{C}, \quad |\alpha|^2 + |\beta|^2 = 1.
+$$
+</Statement>
+
+The symbol $|\psi\rangle$ is read "ket psi" and simply means a column vector. The standard basis vectors get the names
+
+$$
+|0\rangle = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \qquad |1\rangle = \begin{pmatrix} 0 \\ 1 \end{pmatrix},
+$$
+
+so every state can be written $|\psi\rangle = \alpha|0\rangle + \beta|1\rangle$. A state with both amplitudes non-zero is called a *superposition* of $|0\rangle$ and $|1\rangle$.
+
+### Inner products
+
+The "bra" $\langle\psi|$ is the conjugate transpose of $|\psi\rangle$, a row vector: $\langle\psi| = (\bar\alpha \;\; \bar\beta)$. A bra times a ket is the Hermitian inner product on $\mathbb{C}^2$. For $|\phi\rangle = \gamma|0\rangle + \delta|1\rangle$,
+
+$$
+\begin{gathered}
+\langle\phi|\psi\rangle = \bar\gamma\,\alpha + \bar\delta\,\beta, \qquad
+\langle\psi|\phi\rangle = \overline{\langle\phi|\psi\rangle}, \\[0.5em]
+\langle\psi|\psi\rangle = |\alpha|^2 + |\beta|^2 = \lVert\psi\rVert^2 .
+\end{gathered}
+$$
+
+It is linear in the ket and conjugate-linear in the bra. The normalisation condition reads $\langle\psi|\psi\rangle = 1$, and two states are *orthogonal* when $\langle\phi|\psi\rangle = 0$.
+
+<Example>
+**Example.** The vector $(1,\; 1+i)$ has squared norm $|1|^2 + |1+i|^2 = 1 + 2 = 3$, so
+
+$$
+|\psi\rangle = \tfrac{1}{\sqrt3}\,|0\rangle + \tfrac{1+i}{\sqrt3}\,|1\rangle
+$$
+
+is a state. We will carry it through the lecture. Since $1 + i = \sqrt2\,e^{i\pi/4}$, its amplitudes have moduli $\tfrac{1}{\sqrt3}$ and $\sqrt{\tfrac23}$, and the second is rotated by $\pi/4$ relative to the first.
+</Example>
+
+### Other bases
+
+Four superpositions come up constantly:
+
+$$
+|\pm\rangle = \tfrac{1}{\sqrt2}\big(|0\rangle \pm |1\rangle\big), \qquad |{\pm i}\rangle = \tfrac{1}{\sqrt2}\big(|0\rangle \pm i|1\rangle\big).
+$$
+
+A direct computation gives $\langle +|-\rangle = \tfrac12(1 - 1) = 0$ and $\langle +|+\rangle = \langle -|-\rangle = 1$, so $\{|+\rangle, |-\rangle\}$ is an orthonormal basis of $\mathbb{C}^2$, just as good as the standard one. The same holds for $\{|{+i}\rangle, |{-i}\rangle\}$. In any orthonormal basis $\{|b_0\rangle, |b_1\rangle\}$ the coordinates of a state are inner products:
+
+$$
+\begin{gathered}
+|\psi\rangle = \langle b_0|\psi\rangle\,|b_0\rangle + \langle b_1|\psi\rangle\,|b_1\rangle, \\[0.5em]
+|\langle b_0|\psi\rangle|^2 + |\langle b_1|\psi\rangle|^2 = 1 .
+\end{gathered}
+$$
+
+The second identity is Parseval's: the norm of a vector does not depend on the orthonormal basis used to compute it.

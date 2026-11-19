@@ -1,0 +1,28 @@
+---
+title: "Measuring one qubit"
+---
+import Try from '../../../components/Try.astro';
+
+Measuring only qubit $A$ gives outcome $0$ with probability $|a_{00}|^2 + |a_{01}|^2$, the total weight of the basis states that agree with it. The state then collapses onto those terms and is rescaled to unit length:
+
+$$
+|\psi\rangle \;\longmapsto\; |0\rangle \otimes \frac{a_{00}|0\rangle + a_{01}|1\rangle}{\sqrt{|a_{00}|^2 + |a_{01}|^2}}.
+$$
+
+In terms of $M$: the outcome picks a row, and that row, normalised, is the new state of $B$.
+
+For the Bell state each row has a single non-zero entry. Alice's result is a fair coin, and Bob's qubit is then certain to give the same value, however far away it is. Nothing travels: Bob sees a fair coin too, and only by comparing notes do they discover the agreement.
+
+<Try runs={[
+  { do: 'reset,HA,CAB,MA', label: 'Bell pair, then measure A' },
+  { do: 'reset,HA,CAB,sample', label: 'Bell pair, measure both, 100 copies' },
+]}>
+Measure $A$ on a Bell pair and watch what happens to $B$. Then look at the statistics over a hundred pairs.
+</Try>
+
+Two people who share a classical coin flip would see the same agreement, so this alone proves nothing. The difference shows when both rotate before measuring. Because $(H \otimes H)|\Phi^+\rangle = |\Phi^+\rangle$, the results still always agree, although each side is now asking a different question. No shared coin can answer every such pair of questions consistently; that is the content of Bell's theorem, which we state but do not prove.
+
+<Try runs={[
+  { do: 'reset,HA,CAB,HA,HB,sample', label: 'Bell pair, H on both, measure 100 copies' },
+  { do: 'reset,HA,CAB,HA,sample', label: 'Bell pair, H on A only, measure 100 copies' },
+]} />

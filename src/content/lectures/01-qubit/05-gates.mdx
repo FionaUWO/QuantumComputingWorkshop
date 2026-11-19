@@ -1,0 +1,76 @@
+---
+title: "Gates"
+---
+import Statement from '../../../components/Statement.astro';
+import Try from '../../../components/Try.astro';
+
+An operation on a qubit must be linear, and it must send unit vectors to unit vectors.
+
+<Statement>
+**Proposition.** A linear map $U$ on $\mathbb{C}^n$ satisfies $\lVert U\psi\rVert = \lVert\psi\rVert$ for every $\psi$ if and only if $U^\dagger U = I$. Such matrices are called *unitary*.
+</Statement>
+
+*Proof.* We have $\lVert U\psi\rVert^2 = \langle\psi|U^\dagger U|\psi\rangle$, so if $U^\dagger U = I$ the norm is preserved. Conversely, put $A = U^\dagger U - I$. Then $A$ is Hermitian and $\langle\psi|A|\psi\rangle = 0$ for all $\psi$. Taking $\psi$ to be an eigenvector shows every eigenvalue of $A$ is zero, and a Hermitian matrix with only zero eigenvalues is zero. $\qquad\blacksquare$
+
+Equivalently, the columns of $U$ form an orthonormal basis, and $U$ preserves all inner products: $\langle U\phi|U\psi\rangle = \langle\phi|\psi\rangle$. Every unitary is invertible, with $U^{-1} = U^\dagger$, so quantum gates never lose information; only measurement does. Compare the noisy channel $N_{1/2}$ of the first section, which sends every probability vector to $(\tfrac12, \tfrac12)$ and cannot be undone.
+
+| Gate | Matrix | On the sphere |
+| --- | --- | --- |
+| $X$ | $\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$ | half turn about the $x$-axis |
+| $Y$ | $\begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}$ | half turn about the $y$-axis |
+| $Z$ | $\begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}$ | half turn about the $z$-axis |
+| $H$ | $\tfrac{1}{\sqrt2}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}$ | half turn about the axis midway between $x$ and $z$ |
+| $S$ | $\begin{pmatrix} 1 & 0 \\ 0 & i \end{pmatrix}$ | quarter turn about the $z$-axis |
+| $T$ | $\begin{pmatrix} 1 & 0 \\ 0 & e^{i\pi/4} \end{pmatrix}$ | eighth turn about the $z$-axis |
+
+The Hadamard gate $H$ is the change of basis between $\{|0\rangle, |1\rangle\}$ and $\{|+\rangle, |-\rangle\}$: its columns are $|+\rangle$ and $|-\rangle$, so $H|0\rangle = |+\rangle$, $H|1\rangle = |-\rangle$, and $H^2 = I$ sends them back. Conjugating by $H$ therefore exchanges the roles of the $x$- and $z$-axes:
+
+$$
+\begin{aligned}
+HZH &= \tfrac12 \begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}\begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix} \\[0.4em]
+&= \tfrac12 \begin{pmatrix} 1 & -1 \\ 1 & 1 \end{pmatrix}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}
+= \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix} = X .
+\end{aligned}
+$$
+
+<Try runs={[
+  { do: 'reset,X', label: 'Apply X to |0⟩' },
+  { do: 'reset,H,Z,H', label: 'Apply H, Z, H to |0⟩' },
+  { do: 'reset,H,T,T', label: 'Apply H, T, T to |0⟩' },
+]}>
+$X$ is the classical NOT: it swaps $|0\rangle$ and $|1\rangle$. $Z$ does nothing visible to $|0\rangle$, but conjugating it by $H$ turns it into $X$. Watch the path the state traces.
+</Try>
+
+### Every gate is a rotation
+
+The third column of the table is no accident. Let $\hat n$ be a unit vector in $\mathbb{R}^3$. The relations between the Pauli matrices give $(\hat n\cdot\vec\sigma)^2 = I$, so the exponential series splits into even and odd powers exactly as it does for $e^{i\theta}$:
+
+$$
+R_{\hat n}(\theta) := e^{-i\theta\,\hat n\cdot\vec\sigma/2} = \cos\tfrac\theta2\, I - i\sin\tfrac\theta2\,(\hat n\cdot\vec\sigma).
+$$
+
+<Statement>
+**Theorem.** $R_{\hat n}(\theta)$ is unitary with determinant $1$, and it moves the Bloch vector of every state by a rotation through the angle $\theta$ about the axis $\hat n$. Every $2 \times 2$ unitary has the form $e^{i\delta} R_{\hat n}(\theta)$.
+</Statement>
+
+We check one case and leave the general statement to the exercises. About the $z$-axis,
+
+$$
+\begin{gathered}
+R_z(\theta) = \begin{pmatrix} e^{-i\theta/2} & 0 \\ 0 & e^{i\theta/2} \end{pmatrix}, \\[0.6em]
+R_z(\theta)\begin{pmatrix} \cos\tfrac{\vartheta}{2} \\ e^{i\varphi}\sin\tfrac{\vartheta}{2} \end{pmatrix}
+= e^{-i\theta/2}\begin{pmatrix} \cos\tfrac{\vartheta}{2} \\ e^{i(\varphi+\theta)}\sin\tfrac{\vartheta}{2} \end{pmatrix},
+\end{gathered}
+$$
+
+which, after discarding the global phase, is the same polar angle with azimuth $\varphi + \theta$. The gates in the table are rotations up to a global phase:
+
+$$
+\begin{gathered}
+X = i\,R_x(\pi), \qquad Z = i\,R_z(\pi), \\[0.5em]
+H = i\,R_{\hat h}(\pi) \;\text{ with }\; \hat h = \tfrac{1}{\sqrt2}(\hat x + \hat z), \\[0.5em]
+S = e^{i\pi/4} R_z\big(\tfrac\pi2\big), \qquad T = e^{i\pi/8} R_z\big(\tfrac\pi4\big).
+\end{gathered}
+$$
+
+In the language of groups: the matrices $R_{\hat n}(\theta)$ make up $SU(2)$, and the theorem describes a surjective homomorphism $SU(2) \to SO(3)$. It is two-to-one, since $R_{\hat n}(2\pi) = -I$: a full turn of the sphere is the identity rotation but the matrix $-I$, which differs from $I$ by a global phase only. Topologically $SU(2) \cong S^3$ is the double cover of $SO(3)$.
