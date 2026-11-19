@@ -39,7 +39,7 @@ const next = i < l.sections.length - 1
 >
   <header class="section-head">
     <p class="kicker">Lecture {l.num} · Section {s.num} of {l.sections.length}</p>
-    <h1>{s.title}</h1>
+    <h1><span class="sec-num">{l.num}.{s.num}</span> {s.title}</h1>
     {l.draft && <p class="draft-note">First draft. These notes have not been reviewed yet and may contain errors.</p>}
   </header>
 
@@ -50,7 +50,8 @@ const next = i < l.sections.length - 1
       </aside>
     )}
 
-    <article class="notes">
+    {/* --sec feeds the CSS counters that number the subsections (1.1.1, 1.1.2, ...). */}
+    <article class="notes" style={`--sec: "${l.num}.${s.num}"`}>
       <Content />
 
       <nav class="pager" aria-label="Section">

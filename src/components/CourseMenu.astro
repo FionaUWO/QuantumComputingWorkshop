@@ -24,10 +24,10 @@ const { course, lecture, section, subsections = [] } = Astro.props;
           const here = l.slug === lecture && s.slug === section;
           return (
             <li>
-              <a href={s.href} aria-current={here ? 'page' : undefined}>{s.title}</a>
+              <a href={s.href} aria-current={here ? 'page' : undefined}><span class="num">{l.num}.{s.num}</span> {s.title}</a>
               {here && subsections.length > 0 && (
                 <ul class="menu-sub">
-                  {subsections.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+                  {subsections.map((h, k) => <li><a href={`#${h.slug}`}><span class="num">{l.num}.{s.num}.{k + 1}</span> {h.text}</a></li>)}
                 </ul>
               )}
             </li>

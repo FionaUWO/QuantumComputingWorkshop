@@ -36,7 +36,7 @@ whose dimension is the number of orbits of $\Gamma$ acting on the bit strings $\
 *Proof.* The starting state is invariant, and each layer commutes with every $P_\sigma$, so it maps invariant vectors to invariant vectors. A basis of $\mathcal{H}^\Gamma$ is given by the uniform superpositions over the orbits. $\qquad\blacksquare$
 
 <Example>
-**Example.** For the complete graph $K_n$ every permutation is an automorphism. The orbits of $S_n$ on bit strings are the sets of strings with a given number of ones, so $\dim\mathcal{H}^\Gamma = n + 1$ instead of $2^n$. The whole QAOA evolution takes place in a space that $\lceil\log_2(n+1)\rceil$ qubits can hold.
+For the complete graph $K_n$ every permutation is an automorphism. The orbits of $S_n$ on bit strings are the sets of strings with a given number of ones, so $\dim\mathcal{H}^\Gamma = n + 1$ instead of $2^n$. The whole QAOA evolution takes place in a space that $\lceil\log_2(n+1)\rceil$ qubits can hold.
 </Example>
 
 The bit-flip symmetry $X^{\otimes n}$ of MaxCut halves the dimension again. When the invariant subspace is small, one can represent it directly on a smaller register and run the same optimisation there. Making that mapping explicit and efficient is the idea behind the lab's qubit-efficient QAOA.

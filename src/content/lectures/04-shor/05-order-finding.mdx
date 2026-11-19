@@ -40,7 +40,7 @@ The measurement gives a number $\tilde\varphi$ with $t$ binary digits, close to 
 Since $r \le N$, taking $t = 2L + 1$ digits of accuracy meets the hypothesis. The convergents are computed by the Euclidean algorithm in $O(L^3)$ steps. If $s$ and $r$ happen to share a factor we obtain a divisor of $r$ instead; repeating a few times and taking a least common multiple fixes that.
 
 <Example>
-**Example.** Let $N = 15$ and $x = 7$, with $t = 11$ control qubits, so outcomes lie in $0, \dots, 2047$. Suppose the measurement gives $1536$. Then $\tilde\varphi = 1536/2048 = 3/4$, whose continued fraction is $[0; 1, 3]$ with convergents $1$ and $3/4$. The candidate $r = 4$ checks out: $7^4 = 2401 \equiv 1 \pmod{15}$.
+Let $N = 15$ and $x = 7$, with $t = 11$ control qubits, so outcomes lie in $0, \dots, 2047$. Suppose the measurement gives $1536$. Then $\tilde\varphi = 1536/2048 = 3/4$, whose continued fraction is $[0; 1, 3]$ with convergents $1$ and $3/4$. The candidate $r = 4$ checks out: $7^4 = 2401 \equiv 1 \pmod{15}$.
 </Example>
 
 <p class="reading">Reading: Nielsen and Chuang, Section 5.3.1 and Box 5.3.</p>

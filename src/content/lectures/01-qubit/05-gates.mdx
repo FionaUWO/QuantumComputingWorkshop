@@ -14,7 +14,7 @@ An operation on a qubit must be linear, and it must send unit vectors to unit ve
 
 *Proof.* We have $\lVert U\psi\rVert^2 = \langle\psi|U^\dagger U|\psi\rangle$, so if $U^\dagger U = I$ the norm is preserved. Conversely, put $A = U^\dagger U - I$. Then $A$ is Hermitian and $\langle\psi|A|\psi\rangle = 0$ for all $\psi$. Taking $\psi$ to be an eigenvector shows every eigenvalue of $A$ is zero, and a Hermitian matrix with only zero eigenvalues is zero. $\qquad\blacksquare$
 
-Equivalently, the columns of $U$ form an orthonormal basis, and $U$ preserves all inner products: $\langle U\phi|U\psi\rangle = \langle\phi|\psi\rangle$. Every unitary is invertible, with $U^{-1} = U^\dagger$, so quantum gates never lose information; only measurement does. Compare the noisy channel $N_{1/2}$ of the first section, which sends every probability vector to $(\tfrac12, \tfrac12)$ and cannot be undone.
+Equivalently, the columns of $U$ form an orthonormal basis, and $U$ preserves all inner products: $\langle U\phi|U\psi\rangle = \langle\phi|\psi\rangle$. Every unitary is invertible, with $U^{-1} = U^\dagger$, so quantum gates never lose information; only measurement does. Compare the noisy channel $N_{1/2}$ of Section 1.1, which sends every probability vector to $(\tfrac12, \tfrac12)$ and cannot be undone.
 
 | Gate | Matrix | On the sphere |
 | --- | --- | --- |

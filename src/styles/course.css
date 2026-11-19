@@ -71,8 +71,13 @@ p.menu-lecture.waiting small { grid-column: 2; font-size: 0.78rem; }
 .lecture-open h2 { font-size: 1.5rem; margin-top: 3rem; }
 .section-list { list-style: none; counter-reset: sec; padding: 0; margin: 1rem 0 0; border-top: 1px solid var(--lavender-2); }
 .section-list li { counter-increment: sec; border-bottom: 1px solid var(--lavender-2); }
-.section-list a { display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); padding: 0.85rem 0.4rem; text-decoration: none; color: var(--ink); font-weight: 500; }
-.section-list a::before { content: counter(sec); color: var(--purple); font-weight: 600; font-variant-numeric: lining-nums; }
+.section-list a { display: grid; grid-template-columns: 2.8rem minmax(0, 1fr); padding: 0.85rem 0.4rem; text-decoration: none; color: var(--ink); font-weight: 500; }
+.section-list a::before { content: var(--lec, "") "." counter(sec); color: var(--purple); font-weight: 600; font-variant-numeric: lining-nums; }
+/* Section and subsection numbers: 1.1 on the page title and in the menu, 1.1.1 on subsections. */
+.section-head .sec-num { color: var(--purple); font-variant-numeric: lining-nums; margin-right: 0.15em; }
+.course-menu li a .num { font-variant-numeric: lining-nums tabular-nums; margin-right: 0.3em; }
+.notes h3 { counter-increment: sub; }
+.notes h3::before { content: var(--sec, "") "." counter(sub) "\2002"; color: var(--purple); font-variant-numeric: lining-nums; }
 .section-list a:hover { background: var(--soft); color: var(--purple); }
 
 /* The site header spans the full width here so its logo lines up with the menu. */

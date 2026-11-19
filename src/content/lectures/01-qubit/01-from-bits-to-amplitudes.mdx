@@ -2,6 +2,7 @@
 title: "From bits to amplitudes"
 ---
 import Try from '../../../components/Try.astro';
+import Example from '../../../components/Example.astro';
 
 Flip a fair coin and you get a random bit. Flip it again and you still have a random bit. No amount of further flipping makes the outcome any easier to predict.
 
@@ -18,39 +19,154 @@ Where did the randomness go? This lecture is the answer, and it takes six sectio
 
 ### A random bit
 
-A classical bit is an element of $\{0,1\}$. If we are unsure which, we describe it by a probability vector
+A classical bit is either $0$ or $1$. If we are unsure which, we describe it by two numbers: the probability $p_0$ that it is $0$ and the probability $p_1$ that it is $1$. Written as a column they form a *probability vector*
 
 $$
 p = \begin{pmatrix} p_0 \\ p_1 \end{pmatrix}, \qquad p_0, p_1 \ge 0, \quad p_0 + p_1 = 1.
 $$
 
-An operation on a random bit is a linear map that sends probability vectors to probability vectors. Applying it to the two basis vectors shows what such a matrix must look like: each column is itself a probability vector. These are the *stochastic matrices*. Two examples are the NOT gate and a noisy channel that flips the bit with probability $\varepsilon$:
+Two of these vectors describe a bit we are sure about, and we give them names:
+
+$$
+e_0 = \begin{pmatrix} 1 \\ 0 \end{pmatrix} \;\text{ (certainly 0)}, \qquad
+e_1 = \begin{pmatrix} 0 \\ 1 \end{pmatrix} \;\text{ (certainly 1)}.
+$$
+
+Every probability vector is a mixture of the two, $p = p_0\,e_0 + p_1\,e_1$. A fair coin, for instance, is $\tfrac12 e_0 + \tfrac12 e_1$.
+
+<Example>
+A bit that is $0$ seven times in ten is
+
+$$
+p = \begin{pmatrix} 0.7 \\ 0.3 \end{pmatrix} = 0.7\,e_0 + 0.3\,e_1 .
+$$
+
+Both entries are non-negative and $0.7 + 0.3 = 1$. By contrast $(0.7,\ 0.5)$ is not a probability vector, because its entries sum to $1.2$, and neither is $(1.2,\ -0.2)$, because a probability cannot be negative.
+</Example>
+
+### Operations on a random bit
+
+An operation on a random bit is a $2 \times 2$ matrix $M$ that sends probability vectors to probability vectors. Read such a matrix one column at a time:
+
+- The **first column** is $M e_0$: what the operation does to a bit that is certainly $0$.
+- The **second column** is $M e_1$: what it does to a bit that is certainly $1$.
+- Within a column, the top entry is the probability that the output is $0$ and the bottom entry the probability that it is $1$.
+
+So each column is itself a probability vector: its entries are non-negative and sum to $1$. Matrices of this kind are called *stochastic matrices*.
+
+The NOT gate flips the bit. An input $0$ certainly becomes $1$, so the first column is $(0, 1)$. An input $1$ certainly becomes $0$, so the second column is $(1, 0)$.
+
+<Example>
+Apply NOT to the bit that is $0$ seven times in ten:
+
+$$
+\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}\begin{pmatrix} 0.7 \\ 0.3 \end{pmatrix} = \begin{pmatrix} 0.3 \\ 0.7 \end{pmatrix}.
+$$
+
+The two probabilities trade places: the bit is now $1$ seven times in ten.
+</Example>
+
+A noisy channel $N_\varepsilon$ flips the bit with probability $\varepsilon$ and leaves it alone otherwise. Here $\varepsilon$ is the Greek letter epsilon, a number between $0$ and $1$ that is usually small. An input $0$ stays $0$ with probability $1 - \varepsilon$ and becomes $1$ with probability $\varepsilon$, so the first column is $(1-\varepsilon,\ \varepsilon)$. The second column follows in the same way. Side by side:
 
 $$
 \mathrm{NOT} = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}, \qquad
 N_\varepsilon = \begin{pmatrix} 1-\varepsilon & \varepsilon \\ \varepsilon & 1-\varepsilon \end{pmatrix}.
 $$
 
-So the theory of a random bit is: vectors with non-negative entries and unit $1$-norm, $\lVert p \rVert_1 = \sum_i |p_i| = 1$, acted on by the linear maps that preserve those two properties.
-
-No such map can play the part of $H$. Suppose a stochastic matrix $M$ turns the bit $0$ into a fair coin, $M e_0 = \tfrac12 e_0 + \tfrac12 e_1$. Applying it again,
+<Example>
+Take $\varepsilon = 0.1$, a channel that gets one bit in ten wrong, and send through it a bit that is $0$ with probability $0.7$:
 
 $$
-M^2 e_0 = \tfrac12\, M e_0 + \tfrac12\, M e_1 = \begin{pmatrix} \tfrac14 \\[0.2em] \tfrac14 \end{pmatrix} + \tfrac12\, M e_1 .
+N_{0.1}\begin{pmatrix} 0.7 \\ 0.3 \end{pmatrix}
+= \begin{pmatrix} 0.9 \times 0.7 + 0.1 \times 0.3 \\ 0.1 \times 0.7 + 0.9 \times 0.3 \end{pmatrix}
+= \begin{pmatrix} 0.66 \\ 0.34 \end{pmatrix}.
 $$
 
-The entries of $M e_1$ are non-negative, so outcome $1$ keeps probability at least $\tfrac14$. Certainty does not come back, because nothing in a probability vector can cancel.
+The top entry adds up the two ways of ending at $0$: start at $0$ and not be flipped, or start at $1$ and be flipped. The result is again a probability vector.
+</Example>
+
+<Example>
+"Throw the bit away and flip a fair coin" is also an operation. Whatever the input, the output is $0$ or $1$ with probability $\tfrac12$ each, so both columns are $(\tfrac12, \tfrac12)$:
+
+$$
+F = \begin{pmatrix} \tfrac12 & \tfrac12 \\[0.2em] \tfrac12 & \tfrac12 \end{pmatrix}, \qquad
+F\begin{pmatrix} 0.7 \\ 0.3 \end{pmatrix} = \begin{pmatrix} 0.35 + 0.15 \\ 0.35 + 0.15 \end{pmatrix} = \begin{pmatrix} 0.5 \\ 0.5 \end{pmatrix}.
+$$
+
+Applying $F$ to the result changes nothing: a fair coin flipped again is still a fair coin. This is the first sentence of the lecture written as a matrix.
+</Example>
+
+### Why no coin can do what H does
+
+Suppose some stochastic matrix $M$ turns a bit that is certainly $0$ into a fair coin:
+
+$$
+M e_0 = \begin{pmatrix} \tfrac12 \\[0.2em] \tfrac12 \end{pmatrix} = \tfrac12 e_0 + \tfrac12 e_1 .
+$$
+
+Apply $M$ a second time. The bit is now $0$ half the time and $1$ half the time, and $M$ acts on each case separately:
+
+$$
+M^2 e_0 = M\big(\tfrac12 e_0 + \tfrac12 e_1\big) = \tfrac12\, M e_0 + \tfrac12\, M e_1 .
+$$
+
+The first term we know: $\tfrac12\, M e_0$ is half of a fair coin, the vector $(\tfrac14, \tfrac14)$. The second term we do not know, but $M e_1$ is a probability vector, so its entries cannot be negative. Therefore
+
+$$
+M^2 e_0 = \begin{pmatrix} \tfrac14 \\[0.2em] \tfrac14 \end{pmatrix} + \tfrac12\, M e_1
+\qquad\text{has bottom entry at least } \tfrac14 .
+$$
+
+The bottom entry is the probability of outcome $1$. In words: half the time the bit is $0$ before the second step, and from there it lands on $1$ half the time. Whatever $M$ does in the other case can only add to that quarter. Certainty does not come back, because probabilities add and never cancel.
 
 ### Two changes
 
-Quantum theory changes two things. The entries become complex numbers, called *amplitudes*, and the norm that is preserved is the Euclidean $2$-norm. The whole lecture follows from that swap:
+Quantum theory keeps the same picture, a column of two numbers acted on by matrices. It changes two rules.
+
+**The entries may be negative, or complex.** They are no longer probabilities. They are called *amplitudes*, and an amplitude can be any complex number. For example $\tfrac12,\ -\tfrac12$ and $\tfrac{i}{2}$ are all allowed.
+
+**The squares must total one.** The entries of a probability vector sum to one. For a vector of amplitudes $\psi = (\psi_0, \psi_1)$ it is the squared sizes that sum to one:
+
+$$
+|\psi_0|^2 + |\psi_1|^2 = 1 .
+$$
+
+Here $|\psi_i|$ is the absolute value of a real number, or the modulus of a complex one. In geometric terms the vector has length $1$.
+
+<Example>
+The fair coin is the probability vector $(\tfrac12, \tfrac12)$, because its entries sum to one. Two vectors of amplitudes with entries of equal size are
+
+$$
+\begin{pmatrix} \tfrac{1}{\sqrt2} \\[0.3em] \tfrac{1}{\sqrt2} \end{pmatrix}
+\qquad\text{and}\qquad
+\begin{pmatrix} \tfrac{1}{\sqrt2} \\[0.3em] -\tfrac{1}{\sqrt2} \end{pmatrix},
+$$
+
+both allowed because $\big(\tfrac{1}{\sqrt2}\big)^2 + \big(\pm\tfrac{1}{\sqrt2}\big)^2 = \tfrac12 + \tfrac12 = 1$. The second has no counterpart among probability vectors.
+</Example>
+
+<Example>
+Three quick checks of the rule.
+
+- $(\tfrac35,\ \tfrac45)$ is allowed: $\tfrac{9}{25} + \tfrac{16}{25} = 1$. So is $(\tfrac35,\ -\tfrac45)$, since squaring removes the sign.
+- $(\tfrac12,\ \tfrac12)$ is a probability vector but not a vector of amplitudes: $\tfrac14 + \tfrac14 = \tfrac12$, not $1$.
+- $(\tfrac{1}{\sqrt2},\ \tfrac{i}{\sqrt2})$ is allowed. The modulus of $\tfrac{i}{\sqrt2}$ is $\tfrac{1}{\sqrt2}$, so the squared sizes are again $\tfrac12 + \tfrac12$.
+</Example>
+
+Amplitudes are connected to what we observe by one more rule: the squared size of each amplitude is the probability of that outcome. Both vectors in the example give probabilities $\tfrac12$ and $\tfrac12$, so each looks exactly like a fair coin when measured. That is the first button. Likewise $(\tfrac35, \tfrac45)$ and $(\tfrac35, -\tfrac45)$ both give outcome $0$ with probability $0.36$ and outcome $1$ with probability $0.64$. The vectors in each pair are still different, and the minus sign that separates them is what the second button uses.
+
+Side by side:
 
 | | Random bit | Qubit |
 | --- | --- | --- |
-| State | $p \in \mathbb{R}^2$, $p_i \ge 0$, $\lVert p \rVert_1 = 1$ | $\psi \in \mathbb{C}^2$, $\lVert \psi \rVert_2 = 1$ |
-| Operations | stochastic matrices | unitary matrices |
-| Reading it out | look at the bit | measure, with probabilities $\lvert\psi_i\rvert^2$ |
+| State | two probabilities: non-negative, summing to $1$ | two amplitudes: complex, squared sizes summing to $1$ |
+| Reading it out | look at the bit | measure; outcome $i$ has probability $\lvert\psi_i\rvert^2$ |
+| Operations | stochastic matrices, which keep the sum equal to $1$ | *unitary* matrices, which keep the length equal to $1$ |
 
-The first change is the one that matters for the two buttons above: an amplitude can be negative, and a negative number can cancel a positive one. The next four sections set up what we need to follow that cancellation, namely states, measurement, a picture of a qubit, and gates. Section 6 then returns to the experiment.
+Sections 1.2, 1.3 and 1.5 take up the three rows in turn.
+
+Mathematicians have names for the two ways of totalling. The sum of absolute values $|p_0| + |p_1|$ is the *$1$-norm* of a vector and the length $\sqrt{|\psi_0|^2 + |\psi_1|^2}$ is its *$2$-norm*. In that language the whole change is small: complex entries are allowed, and one norm is swapped for the other.
+
+The first change is the one that matters for the two buttons: an amplitude can be negative, and a negative number can cancel a positive one. The next four sections set up what we need to follow that cancellation, namely states, measurement, a picture of a qubit, and gates. Section 1.6 then returns to the experiment.
 
 <p class="reading">Reading: Nielsen and Chuang, Section 1.2.</p>

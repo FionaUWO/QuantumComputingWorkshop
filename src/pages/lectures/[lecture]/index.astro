@@ -27,7 +27,7 @@ const l = course.find((x) => x.slug === slug)!;
     {l.draft && <p class="draft-note">First draft. These notes have not been reviewed yet and may contain errors.</p>}
 
     <h2>In this lecture</h2>
-    <ol class="section-list">
+    <ol class="section-list" style={`--lec: "${l.num}"`}>
       {l.sections.map((s) => <li><a href={s.href}>{s.title}</a></li>)}
     </ol>
   </div>
