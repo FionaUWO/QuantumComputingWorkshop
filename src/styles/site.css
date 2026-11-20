@@ -364,6 +364,10 @@ p { margin: 1rem 0 0; }
 .lab-photos > div:hover img { transform: scale(1.05); }
 .lab-photos { aspect-ratio: 16 / 10; }
 .research { margin-top: 2.5rem; background: var(--soft); padding: clamp(1.2rem, 2.5vw, 2rem); }
+.research .actions { display: flex; flex-wrap: wrap; gap: 0.4rem 1.6rem; margin-top: 0.9rem; }
+/* "About us" follows the lecture list on the same white ground, so a rule marks where it starts. */
+.section.about { border-top: 1px solid var(--lavender-2); }
+.lab-copy .lab-name { font-size: clamp(1.5rem, 2.6vw, 2rem); line-height: 1.15; color: var(--purple); margin-bottom: 0.9rem; }
 
 .contact { padding: clamp(3rem, 5.5vw, 5rem) 0; }
 .contact .lede { margin-top: 1rem; }
