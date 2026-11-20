@@ -112,7 +112,12 @@
   const revealVisible = () => {
     const limit = window.innerHeight * 0.92;
     waiting = waiting.filter((g) => {
-      if (still || g.getBoundingClientRect().top < limit) { g.classList.add('in'); return false; }
+      if (still || g.getBoundingClientRect().top < limit) {
+        g.classList.add('in');
+        // After the slide-in (0.7 s plus 80 ms per child) hand each child back its own transitions.
+        setTimeout(() => g.classList.add('done'), still ? 0 : 800 + g.children.length * 80);
+        return false;
+      }
       return true;
     });
     if (!waiting.length) { removeEventListener('scroll', revealVisible); removeEventListener('resize', revealVisible); }
