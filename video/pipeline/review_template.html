@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>审片</title>
+<style>
+  :root { --bg:#FAFAF7; --ink:#1F2933; --muted:#7B8794; --line:#E4E7EB; --card:#fff; --glow:#FFD166;
+          --blue:#2F6FDE; --orange:#F28C28; --green:#2E9E4F; --red:#E02424; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font: 15px/1.5 "Segoe UI", "Microsoft YaHei", sans-serif; }
+  header { padding:12px 20px; border-bottom:1px solid var(--line); display:flex; gap:16px;
+           align-items:baseline; flex-wrap:wrap; }
+  header h1 { font-size:18px; margin:0; }
+  header span { color:var(--muted); font-size:13px; }
+  main { display:grid; grid-template-columns:minmax(0,1.25fr) minmax(360px,1fr); gap:16px; padding:16px 20px;
+         height:calc(100vh - 54px); }
+  .left { display:flex; flex-direction:column; gap:10px; min-height:0; overflow:auto; }
+  video { width:100%; border-radius:8px; border:1px solid var(--line); background:#000; }
+  .now { background:var(--card); border:1px solid var(--line); border-left:5px solid var(--glow);
+         border-radius:8px; padding:10px 14px; }
+  .now b { color:var(--blue); margin-right:8px; }
+  .bar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  button { font:inherit; padding:6px 12px; border-radius:6px; border:1px solid var(--line);
+           background:var(--card); color:var(--ink); cursor:pointer; }
+  button:hover { border-color:var(--blue); }
+  button.primary { background:var(--blue); border-color:var(--blue); color:#fff; }
+  textarea { width:100%; font:inherit; border:1px solid var(--line); border-radius:6px; padding:6px 8px;
+             resize:vertical; background:#fff; color:var(--ink); }
+  textarea:focus { outline:2px solid var(--blue); border-color:transparent; }
+  .general textarea { min-height:70px; }
+  .right { overflow:auto; min-height:0; padding-right:4px; }
+  .scene { margin:14px 0 6px; display:flex; justify-content:space-between; align-items:center;
+           position:sticky; top:0; background:var(--bg); padding:6px 0; z-index:1;
+           border-bottom:1px solid var(--line); }
+  .scene h2 { font-size:15px; margin:0; }
+  .scene label { font-size:13px; color:var(--muted); cursor:pointer; }
+  .scene.ok h2 { color:var(--green); }
+  .seg { border:1px solid var(--line); background:var(--card); border-radius:8px; padding:8px 10px;
+         margin:6px 0; }
+  .seg.cur { border-color:var(--orange); box-shadow:0 0 0 2px #F28C2833; }
+  .seg.has { border-left:5px solid var(--red); }
+  .seg .top { display:flex; gap:8px; cursor:pointer; }
+  .seg .id { color:var(--blue); font-weight:600; white-space:nowrap; }
+  .seg .t { color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .seg .edit { display:none; margin-top:8px; }
+  .seg.open .edit, .seg.has .edit { display:block; }
+  .kinds { display:flex; gap:12px; margin-bottom:6px; font-size:13px; flex-wrap:wrap; }
+  .kinds label { cursor:pointer; }
+  .hint { color:var(--muted); font-size:13px; }
+  #out { min-height:120px; display:none; margin-top:8px; font-family:Consolas, monospace; font-size:13px; }
+  @media (max-width: 900px) { main { grid-template-columns:1fr; height:auto; } .right { overflow:visible; } }
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title"></h1>
+  <span id="meta"></span>
+  <span class="hint">点一句话跳到那里 · 空格键播放/暂停 · 意见自动保存在本机浏览器里</span>
+</header>
+<main>
+  <div class="left">
+    <video id="v" controls preload="metadata"></video>
+    <div class="now"><b id="nowid"></b><span id="nowtext"></span></div>
+    <div class="bar">
+      <button id="back">◀ 上一句</button>
+      <button id="again">重听这一句</button>
+      <button id="next">下一句 ▶</button>
+      <button id="note">给这一句写意见</button>
+      <span class="hint" id="count"></span>
+    </div>
+    <div class="general">
+      <div class="hint">整集的总体意见（节奏、风格、缺了什么）：</div>
+      <textarea id="general" placeholder="可以留空"></textarea>
+    </div>
+    <div class="bar">
+      <button class="primary" id="copy">复制全部意见</button>
+      <button id="save">下载为 .md 文件</button>
+      <button id="clear">清空意见</button>
+      <span class="hint" id="msg"></span>
+    </div>
+    <textarea id="out" readonly></textarea>
+  </div>
+  <div class="right" id="list"></div>
+</main>
+<script>
+const D = /*DATA*/null;
+const KEY = "review-" + D.ep;
+const KINDS = ["内容", "语气", "动画"];
+let S = { notes: {}, ok: {}, general: "" };
+try { S = Object.assign(S, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+const $ = (id) => document.getElementById(id);
+const fmt = (t) => Math.floor(t / 60) + ":" + String(Math.floor(t % 60)).padStart(2, "0");
+const v = $("v");
+v.src = D.video;
+$("title").textContent = "审片 · " + D.title;
+$("meta").textContent = "总长 " + fmt(D.total) + " · " + D.segs.length + " 句";
+document.title = "审片 · " + D.title;
+$("general").value = S.general || "";
+$("general").oninput = (e) => { S.general = e.target.value; save(); };
+
+const list = $("list");
+const el = {};
+let lastScene = null;
+D.segs.forEach((s, n) => {
+  const sc = s.id[0];
+  if (sc !== lastScene) {
+    lastScene = sc;
+    const h = document.createElement("div");
+    h.className = "scene" + (S.ok[sc] ? " ok" : "");
+    h.innerHTML = "<h2></h2><label><input type='checkbox'> 这个场景已确认</label>";
+    h.querySelector("h2").textContent = "场景 " + sc.toUpperCase() + (D.scenes[sc] ? " · " + D.scenes[sc] : "");
+    const cb = h.querySelector("input");
+    cb.checked = !!S.ok[sc];
+    cb.onchange = () => { S.ok[sc] = cb.checked; h.classList.toggle("ok", cb.checked); save(); };
+    list.appendChild(h);
+  }
+  const d = document.createElement("div");
+  d.className = "seg";
+  d.innerHTML = "<div class='top'><span class='id'></span><span class='t'></span><span class='tx'></span></div>" +
+    "<div class='edit'><div class='kinds'></div><textarea rows='2' placeholder='想怎么改？'></textarea></div>";
+  d.querySelector(".id").textContent = s.id;
+  d.querySelector(".t").textContent = fmt(s.start);
+  d.querySelector(".tx").textContent = s.text;
+  const note = S.notes[s.id] || { kinds: [], text: "" };
+  const kinds = d.querySelector(".kinds");
+  KINDS.forEach((k) => {
+    const l = document.createElement("label");
+    l.innerHTML = "<input type='checkbox'> " + k;
+    const c = l.querySelector("input");
+    c.checked = note.kinds.includes(k);
+    c.onchange = () => { upd(s.id, d); };
+    kinds.appendChild(l);
+  });
+  const ta = d.querySelector("textarea");
+  ta.value = note.text;
+  ta.oninput = () => upd(s.id, d);
+  d.querySelector(".top").onclick = () => { v.currentTime = s.start + 0.01; v.play(); d.classList.add("open"); };
+  d.classList.toggle("has", !!note.text.trim());
+  list.appendChild(d);
+  el[s.id] = d;
+});
+
+function upd(id, d) {
+  const kinds = [...d.querySelectorAll(".kinds input")].map((c, i) => c.checked ? KINDS[i] : null).filter(Boolean);
+  const text = d.querySelector("textarea").value;
+  if (text.trim() || kinds.length) S.notes[id] = { kinds, text }; else delete S.notes[id];
+  d.classList.toggle("has", !!text.trim());
+  save(); count();
+}
+function count() {
+  const n = Object.values(S.notes).filter((x) => x.text.trim()).length;
+  $("count").textContent = n ? "已写 " + n + " 条意见" : "";
+}
+count();
+
+let cur = -1;
+function index(t) {
+  let k = 0;
+  for (let i = 0; i < D.segs.length; i++) if (D.segs[i].start <= t + 0.05) k = i;
+  return k;
+}
+v.ontimeupdate = () => {
+  const k = index(v.currentTime);
+  if (k === cur) return;
+  if (cur >= 0) el[D.segs[cur].id].classList.remove("cur");
+  cur = k;
+  const s = D.segs[k];
+  el[s.id].classList.add("cur");
+  $("nowid").textContent = s.id + "  " + fmt(s.start);
+  $("nowtext").textContent = s.text;
+  if (!v.paused) el[s.id].scrollIntoView({ block: "nearest", behavior: "smooth" });
+};
+const go = (k) => { k = Math.max(0, Math.min(D.segs.length - 1, k)); v.currentTime = D.segs[k].start + 0.01; v.play(); };
+$("back").onclick = () => go(index(v.currentTime) - 1);
+$("next").onclick = () => go(index(v.currentTime) + 1);
+$("again").onclick = () => go(index(v.currentTime));
+$("note").onclick = () => {
+  v.pause();
+  const d = el[D.segs[index(v.currentTime)].id];
+  d.classList.add("open");
+  d.scrollIntoView({ block: "center" });
+  d.querySelector("textarea").focus();
+};
+document.addEventListener("keydown", (e) => {
+  if (e.code === "Space" && !["TEXTAREA", "INPUT", "BUTTON"].includes(document.activeElement.tagName)) {
+    e.preventDefault();
+    v.paused ? v.play() : v.pause();
+  }
+});
+
+function report() {
+  const out = ["# 审片意见 · " + D.title, ""];
+  if ((S.general || "").trim()) out.push("## 总体", S.general.trim(), "");
+  out.push("## 逐句");
+  let any = false;
+  D.segs.forEach((s) => {
+    const n = S.notes[s.id];
+    if (!n || !n.text.trim()) return;
+    any = true;
+    out.push("- [" + D.ep + " " + s.id + " " + fmt(s.start) + "]" + (n.kinds.length ? "（" + n.kinds.join("、") + "）" : "") +
+             " " + n.text.trim().replace(/\n+/g, " / "));
+    out.push("  原句: " + s.text);
+  });
+  if (!any) out.push("（没有逐句意见）");
+  const ok = Object.keys(S.ok).filter((k) => S.ok[k]).map((k) => k.toUpperCase());
+  out.push("", "## 已确认的场景", ok.length ? ok.join("、") : "（还没有）");
+  return out.join("\n");
+}
+$("copy").onclick = async () => {
+  const text = report();
+  $("out").style.display = "block";
+  $("out").value = text;
+  try { await navigator.clipboard.writeText(text); $("msg").textContent = "已复制，粘贴到对话里发给 Claude"; }
+  catch (e) { $("out").select(); $("msg").textContent = "请手动复制下面的文字"; }
+};
+$("save").onclick = () => {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([report()], { type: "text/markdown" }));
+  a.download = D.ep + "_review_notes.md";
+  a.click();
+  $("msg").textContent = "已下载 " + a.download;
+};
+$("clear").onclick = () => {
+  if (!confirm("清空这一集写过的所有意见和确认标记？")) return;
+  S = { notes: {}, ok: {}, general: "" };
+  save();
+  location.reload();
+};
+</script>
+</body>
+</html>

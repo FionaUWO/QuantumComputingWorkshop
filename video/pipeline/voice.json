@@ -1,0 +1,10 @@
+{
+  "engine": "eleven",
+  "voice": "QIhD5ivPGEoYZQDocuHI",
+  "voice_name": "Adam - Articulate Engineering Professor (ElevenLabs voice library)",
+  "model": "eleven_multilingual_v2",
+  "rate": 0,
+  "tempo": 1.25,
+  "group_speed": 1.1,
+  "settings": {"stability": 0.5, "similarity_boost": 0.75, "style": 0.2}
+}

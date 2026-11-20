@@ -5,3 +5,7 @@ node_modules/
 dist/
 .astro/
 Textbook/
+
+# video production: recordings, renders and drafts are large and can be rebuilt
+video/out/
+__pycache__/
