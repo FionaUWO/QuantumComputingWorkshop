@@ -100,9 +100,8 @@ body:has(.course-shell) .site-head .wrap { max-width: none; padding-left: 1.25re
 @media (min-width: 1000px) {
   .course-main { padding-inline: max(clamp(1rem, 4vw, 3.5rem), calc((100% - 88rem) / 2)); }
 }
-/* Prose keeps a comfortable measure inside that wide column; a formula or table sits on the
-   same measure when it fits and grows into the extra width when it does not; simulators use all of it. */
-.course-body .notes > * { max-width: 48rem; }
-.course-body .notes > .katex-display, .course-body .notes > table { width: fit-content; min-width: min(100%, 48rem); max-width: 100%; }
-.course-body .notes > .board, .course-body .notes > figure { max-width: none; }
+/* Everything in the notes uses the full width of that column, so the text, the statements and
+   the formulas line up with the edges of the section's video. (Prose used to be held to 48rem
+   inside the column, which left it visibly narrower than the video above it.) */
+.course-body .notes > .katex-display, .course-body .notes > table { width: 100%; max-width: 100%; }
 
