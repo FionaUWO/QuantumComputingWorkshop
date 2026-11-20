@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; }
+  body {
+    width: 2560px; height: 1440px; overflow: hidden; position: relative;
+    background:
+      radial-gradient(ellipse 1500px 900px at 82% 18%, rgba(125, 82, 190, .55), transparent 70%),
+      radial-gradient(ellipse 1300px 900px at 8% 95%, rgba(20, 8, 40, .7), transparent 70%),
+      linear-gradient(115deg, #24123f 0%, #3d1d66 48%, #4f2683 100%);
+    font-family: "Inter", sans-serif;
+  }
+  svg.circuit {
+    position: absolute; inset: 0;
+    -webkit-mask-image: radial-gradient(ellipse 900px 330px at 50% 50%, transparent 0, transparent 82%, #000 135%);
+            mask-image: radial-gradient(ellipse 900px 330px at 50% 50%, transparent 0, transparent 82%, #000 135%);
+  }
+  .lockup {
+    position: absolute; left: 507px; top: 508px; width: 1546px; height: 423px;
+    display: flex; align-items: center; justify-content: center; gap: 72px;
+  }
+  .mark {
+    flex: none; width: 300px; height: 300px; border-radius: 50%; background: #fff;
+    display: grid; place-items: center;
+    box-shadow: 0 20px 60px rgba(10, 4, 25, .45);
+  }
+  .mark img { width: 212px; height: 212px; }
+  .eyebrow {
+    font-size: 30px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase;
+    color: #b9a3dc; margin-bottom: 14px;
+  }
+  h1 {
+    margin: 0; font-family: "Fraunces", serif; font-weight: 600; font-size: 148px; line-height: 1;
+    letter-spacing: -.015em; color: #fff;
+  }
+  .sub { margin-top: 26px; font-size: 37px; font-weight: 400; color: #ece6f5; white-space: nowrap; }
+  body.guides::after {
+    content: ""; position: absolute; left: 507px; top: 508px; width: 1546px; height: 423px;
+    outline: 3px dashed #00e0c8;
+  }
+  body.guides::before {
+    content: ""; position: absolute; left: 0; top: 508px; width: 2560px; height: 423px;
+    outline: 3px dashed #ffd400; z-index: 5;
+  }
+</style>
+</head>
+<body>
+<svg class="circuit" viewBox="0 0 2560 1440" xmlns="http://www.w3.org/2000/svg"></svg>
+<div class="lockup">
+  <div style="text-align:center">
+    <div class="eyebrow">Western University</div>
+    <h1>Q-AICON Lab</h1>
+    <div class="sub">Quantum and AI for Computing, Optimization, and Networking</div>
+  </div>
+</div>
+<script>
+  if (location.hash === '#guides') document.body.classList.add('guides');
+  const svg = document.querySelector('svg.circuit');
+  const NS = 'http://www.w3.org/2000/svg';
+  const C = '#b9a3dc';
+  let seed = 20261119;
+  const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+  const el = (n, a, t) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); if (t) e.textContent = t; svg.appendChild(e); return e; };
+  const g = el('g', { stroke: C, fill: 'none', 'stroke-width': 3, opacity: .34 });
+  const add = (n, a, t) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); if (t) e.textContent = t; g.appendChild(e); return e; };
+  const ys = []; for (let y = 60; y <= 1380; y += 120) ys.push(y);
+  ys.forEach(y => add('line', { x1: -10, y1: y, x2: 2570, y2: y }));
+  const letters = ['H', 'X', 'Z', 'T', 'S', 'Y'];
+  const S = 62;
+  for (let col = 0; col < 16; col++) {
+    const x = 90 + col * 160 + Math.round((rnd() - .5) * 40);
+    let i = 0;
+    while (i < ys.length) {
+      const r = rnd();
+      if (r < .30) {
+        add('rect', { x: x - S / 2, y: ys[i] - S / 2, width: S, height: S, rx: 8, fill: '#32185a' });
+        add('text', { x, y: ys[i] + 13, 'text-anchor': 'middle', 'font-family': 'Inter, sans-serif', 'font-size': 36, 'font-weight': 600, fill: C, stroke: 'none' }, letters[Math.floor(rnd() * letters.length)]);
+        i += 1;
+      } else if (r < .48 && i + 1 < ys.length) {
+        const up = rnd() < .5, a = up ? ys[i] : ys[i + 1], b = up ? ys[i + 1] : ys[i];
+        add('line', { x1: x, y1: ys[i], x2: x, y2: ys[i + 1] });
+        add('circle', { cx: x, cy: a, r: 11, fill: C, stroke: 'none' });
+        add('circle', { cx: x, cy: b, r: 24, fill: '#32185a' });
+        add('line', { x1: x - 24, y1: b, x2: x + 24, y2: b });
+        add('line', { x1: x, y1: b - 24, x2: x, y2: b + 24 });
+        i += 2;
+      } else { i += 1; }
+    }
+  }
+</script>
+</body>
+</html>
