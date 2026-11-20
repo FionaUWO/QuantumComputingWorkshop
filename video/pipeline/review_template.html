@@ -17,6 +17,8 @@
   main { display:grid; grid-template-columns:minmax(0,1.25fr) minmax(360px,1fr); gap:16px; padding:16px 20px;
          height:calc(100vh - 54px); }
   .left { display:flex; flex-direction:column; gap:10px; min-height:0; overflow:auto; }
+  video::cue { font-family: "Segoe UI", sans-serif; background: rgba(20,20,20,.8); }
+  video::cue(.asks) { color: #7FD4E6; }
   video { width:100%; border-radius:8px; border:1px solid var(--line); background:#000; }
   .now { background:var(--card); border:1px solid var(--line); border-left:5px solid var(--glow);
          border-radius:8px; padding:10px 14px; }
@@ -67,6 +69,7 @@
       <button id="back">◀ 上一句</button>
       <button id="again">重听这一句</button>
       <button id="next">下一句 ▶</button>
+      <button id="subs">字幕：开</button>
       <button id="note">给这一句写意见</button>
       <span class="hint" id="count"></span>
     </div>
@@ -95,6 +98,15 @@ const $ = (id) => document.getElementById(id);
 const fmt = (t) => Math.floor(t / 60) + ":" + String(Math.floor(t % 60)).padStart(2, "0");
 const v = $("v");
 v.src = D.video;
+// subtitles are a track built here (a file:// page may not load a .vtt file), so they can be switched off
+const subs = v.addTextTrack("subtitles", "English", "en");
+(D.cues || []).forEach((c) => subs.addCue(new VTTCue(c[0], c[0] + c[1], c[3] === "B" ? "<c.asks>" + c[2] + "</c>" : c[2])));
+const showSubs = () => {
+  subs.mode = S.subs === false ? "hidden" : "showing";
+  $("subs").textContent = S.subs === false ? "字幕：关" : "字幕：开";
+};
+$("subs").onclick = () => { S.subs = S.subs === false; save(); showSubs(); };
+showSubs();
 $("title").textContent = "审片 · " + D.title;
 $("meta").textContent = "总长 " + fmt(D.total) + " · " + D.segs.length + " 句";
 document.title = "审片 · " + D.title;

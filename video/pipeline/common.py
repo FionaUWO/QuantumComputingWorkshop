@@ -17,14 +17,14 @@ from manim import *
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build import load_script, out_dir  # noqa: E402
 
-BG = "#24123F"        # site --purple-dark
-PANEL = "#33205A"
+BG = "#000000"        # pure black (the user's choice, 2026-11-20; was the site's dark purple)
+PANEL = "#1B1626"
 INK = "#F4F0FA"
 MUTED = "#A89BC4"
 LILAC = "#B9A3DC"     # outcome 0, and nothing else
 PURPLE = "#7B4FC0"
 RING = "#FFFFFF"      # outcome 1
-DIM = "#3E2C63"       # an empty dot
+DIM = "#2E2640"       # an empty dot
 ACCENT = "#F28C28"    # minus signs and cancellation only
 HILITE = "#7FD4E6"    # emphasis: "look here", key words, frames, the state arrow
 GOOD = "#6FCF97"
@@ -60,7 +60,98 @@ def header(text):
     return T(text, size=22, color=MUTED).to_corner(UL, buff=0.3)
 
 
-def def_card(term, definition, width=11.0):
+LOGO_FILE = Path(__file__).resolve().parents[2] / "public" / "assets" / "img" / "logo-800.png"
+
+
+def logo_layers():
+    """The logo taken apart for the opening: its letters "AI" (sharp, and blurred), and its Q, which is
+    drawn as a magnifying glass. Each layer keeps the logo's full canvas, so the layers line up when
+    they are given the same size and centre. Written once to out/_logo/."""
+    from PIL import Image, ImageFilter
+
+    d = Path(__file__).resolve().parents[1] / "out" / "_logo"
+    files = {k: d / f"{k}.png" for k in ("ai", "ai_blur", "q")}
+    if all(f.exists() and f.stat().st_mtime > LOGO_FILE.stat().st_mtime for f in files.values()):
+        return files
+    d.mkdir(parents=True, exist_ok=True)
+    a = np.array(Image.open(LOGO_FILE).convert("RGBA")).astype(np.int32)
+    purple = (a[..., 0] > a[..., 1] + 25) & (a[..., 3] > 0)        # the Q is the only part with red in it
+    for name, keep in (("q", purple), ("ai", ~purple)):
+        layer = a.copy()
+        layer[~keep, 3] = 0
+        Image.fromarray(layer.astype(np.uint8), "RGBA").save(files[name])
+    Image.open(files["ai"]).filter(ImageFilter.GaussianBlur(30)).save(files["ai_blur"])
+    return files
+
+
+def logo_reveal(scene, centre, height=2.25, disc_radius=1.5):
+    """The opening of every film (the user's idea, 2026-11-20): "AI" sits out of focus at its full size,
+    the Q slides in from the right as a magnifying glass, and under the glass "AI" comes into focus,
+    which is the lab's logo. Takes about 2 s.
+
+    The Q is drawn here, not taken from the logo file: the user asked for a rounder Q than the
+    hand-drawn one in the file, and for the lens to look like glass. Returns the finished mark as
+    Group(disc, letters, ring, handle)."""
+    files = logo_layers()
+    centre = np.array(centre, dtype=float)
+    k = height / 800                                    # the logo file is 800 px square
+    at = lambda x, y: centre + np.array([(x - 400) * k, (400 - y) * k, 0])
+    purple = "#721E92"
+    mid, r_out, r_in = at(390, 377), 363 * k, 285 * k
+    disc = Circle(radius=disc_radius, stroke_width=0, fill_color="#FFFFFF", fill_opacity=1).move_to(centre)
+    # ring with the gap the handle passes through, as in the logo
+    ring = AnnularSector(inner_radius=r_in, outer_radius=r_out, angle=334 * DEGREES, start_angle=-41 * DEGREES,
+                         fill_color=purple, fill_opacity=1, stroke_width=0).move_arc_center_to(mid)
+    p0, p1 = at(528, 598), at(702, 757)
+    handle = RoundedRectangle(width=np.linalg.norm(p1 - p0) + 84 * k, height=84 * k, corner_radius=41 * k,
+                              fill_color=purple, fill_opacity=1, stroke_width=0)
+    handle.rotate(np.arctan2(p1[1] - p0[1], p1[0] - p0[0])).move_to((p0 + p1) / 2)
+    # glass: a faint cool tint, a bright glint at the upper left and a soft shadow at the lower right
+    tint = Circle(radius=r_in, stroke_width=0, fill_color="#9FD8FF", fill_opacity=0.22).move_to(mid)
+    glint = Arc(radius=r_in * 0.80, start_angle=115 * DEGREES, angle=50 * DEGREES, color="#FFFFFF",
+                stroke_width=7, stroke_opacity=0.9).move_arc_center_to(mid)
+    glint2 = Arc(radius=r_in * 0.80, start_angle=172 * DEGREES, angle=10 * DEGREES, color="#FFFFFF",
+                 stroke_width=7, stroke_opacity=0.9).move_arc_center_to(mid)
+    shade = Arc(radius=r_in * 0.90, start_angle=-75 * DEGREES, angle=70 * DEGREES, color="#3A6EA5",
+                stroke_width=5, stroke_opacity=0.35).move_arc_center_to(mid)
+    lens = VGroup(tint, shade, glint, glint2)
+    glass = VGroup(lens, ring, handle)
+    img = lambda f: ImageMobject(str(f)).set(height=height).move_to(centre)
+    blur, sharp = img(files["ai_blur"]), img(files["ai"]).set_opacity(0)
+    # The glass swings in from the upper right along a curve, tilted, and arrives with a little too
+    # much speed: it runs slightly past its place and settles back (the user's note: an arc, and inertia).
+    rest = glass.copy()
+    start, bend = np.array([5.0, 1.5, 0.0]), np.array([1.7, 2.0, 0.0])     # relative to the resting place
+
+    def swing(mob, t):
+        e = 1 + 2.1 * (t - 1) ** 3 + 1.1 * (t - 1) ** 2          # eases out and overshoots by about 3%
+        off = (1 - e) ** 2 * start + 2 * e * (1 - e) * bend        # a quadratic curve that ends at rest
+        mob.become(rest.copy().rotate((1 - e) * 32 * DEGREES, about_point=mid).shift(off))
+
+    swing(glass, 0)
+    scene.play(GrowFromCenter(disc), run_time=0.3)
+    scene.play(FadeIn(blur), run_time=0.3)
+    scene.add(sharp)
+    scene.play(AnimationGroup(
+        UpdateFromAlphaFunc(glass, swing, run_time=1.0, rate_func=linear),
+        Succession(Wait(0.45), AnimationGroup(blur.animate.set_opacity(0), sharp.animate.set_opacity(1),
+                                              run_time=0.5))))
+    lens, ring, handle = glass
+    scene.play(FadeOut(lens), run_time=0.3)
+    scene.remove(blur)
+    return Group(disc, sharp, ring, handle)
+
+
+def watermark():
+    """The lab's mark for the top right corner of every film: the logo (on a white disc, since it is
+    drawn for a light page) and the lab's name. Quiet enough not to compete with the picture."""
+    disc = Circle(radius=0.23, stroke_width=0, fill_color="#FFFFFF", fill_opacity=0.9)
+    logo = ImageMobject(str(LOGO_FILE)).set(height=0.35).move_to(disc).set_opacity(0.9)
+    name = T("QAICON Lab", size=20, color=MUTED, bold=True).next_to(disc, RIGHT, buff=0.14)
+    return Group(disc, logo, name).to_corner(UR, buff=0.3)
+
+
+def def_card(term, definition, width=11.0, x=0.0):
     """A definition card for the lower third, just above the subtitle strip."""
     t = T(term, size=28, bold=True)
     d = fit(T(definition, size=22, color=INK), width - 0.7)
@@ -72,7 +163,7 @@ def def_card(term, definition, width=11.0):
     body.move_to(box).align_to(box, LEFT).shift(RIGHT * 0.42)
     bar.next_to(body, LEFT, buff=0.14)
     card = VGroup(box, bar, body)
-    card.move_to([0, -2.95 + card.height / 2 + 0.12, 0])
+    card.move_to([x, -2.95 + card.height / 2 + 0.12, 0])
     return card
 
 
@@ -324,8 +415,8 @@ class NarratedScene(MovingCameraScene):
             self.play(FadeOut(self.head), FadeIn(new), run_time=0.4)
         self.head = new
 
-    def card(self, term, definition):
-        new = def_card(term, definition)
+    def card(self, term, definition, width=11.0, x=0.0):
+        new = def_card(term, definition, width, x)
         old = getattr(self, "card_mob", None)
         if old is None:
             self.play(FadeIn(new, shift=UP * 0.2), run_time=0.5)

@@ -28,10 +28,13 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import re
 import shutil
 import subprocess
 import sys
 import textwrap
+import urllib.error
+import urllib.request
 import wave
 from pathlib import Path
 
@@ -309,6 +312,286 @@ def step_tts_groups(ep, scene=None, force=False):
 
 
 # ---------------------------------------------------------------- steps
+def eleven_dialogue(turns, cfg):
+    """One ElevenLabs request (paid, online) that reads a dialogue: `turns` is [(voice id, text)].
+    Returns (mp3 bytes, [(start, end) of each turn in seconds])."""
+    import base64
+    import urllib.error
+    import urllib.request
+
+    dc = cfg["dialogue"]
+    body = {"inputs": [{"text": t, "voice_id": v} for v, t in turns], "model_id": dc.get("model", "eleven_v3"),
+            "settings": {"stability": dc.get("stability", 0.5)}}
+    url = "https://api.elevenlabs.io/v1/text-to-dialogue/with-timestamps?output_format=mp3_44100_128"
+    req = urllib.request.Request(url, data=json.dumps(body).encode("utf-8"),
+                                 headers={"xi-api-key": eleven_key(), "Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=300) as r:
+            data = json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        raise SystemExit(f"ElevenLabs refused the request: HTTP {e.code} {e.read().decode('utf-8', 'replace')[:400]}")
+    spans = [None] * len(turns)
+    for seg in data.get("voice_segments") or []:
+        k = seg["dialogue_input_index"]
+        a, b = seg["start_time_seconds"], seg["end_time_seconds"]
+        spans[k] = (a, b) if spans[k] is None else (min(a, spans[k][0]), max(b, spans[k][1]))
+    if any(x is None for x in spans):
+        raise SystemExit(f"the dialogue came back without a time span for every turn: {spans}; "
+                         f"reply fields: {sorted(data)}")
+    return base64.b64decode(data["audio_base64"]), spans
+
+
+def quiet_runs(x, fr, floor_db=-38.0, least=0.18):
+    """[(start, end)] in seconds of every stretch of the recording quieter than `floor_db` for `least` s."""
+    hop = int(0.01 * fr)
+    n = len(x) // hop
+    rms = np.sqrt((x[:n * hop].astype(np.float64).reshape(n, hop) ** 2).mean(axis=1))
+    low = rms < 32768 * 10 ** (floor_db / 20)
+    runs, k = [], 0
+    while k < n:
+        if low[k]:
+            j = k
+            while j < n and low[j]:
+                j += 1
+            if (j - k) * hop / fr >= least:
+                runs.append((k * hop / fr, j * hop / fr))
+            k = j
+        else:
+            k += 1
+    return runs
+
+
+def chunk_pitch(x, fr):
+    """Median pitch in Hz of a stretch of speech (0 if none can be measured). Used only to tell a
+    low voice from a high one."""
+    step = max(fr // 8000, 1)
+    y = x[:len(x) // step * step].astype(np.float64).reshape(-1, step).mean(axis=1)
+    sr = fr / step
+    n = int(0.04 * sr)
+    lo, hi = int(sr / 350), int(sr / 70)
+    found = []
+    for a in range(0, len(y) - n, n // 2):
+        f = y[a:a + n] - y[a:a + n].mean()
+        e = float(f @ f)
+        if e < n * 150.0 ** 2:
+            continue
+        ac = np.correlate(f, f, "full")[n - 1:]
+        k = lo + int(np.argmax(ac[lo:hi]))
+        if ac[k] > 0.45 * e:
+            found.append(sr / k)
+    return float(np.median(found)) if len(found) >= 3 else 0.0
+
+
+def eleven_align(mp3_file, text):
+    """Where each character of `text` is spoken in a recording (ElevenLabs forced alignment):
+    a list of (start, end) in seconds, one per character. The key needs the Forced Alignment
+    permission."""
+    bd = "----" + hashlib.sha1(mp3_file.name.encode()).hexdigest()
+    body = (f'--{bd}\r\nContent-Disposition: form-data; name="text"\r\n\r\n{text}\r\n').encode("utf-8")
+    body += (f'--{bd}\r\nContent-Disposition: form-data; name="file"; filename="d.mp3"\r\n'
+             "Content-Type: audio/mpeg\r\n\r\n").encode() + mp3_file.read_bytes() + f"\r\n--{bd}--\r\n".encode()
+    req = urllib.request.Request("https://api.elevenlabs.io/v1/forced-alignment", data=body,
+                                 headers={"xi-api-key": eleven_key(),
+                                          "Content-Type": f"multipart/form-data; boundary={bd}"})
+    with urllib.request.urlopen(req, timeout=300) as r:
+        data = json.loads(r.read())
+    chars = data["characters"]
+    if "".join(c["text"] for c in chars) != text:
+        raise ValueError("the alignment does not spell the text that was sent")
+    return [(c["start"], c["end"]) for c in chars]
+
+
+def cut_dialogue(whole, ids, who, texts, raw):
+    """Cut a dialogue recording into its turns, at the times forced alignment gives for the first
+    and last character of each turn. The alignment is kept beside the recording, so cutting again
+    asks for nothing. If it cannot be had, fall back to cutting at silences."""
+    plain = [re.sub(r"\s+", " ", re.sub(r"\[[^\]]*\]", "", t)).strip() for t in texts]
+    joined = " ".join(plain)
+    saved = whole.with_suffix(".align.json")
+    times = None
+    if saved.exists():
+        old = json.loads(saved.read_text(encoding="utf-8"))
+        times = old["times"] if old.get("text") == joined else None
+    if times is None:
+        try:
+            times = eleven_align(whole.with_suffix(".mp3"), joined)
+        except (urllib.error.URLError, ValueError, KeyError) as e:
+            detail = e.read().decode("utf-8", "replace")[:200] if hasattr(e, "read") else str(e)
+            print(f"  no forced alignment ({detail}); cutting at silences instead")
+            return cut_by_silence(whole, ids, who, texts, raw)
+        saved.write_text(json.dumps({"text": joined, "times": times}), encoding="utf-8")
+    with wave.open(str(whole)) as w:
+        fr = w.getframerate()
+        x = np.frombuffer(w.readframes(w.getnframes()), dtype=np.int16)
+    total = len(x) / fr
+    spans, at = [], 0
+    for t in plain:
+        spans.append((times[at][0], times[at + len(t) - 1][1]))
+        at += len(t) + 1
+    for k, i in enumerate(ids):
+        a = 0.0 if k == 0 else (spans[k - 1][1] + spans[k][0]) / 2
+        b = total if k == len(ids) - 1 else (spans[k][1] + spans[k + 1][0]) / 2
+        piece = x[int(a * fr):int(b * fr)]
+        loud = np.nonzero(np.abs(piece.astype(np.int32)) > 300)[0]
+        if len(loud):            # trim to the speech, keeping a short tail
+            piece = piece[max(loud[0] - int(0.03 * fr), 0):loud[-1] + int(0.10 * fr)]
+        with wave.open(str(raw / f"{i}.wav"), "wb") as w:
+            w.setnchannels(1)
+            w.setsampwidth(2)
+            w.setframerate(fr)
+            w.writeframes(piece.tobytes())
+        gap = spans[k + 1][0] - spans[k][1] if k < len(ids) - 1 else 0.0
+        print(f"  {i} ({who[k]}): {spans[k][0]:6.2f}-{spans[k][1]:6.2f} s, {len(piece) / fr:4.1f} s kept, "
+              f"{len(plain[k]) / max(spans[k][1] - spans[k][0], 0.01):4.1f} characters/s"
+              + ("   <-- check: no gap before the next line" if k < len(ids) - 1 and gap < 0.08 else ""))
+
+
+def cut_by_silence(whole, ids, who, texts, raw):
+    """Cut a dialogue recording into its turns without an alignment (the fallback).
+
+    The time spans the service reports for the turns are not reliable (they have been seconds
+    off, and a cut made at them lands in the middle of a sentence), so they are not used. The
+    recording is split at its silences into stretches of speech, and the stretches are dealt out
+    to the turns, in order, so that (1) each turn gets speech in proportion to the length of its
+    text and (2) a stretch spoken in the low voice goes to a turn of the low-voiced speaker and
+    likewise for the high voice. Every cut therefore falls in a real silence."""
+    with wave.open(str(whole)) as w:
+        fr = w.getframerate()
+        x = np.frombuffer(w.readframes(w.getnframes()), dtype=np.int16)
+    total = len(x) / fr
+    edges = [0.0]
+    for a, b in quiet_runs(x, fr):
+        edges += [a, b]
+    edges.append(total)
+    chunks = [(edges[k], edges[k + 1]) for k in range(0, len(edges), 2) if edges[k + 1] - edges[k] > 0.06]
+    dur = np.array([b - a for a, b in chunks])
+    pitch = np.array([chunk_pitch(x[int(a * fr):int(b * fr)], fr) for a, b in chunks])
+    known = pitch[pitch > 0]
+    split = low_top = high_floor = 0.0
+    if len(known):       # the pitch that separates the low voice from the high one (two-means on log pitch)
+        lg, wt = np.log(pitch[pitch > 0]), dur[pitch > 0]
+        lo_c, hi_c = lg.min(), lg.max()
+        for _ in range(20):
+            low = np.abs(lg - lo_c) <= np.abs(lg - hi_c)
+            if low.all() or not low.any():
+                break
+            lo_c, hi_c = np.average(lg[low], weights=wt[low]), np.average(lg[~low], weights=wt[~low])
+        split = float(np.exp((lo_c + hi_c) / 2))
+        low_top, high_floor = float(np.exp(lo_c)) * 1.1, float(np.exp(hi_c)) * 0.93
+    people = sorted(set(who))
+    two = len(people) == 2 and len(known) and known.max() / known.min() > 1.25
+    if two:      # which speaker has the lower voice: try both and keep the cheaper fit
+        options = [dict(zip(people, (False, True))), dict(zip(people, (True, False)))]
+    else:
+        options = [None]
+    weight = np.array([len(t) for t in texts], dtype=float)
+    want = dur.sum() * weight / weight.sum()
+    N, S = len(ids), len(chunks)
+    if S < N:
+        raise SystemExit(f"{whole.name}: {N} turns but only {S} stretches of speech")
+    cum = np.concatenate([[0.0], np.cumsum(dur)])
+    best = None
+    for high in options:
+        wrong = np.zeros((N, S + 1))        # wrong[k][j]: seconds of chunks < j in the other voice
+        for k in range(N):
+            if high is not None:
+                # a stretch votes only when its pitch is clearly in one voice's range
+                bad = np.array([d if (p > high_floor and not high[who[k]]) or (0 < p < low_top and high[who[k]])
+                                else 0.0 for d, p in zip(dur, pitch)])
+                wrong[k] = np.concatenate([[0.0], np.cumsum(bad)])
+        cost = np.full((N + 1, S + 1), np.inf)
+        back = np.zeros((N + 1, S + 1), dtype=int)
+        cost[0][0] = 0.0
+        for k in range(1, N + 1):
+            for j in range(k, S - (N - k) + 1):
+                for i in range(k - 1, j):
+                    if not np.isfinite(cost[k - 1][i]):
+                        continue
+                    got = cum[j] - cum[i]
+                    c = cost[k - 1][i] + (got - want[k - 1]) ** 2 / want[k - 1] \
+                        + 0.8 * (wrong[k - 1][j] - wrong[k - 1][i])
+                    if c < cost[k][j]:
+                        cost[k][j], back[k][j] = c, i
+        if best is None or cost[N][S] < best[0]:
+            ends, j = [], S
+            for k in range(N, 0, -1):
+                ends.append(j)
+                j = back[k][j]
+            best = (cost[N][S], ends[::-1])
+    ends = best[1]
+    first = 0
+    for k, i in enumerate(ids):
+        a = 0.0 if k == 0 else (chunks[first - 1][1] + chunks[first][0]) / 2
+        b = total if k == N - 1 else (chunks[ends[k] - 1][1] + chunks[ends[k]][0]) / 2
+        piece = x[int(a * fr):int(b * fr)]
+        loud = np.nonzero(np.abs(piece.astype(np.int32)) > 300)[0]
+        if len(loud):            # trim to the speech, keeping a short tail
+            piece = piece[max(loud[0] - int(0.03 * fr), 0):loud[-1] + int(0.10 * fr)]
+        with wave.open(str(raw / f"{i}.wav"), "wb") as w:
+            w.setnchannels(1)
+            w.setsampwidth(2)
+            w.setframerate(fr)
+            w.writeframes(piece.tobytes())
+        ps = [p for p in pitch[first:ends[k]] if p > 0]
+        spoken_s = cum[ends[k]] - cum[first]
+        print(f"  {i} ({who[k]}): {a:6.2f}-{b:6.2f} s, {spoken_s:4.1f} s of speech for {len(texts[k]):3d} characters "
+              f"({len(texts[k]) / spoken_s:4.1f}/s), pitch {np.median(ps) if ps else 0:3.0f} Hz"
+              + ("   <-- check: unusual pace" if not 11.5 < len(texts[k]) / spoken_s < 27 else ""))
+        first = ends[k]
+
+
+def step_tts_dialogue(ep, scene=None, force=False):
+    """Voice a two-speaker script (its SPEAKER table says who has each line). A scene is sent as one
+    dialogue, so the two voices answer each other, and is then cut into its lines. Every line is
+    trimmed to its speech: the silences between turns are the script's PAUSE_AFTER, not the voice's."""
+    cfg = voice_cfg()
+    dc = cfg["dialogue"]
+    mod = load_script(ep)
+    d = out_dir(ep)
+    raw = d / "raw"
+    raw.mkdir(parents=True, exist_ok=True)
+    (d / "wav").mkdir(exist_ok=True)
+    items = spoken(mod)
+    say = {it["id"]: it["say"] for it in items}
+    cache_file, nf = d / "cache.json", d / "native.json"
+    cache = json.loads(cache_file.read_text(encoding="utf-8")) if cache_file.exists() else {}
+    native = json.loads(nf.read_text(encoding="utf-8")) if nf.exists() else {}
+    letters = [x for x in dict.fromkeys(it["id"][0] for it in items) if x == scene]
+    if not letters:
+        raise SystemExit("dialogue voicing is done one scene at a time: pass --scene <letter>")
+    for letter in letters:
+        ids = [it["id"] for it in items if it["id"][0] == letter]
+        turns = []      # lines that one speaker says in a row are sent as one turn, so they are read
+        for i in ids:   # as connected speech and not as separate announcements
+            v = dc["voices"][mod.SPEAKER[i]]
+            if turns and turns[-1][0] == v:
+                turns[-1] = (v, turns[-1][1] + " " + say[i])
+            else:
+                turns.append((v, say[i]))
+        key =hashlib.sha1(json.dumps([dc, turns], sort_keys=True).encode("utf-8")).hexdigest()
+        if not force and cache.get("dialogue:" + letter) == key and all((raw / f"{i}.wav").exists() for i in ids):
+            print(f"{ep}: scene {letter} is already voiced with this wording; cutting it again")
+            cut_dialogue(raw / f"dialogue_{letter}.wav", ids, [mod.SPEAKER[i] for i in ids], [say[i] for i in ids], raw)
+            continue
+        print(f"{ep}: voicing scene {letter} as a dialogue, {len(ids)} lines in {len(turns)} turns, "
+              f"{sum(len(t) for _, t in turns)} characters")
+        mp3, spans = eleven_dialogue(turns, cfg)
+        mp3_file, whole = raw / f"dialogue_{letter}.mp3", raw / f"dialogue_{letter}.wav"
+        mp3_file.write_bytes(mp3)
+        to_wav(mp3_file, whole)
+        whole.with_suffix(".align.json").unlink(missing_ok=True)    # it described the old recording
+        (raw / f"dialogue_{letter}.json").write_text(json.dumps({"spans": spans}), encoding="utf-8")
+        cut_dialogue(whole, ids, [mod.SPEAKER[i] for i in ids], [say[i] for i in ids], raw)
+        for i in ids:
+            # retime_all speeds a line up by tempo / native; this makes that equal the dialogue tempo
+            native[i] = cfg.get("tempo", 1.0) / dc.get("tempo", 1.0)
+        cache["dialogue:" + letter] = key
+        cache_file.write_text(json.dumps(cache, indent=1), encoding="utf-8")
+        nf.write_text(json.dumps(native, indent=1), encoding="utf-8")
+    durs = retime_all(ep, cfg, items)
+    print(f"{ep}: {len(durs)} of {len(items)} lines have a recording")
+
+
 def step_tts(ep, force=False, scene=None):
     """Voice the narration. A sentence is sent out again only if its text, tone or the voice changed.
     With `scene`, only the lines whose id starts with that letter are voiced."""
@@ -503,21 +786,17 @@ def step_mux(ep, low=False, even=True):
         w.setsampwidth(2)
         w.setframerate(rate)
         w.writeframes(track.tobytes())
-    # ---- subtitles
-    srt, n = [], 0
-    for m in marks["marks"]:
-        cues = wrap_cues(subs[m["id"]])
-        sizes = [sum(len(x) for x in c) for c in cues]
-        t = m["start"]
-        for c, size in zip(cues, sizes):
-            dur = m["dur"] * size / sum(sizes)
-            for line in c:
-                assert len(line) <= MAX_CHARS, line
-            n += 1
-            srt.append(f"{n}\n{ts(t)} --> {ts(t + dur)}\n" + "\n".join(c) + "\n")
-            t += dur
+    # ---- subtitles: a separate track the viewer can switch off, never part of the picture
+    cues = make_cues(mod, marks)
+    srt = [f"{n}\n{ts(t)} --> {ts(t + dur)}\n"
+           + (f'<font color="#7FD4E6">{text}</font>' if who == "B" else text) + "\n"
+           for n, (t, dur, text, who) in enumerate(cues, 1)]
+    vtt = ["WEBVTT\n"] + [f"{ts(t, '.')} --> {ts(t + dur, '.')}\n"
+                           + (f"<c.asks>{text}</c>" if who == "B" else text) + "\n"
+                           for t, dur, text, who in cues]
     srt_name = "draft.srt" if low else "subtitles.srt"
     (d / srt_name).write_text("\n".join(srt), encoding="utf-8")
+    (d / srt_name).with_suffix(".vtt").write_text("\n".join(vtt), encoding="utf-8")
     if not low:  # narration script with timestamps, kept beside the script
         rows = [f"# {mod.TITLE} — narration script with timestamps", "",
                 "Times are positions in the final video (mm:ss.s). "
@@ -532,19 +811,38 @@ def step_mux(ep, low=False, even=True):
                      f"{words / sum(m['dur'] for m in marks['marks']) * 60:.0f} words per minute while speaking."]
         (ep_dir(ep) / "narration.md").write_text("\n".join(rows) + "\n", encoding="utf-8")
         shutil.copy(d / srt_name, ep_dir(ep) / "subtitles.srt")
-    # ---- video with burned-in subtitles (ffmpeg runs inside the output folder so the
-    #      subtitle filter gets a plain relative file name)
-    style = ("FontName=Segoe UI,FontSize=14,PrimaryColour=&H00FFFFFF,OutlineColour=&H30202020,"
-             "BorderStyle=3,Outline=1,Shadow=0,MarginV=7")
+        shutil.copy((d / srt_name).with_suffix(".vtt"), d / f"{mod.OUTFILE}.vtt")    # goes to the site with the film
+    # ---- video. The subtitles ride along as a text track (players such as VLC can switch it on and
+    #      off); web pages use the .vtt file written above, since browsers ignore tracks inside an mp4.
     (d / "preview").mkdir(parents=True, exist_ok=True)
     final = d / "preview" / "draft.mp4" if low else d / f"{mod.OUTFILE}.mp4"
     cmd = ["ffmpeg", "-y", "-loglevel", "error", "-i", str(find_render(ep, low)), "-i", str(audio),
-           "-vf", f"subtitles={srt_name}:force_style='{style}'",
+           "-i", srt_name, "-map", "0:v", "-map", "1:a", "-map", "2:s",
            "-c:v", "libx264", "-preset", "veryfast" if low else "medium", "-crf", "23" if low else "20",
-           "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "128k", "-shortest", str(final)]
+           "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "128k", "-c:s", "mov_text",
+           "-metadata:s:s:0", "language=eng", "-t", f"{marks['total']:.3f}", str(final)]
     subprocess.run(cmd, check=True, cwd=d)
     print(f"wrote {final}  ({marks['total'] / 60:.1f} min)")
     return final
+
+
+def make_cues(mod, marks):
+    """[(start, seconds, text, speaker)] for every subtitle: a line is split into cues of at most two
+    short rows, each shown for its share of the line's time."""
+    subs = {i: sub for i, sub, _ in mod.SEGS}
+    who = getattr(mod, "SPEAKER", {})
+    out = []
+    for m in marks["marks"]:
+        cues = wrap_cues(subs[m["id"]])
+        sizes = [sum(len(x) for x in c) for c in cues]
+        t = m["start"]
+        for c, size in zip(cues, sizes):
+            dur = m["dur"] * size / sum(sizes)
+            for line in c:
+                assert len(line) <= MAX_CHARS, line
+            out.append((round(t, 3), round(dur, 3), "\n".join(c), who.get(m["id"], "A")))
+            t += dur
+    return out
 
 
 def scene_ranges(ep, low=False):
@@ -576,12 +874,17 @@ def step_preview(ep, scene):
 def step_review(ep):
     """Review page: the final video beside the sentence list, with a note box per sentence."""
     mod = load_script(ep)
-    marks = load_marks(ep)
+    final = (out_dir(ep) / f"{mod.OUTFILE}.mp4").exists()
+    if not final and not (out_dir(ep) / "preview" / "draft.mp4").exists():
+        raise SystemExit("nothing to review yet: make the draft first (render --low, then preview)")
+    marks = load_marks(ep, low=not final)       # before the HD film exists, review the draft
     subs = {i: sub for i, sub, _ in mod.SEGS}
-    data = {"ep": ep, "title": mod.TITLE, "video": f"{mod.OUTFILE}.mp4", "total": marks["total"],
+    data = {"ep": ep, "title": mod.TITLE + ("" if final else " (draft)"),
+            "video": f"{mod.OUTFILE}.mp4" if final else "preview/draft.mp4", "total": marks["total"],
             "scenes": getattr(mod, "SCENES", {}),
             "segs": [{"id": m["id"], "start": m["start"], "dur": m["dur"], "text": subs[m["id"]]}
-                     for m in marks["marks"]]}
+                     for m in marks["marks"]],
+            "cues": make_cues(mod, marks)}
     html = (HERE / "review_template.html").read_text(encoding="utf-8")
     html = html.replace("/*DATA*/null", json.dumps(data, ensure_ascii=False))
     page = out_dir(ep) / f"{mod.OUTFILE}_review.html"
@@ -605,7 +908,9 @@ if __name__ == "__main__":
     a = ap.parse_args()
     if not (ep_dir(a.ep) / "script.py").exists():
         raise SystemExit(f"no script at {ep_dir(a.ep) / 'script.py'}")
-    if a.step == "tts" and a.grouped:
+    if a.step == "tts" and hasattr(load_script(a.ep), "SPEAKER"):   # a two-voice script
+        step_tts_dialogue(a.ep, a.scene, a.force)
+    elif a.step == "tts" and a.grouped:
         step_tts_groups(a.ep, a.scene, a.force)
     elif a.step in ("tts", "all"):
         step_tts(a.ep, a.force, a.scene)
