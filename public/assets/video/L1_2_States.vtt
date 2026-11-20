@@ -1,0 +1,393 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:04.316
+Hello everyone, and welcome back. We
+are QAICON Lab, the Quantum and AI for
+
+00:00:04.316 --> 00:00:08.165
+Computing, Optimization, and
+Networking Lab, at Western University.
+
+00:00:08.533 --> 00:00:12.409
+<c.asks>And today, we want to see what the
+state of a qubit actually looks like.</c>
+
+00:00:14.333 --> 00:00:16.987
+Last time, we ended on two
+columns of amplitudes that
+
+00:00:16.987 --> 00:00:19.743
+differ by nothing but a minus
+sign in the bottom entry.
+
+00:00:20.333 --> 00:00:23.214
+And if you square the entries
+of either one, you get
+
+00:00:23.214 --> 00:00:26.264
+exactly the same thing, a
+half and a half, fifty-fifty.
+
+00:00:26.700 --> 00:00:29.375
+<c.asks>So if I measure them, I
+can't tell them apart.</c>
+
+00:00:29.700 --> 00:00:33.408
+You can't tell them apart, at least
+not by measuring like this, because
+
+00:00:33.408 --> 00:00:36.481
+either way every result looks like
+the flip of a fair coin.
+
+00:00:36.867 --> 00:00:38.161
+<c.asks>Then are they
+the same state?</c>
+
+00:00:38.633 --> 00:00:41.601
+Well... no. They're not
+the same state, and seeing
+
+00:00:41.601 --> 00:00:44.326
+why is really the whole
+point of this section.
+
+00:00:44.900 --> 00:00:47.048
+What we need is a picture
+of a state where that
+
+00:00:47.048 --> 00:00:49.102
+minus sign is something
+you can actually see.
+
+00:00:50.033 --> 00:00:53.300
+Let's start by drawing two
+axes, a horizontal one for the
+
+00:00:53.300 --> 00:00:56.275
+outcome zero and a vertical
+one for the outcome one.
+
+00:00:56.867 --> 00:01:00.428
+A column of two amplitudes is
+then just a point in this plane,
+
+00:01:00.428 --> 00:01:03.931
+so we can draw an arrow from the
+origin out to it, like this.
+
+00:01:04.500 --> 00:01:07.153
+Now remember the rule from
+last time, that the squares
+
+00:01:07.153 --> 00:01:09.305
+of the two amplitudes have
+to add up to one.
+
+00:01:09.633 --> 00:01:13.152
+<c.asks>That's Pythagoras. So the
+arrow has length one.</c>
+
+00:01:13.600 --> 00:01:17.589
+It is Pythagoras, and it means that
+every state of a qubit is an arrow of
+
+00:01:17.589 --> 00:01:21.689
+length one, so as the state changes,
+its tip just moves around this circle.
+
+00:01:22.267 --> 00:01:24.677
+Physicists write an arrow
+like this with an angle
+
+00:01:24.677 --> 00:01:27.087
+bracket around its label,
+and they call it a ket.
+
+00:01:27.667 --> 00:01:30.745
+The arrow lying along the
+zero axis is called ket zero,
+
+00:01:30.745 --> 00:01:34.050
+and the one pointing straight
+up the other axis is ket one.
+
+00:01:34.633 --> 00:01:38.029
+Any other arrow you can build by
+taking some amount of ket zero,
+
+00:01:38.029 --> 00:01:41.101
+then some amount of ket one, and
+placing them tip to tail.
+
+00:01:41.700 --> 00:01:45.561
+And when both of those amounts are non-
+zero, the state is called a superposition.
+
+00:01:45.933 --> 00:01:50.813
+<c.asks>I've heard that one. It means the qubit
+is zero and one at the same time, right?</c>
+
+00:01:51.900 --> 00:01:55.102
+Well, zero and one at the same
+time is how it's usually put,
+
+00:01:55.102 --> 00:01:58.413
+and honestly I think that hides
+the picture. There is only one
+
+00:01:58.413 --> 00:02:01.453
+arrow here, and it just isn't
+pointing along either axis.
+
+00:02:02.400 --> 00:02:05.055
+Now let's go back to those
+two columns from the start,
+
+00:02:05.055 --> 00:02:07.310
+and draw the first one as
+an arrow, like this.
+
+00:02:07.800 --> 00:02:11.733
+It sits exactly halfway between
+the two axes, and this particular
+
+00:02:11.733 --> 00:02:15.298
+arrow comes up so often that it
+has its own name, ket plus.
+
+00:02:15.867 --> 00:02:18.839
+The second column is the same
+except for that minus sign on the
+
+00:02:18.839 --> 00:02:21.858
+bottom entry, so before I draw
+it, where do you think it points?
+
+00:02:22.933 --> 00:02:25.759
+<c.asks>Same distance along zero,
+but down instead of up?</c>
+
+00:02:26.100 --> 00:02:30.732
+Down instead of up, exactly, because
+the bottom entry is the one that tells
+
+00:02:30.732 --> 00:02:35.114
+you how far to go along the ket one
+axis. This one is called ket minus.
+
+00:02:35.700 --> 00:02:38.816
+Now look over at the bars for
+these two states, and you'll
+
+00:02:38.816 --> 00:02:41.714
+see they are exactly the
+same, fifty-fifty both times.
+
+00:02:42.300 --> 00:02:44.655
+But the arrows themselves could
+hardly be more different.
+
+00:02:45.733 --> 00:02:47.596
+<c.asks>Wait, they're at
+a right angle.</c>
+
+00:02:47.933 --> 00:02:51.321
+Yes, they are at a right angle, and
+that's really the whole point. A
+
+00:02:51.321 --> 00:02:54.810
+probability can never be negative,
+so a random bit has nowhere to keep
+
+00:02:54.809 --> 00:02:58.298
+this difference, while a qubit keeps
+it in the direction of its arrow.
+
+00:02:59.233 --> 00:03:02.704
+<c.asks>Is there a way to compute that
+right angle, without drawing it?</c>
+
+00:03:03.133 --> 00:03:06.474
+Definitely, there is a way to
+compute it, and it comes from asking
+
+00:03:06.474 --> 00:03:10.174
+how much of one arrow lies along the
+other, like the shadow you see here.
+
+00:03:10.767 --> 00:03:14.205
+When the amplitudes are real numbers,
+you find that by multiplying the
+
+00:03:14.205 --> 00:03:17.245
+matching entries of the two columns
+and adding up the results.
+
+00:03:17.833 --> 00:03:21.843
+So try it yourself for ket plus and ket
+minus, before I fill in the answer.
+
+00:03:22.933 --> 00:03:26.351
+<c.asks>A half minus
+a half. Zero.</c>
+
+00:03:26.700 --> 00:03:31.292
+You're right, a half minus a half, so
+the overlap is exactly zero, and that
+
+00:03:31.292 --> 00:03:35.697
+is what a right angle means. Two states
+like that are called orthogonal.
+
+00:03:36.267 --> 00:03:39.827
+The way we write an overlap is with
+a full bracket, where the left half
+
+00:03:39.827 --> 00:03:42.981
+is called a bra and the right half
+is the ket you already know.
+
+00:03:43.567 --> 00:03:46.428
+And if you take the overlap
+of an arrow with itself, you
+
+00:03:46.428 --> 00:03:49.289
+get its length squared, which
+for a state is always one.
+
+00:03:50.233 --> 00:03:54.272
+Now, two arrows of length one at a
+right angle is all that a pair of axes
+
+00:03:54.272 --> 00:03:58.199
+ever was, so nothing stops us from
+using these two as our axes instead.
+
+00:03:58.767 --> 00:04:02.348
+In other words, ket plus and ket
+minus are just as good a basis as ket
+
+00:04:02.348 --> 00:04:06.137
+zero and ket one, and I can turn the
+whole picture so that they sit level.
+
+00:04:06.967 --> 00:04:10.205
+Notice that the arrow itself hasn't
+moved. Only its coordinates have
+
+00:04:10.205 --> 00:04:13.685
+changed, and each new coordinate is
+its overlap with one of the new axes.
+
+00:04:14.267 --> 00:04:16.370
+So here's a quick check
+for you. In this new
+
+00:04:16.370 --> 00:04:18.473
+basis, what are the
+coordinates of ket zero?
+
+00:04:19.767 --> 00:04:23.937
+<c.asks>It sits halfway between them.
+One over root two, twice.</c>
+
+00:04:24.533 --> 00:04:27.326
+Halfway between them, yes,
+one over root two both times,
+
+00:04:27.326 --> 00:04:30.221
+and the squares still add to
+one, because the length of an
+
+00:04:30.221 --> 00:04:32.710
+arrow doesn't care which axes
+you measure it with.
+
+00:04:33.633 --> 00:04:36.098
+Okay, so I owe you a
+confession. Every arrow
+
+00:04:36.098 --> 00:04:38.964
+I've drawn so far had real
+numbers for its entries.
+
+00:04:39.533 --> 00:04:42.483
+In general the amplitudes can
+be complex numbers, and then
+
+00:04:42.483 --> 00:04:45.589
+each entry is itself a little
+arrow, sitting in its own disc.
+
+00:04:46.033 --> 00:04:48.621
+<c.asks>So a size, and a
+direction it's turned.</c>
+
+00:04:48.967 --> 00:04:51.427
+A size and a turn, that's
+exactly it, and here is one
+
+00:04:51.427 --> 00:04:54.455
+example that we'll carry with us
+through the rest of the lecture.
+
+00:04:55.033 --> 00:04:58.427
+Its first entry has size one over
+root three and isn't turned at
+
+00:04:58.427 --> 00:05:01.929
+all, while the second is longer,
+and turned by forty-five degrees.
+
+00:05:02.500 --> 00:05:05.580
+If you square just the sizes
+you get one third and two
+
+00:05:05.580 --> 00:05:08.718
+thirds, which add up to one,
+so this really is a state.
+
+00:05:09.300 --> 00:05:12.253
+And that minus sign from before
+turns out to be the simplest
+
+00:05:12.253 --> 00:05:14.806
+case of all, a pointer turned
+exactly halfway round.
+
+00:05:15.733 --> 00:05:18.680
+There's one last detail. With
+complex entries, the bra undoes
+
+00:05:18.680 --> 00:05:21.627
+each turn before multiplying,
+which is what keeps the overlap
+
+00:05:21.627 --> 00:05:24.132
+of an arrow with itself equal
+to its length squared.
+
+00:05:25.067 --> 00:05:29.419
+So a state carries more than a pair of
+probabilities. It also carries the signs
+
+00:05:29.419 --> 00:05:34.050
+and the turns of its amplitudes, which is
+why these two arrows are different states.
+
+00:05:34.467 --> 00:05:36.402
+<c.asks>But measuring only
+showed me the bars.</c>
+
+00:05:37.500 --> 00:05:40.569
+It only showed you the bars, and
+that's the question we're left
+
+00:05:40.569 --> 00:05:43.837
+with. How much of the arrow does a
+measurement actually let us see?
+
+00:05:44.433 --> 00:05:47.067
+That's what we'll take up next,
+in section one point three.

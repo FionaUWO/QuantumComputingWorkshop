@@ -411,6 +411,8 @@ p { margin: 1rem 0 0; }
 /* The narrated video of a section, above its notes. */
 .lesson-video { margin: 0 0 2rem; }
 .lesson-video video { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 10px; background: var(--purple-dark); }
+.lesson-video video::cue { background: rgba(20, 20, 20, 0.8); }
+.lesson-video video::cue(.asks) { color: #7FD4E6; }   /* the second speaker in a dialogue */
 .lesson-video figcaption { margin-top: 0.5rem; font-size: 0.9rem; color: var(--muted); }
 
 .example { border-left: 3px solid var(--lilac); padding: 0.1rem 0 0.2rem 1.1rem; margin-top: 1.6rem; }
