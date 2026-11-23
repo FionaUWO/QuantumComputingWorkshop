@@ -81,17 +81,42 @@ def main():
         total = sum(len(re.sub(r"\[[^\]]*\]", "", t).split()) for _, _, t in lines)
         b_words = sum(len(t.split()) for _, t in b_lines)
         print(f"  questioner: {len(b_lines)} lines, {b_words / total:.0%} of the words (want at most 20%)")
-        # after the questioner speaks, the explainer's next words should pick up hers
-        stop = set("the a an of to and is it in on that this i you so but are be at as with for they there's".split())
+        # after the questioner speaks, the explainer should pick her up, without parroting her
+        # (STYLE_3B1B.md section 9; VIDEO_WORKFLOW.md "讲解者怎么接她的话")
+        stop = set("the a an of to and is it in on that this i you so but are be at as with for they there's "
+                   "if can what then same just".split())
+        opener = re.compile(r"^(yes|no|yeah|right|exactly|spot on|that's it|that's right|good|nice|not quite|"
+                            r"you're right|definitely|well|hmm|okay|there is|there are|isn't it|good question)\b")
+        used = {}  # scene letter -> opener words already used
         for k, (i, who, t) in enumerate(lines[:-1]):
             if who == "A" or lines[k + 1][1] != "A":
                 continue
+            rid, reply_all = lines[k + 1][0], lines[k + 1][2]
+            ss = sentences(reply_all)
+            reply = ss[0] if ss else ""
+            low = reply.lower()
             hers = {w for w in re.findall(r"[a-z']+", t.lower()) if w not in stop}
-            reply = sentences(lines[k + 1][2])[0] if sentences(lines[k + 1][2]) else ""
-            his = set(re.findall(r"[a-z']+", reply.lower()))
-            if not hers & his:
+            his = set(re.findall(r"[a-z']+", low))
+            near = set(re.findall(r"[a-z']+", " ".join(ss[:2]).lower()))
+            m = opener.match(low)
+            if not m and not hers & his:
                 bad += 1
-                print(f"  NO  {lines[k + 1][0]} does not pick up any word of {i}: \"{t}\" -> \"{reply}\"")
+                print(f"  NO  {rid} does not pick up {i}: \"{t}\" -> \"{reply}\"")
+            elif m and not hers & near and len(ss) > 1:
+                print(f"  ?   {rid} answers {i} with \"{m.group(1)}\" but its next sentence uses none of her words; "
+                      f"check it carries on from what she said")
+            if hers and len(hers & his) / len(hers) >= 0.6 and len(hers) >= 3:
+                bad += 1
+                print(f"  NO  {rid} repeats most of {i}'s words in its first sentence (parroting): \"{reply}\"")
+            if m and m.group(1) not in ("well", "hmm", "okay") and re.match(re.escape(m.group(1)) + r"\s*,", low):
+                bad += 1
+                print(f"  NO  {rid} glues \"{m.group(1)}\" to the rest with a comma; make it its own sentence")
+            if m:
+                word = m.group(1)
+                if word in used.setdefault(rid[0], set()) and word not in ("well", "okay"):
+                    bad += 1
+                    print(f"  NO  {rid} reuses \"{word}\" as an answer in scene {rid[0]}; vary it")
+                used[rid[0]].add(word)
     print("all counts are inside the targets; now read it aloud" if not bad else f"{bad} thing(s) to look at")
 
 
