@@ -12,16 +12,17 @@
     "style": 0.2
   },
   "dialogue": {
-    "model": "eleven_v3",
+    "model": "eleven_v4",
     "stability": 0.5,
     "tempo": 1.1,
     "voices": {
-      "A": "cBTYF7NiJbR8Bvmdeuse",
+      "A": "Gubgw9l4dtIoQA9YZHgx",
       "B": "kdmDKE6EkgrWrrykO9Qt"
     },
     "voice_names": {
-      "A": "Mike - Animation, Explainers & Gaming (explains)",
+      "A": "Brian - Deep, Resonant and Comforting (explains)",
       "B": "Alexandra - Conversational and Natural (asks)"
-    }
+    },
+    "similarity_boost": 0.75
   }
 }

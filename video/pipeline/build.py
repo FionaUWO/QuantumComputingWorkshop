@@ -322,6 +322,8 @@ def eleven_dialogue(turns, cfg):
     dc = cfg["dialogue"]
     body = {"inputs": [{"text": t, "voice_id": v} for v, t in turns], "model_id": dc.get("model", "eleven_v3"),
             "settings": {"stability": dc.get("stability", 0.5)}}
+    if "similarity_boost" in dc:
+        body["settings"]["similarity_boost"] = dc["similarity_boost"]
     url = "https://api.elevenlabs.io/v1/text-to-dialogue/with-timestamps?output_format=mp3_44100_128"
     req = urllib.request.Request(url, data=json.dumps(body).encode("utf-8"),
                                  headers={"xi-api-key": eleven_key(), "Content-Type": "application/json"})
@@ -874,8 +876,10 @@ def step_preview(ep, scene):
 def step_review(ep):
     """Review page: the final video beside the sentence list, with a note box per sentence."""
     mod = load_script(ep)
-    final = (out_dir(ep) / f"{mod.OUTFILE}.mp4").exists()
-    if not final and not (out_dir(ep) / "preview" / "draft.mp4").exists():
+    film, draft = out_dir(ep) / f"{mod.OUTFILE}.mp4", out_dir(ep) / "preview" / "draft.mp4"
+    # review whichever is newer: a draft made after the last HD film is the one being worked on
+    final = film.exists() and not (draft.exists() and draft.stat().st_mtime > film.stat().st_mtime)
+    if not final and not draft.exists():
         raise SystemExit("nothing to review yet: make the draft first (render --low, then preview)")
     marks = load_marks(ep, low=not final)       # before the HD film exists, review the draft
     subs = {i: sub for i, sub, _ in mod.SEGS}

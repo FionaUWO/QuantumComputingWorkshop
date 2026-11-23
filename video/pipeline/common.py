@@ -467,10 +467,14 @@ class NarratedScene(MovingCameraScene):
                       run_time=pause, rate_func=linear)
             self.remove(bar_bg, bar, hint)
             ans.set_color(GOOD).move_to([0, -0.8, 0])
-            with self.voice(aid, gap=0.8):
+            # In a dialogue the next line confirms this answer, so it must follow closely: the pause
+            # is the script's, and the old question clears quickly (with the heading, after the last).
+            with self.voice(aid, gap=None if hasattr(self.script, "SPEAKER") else 0.8):
                 self.play(FadeIn(ans, shift=UP * 0.2))
-            self.play(FadeOut(VGroup(qn, q, ans)))
-        self.play(FadeOut(head))
+            gone = VGroup(qn, q, ans) if k < len(qas) - 1 else VGroup(qn, q, ans, head)
+            self.play(FadeOut(gone), run_time=0.5 if hasattr(self.script, "SPEAKER") else 1.0)
+        if head in self.mobjects:
+            self.play(FadeOut(head))
 
     def save_marks(self):
         d = out_dir(self.EP)

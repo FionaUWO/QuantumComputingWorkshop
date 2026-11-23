@@ -1,458 +1,489 @@
 1
-00:00:00,000 --> 00:00:04,325
-Hello everyone. We are QAICON Lab,
-the Quantum and AI for Computing,
+00:00:00,000 --> 00:00:04,517
+Hello everyone, and welcome. We are
+QAICON Lab, the Quantum and AI for
 
 2
-00:00:04,325 --> 00:00:07,875
-Optimization, and Networking Lab,
-at Western University.
+00:00:04,517 --> 00:00:08,837
+Computing, Optimization, and
+Networking Lab, at Western University.
 
 3
-00:00:08,467 --> 00:00:13,115
-Today, we're going to talk about what
-makes a qubit different from a random bit.
+00:00:09,167 --> 00:00:13,728
+<font color="#7FD4E6">And today, we want to find out what makes
+a qubit different from a random bit.</font>
 
 4
-00:00:14,700 --> 00:00:16,960
-Flip a fair coin. You
-get a random bit.
+00:00:14,800 --> 00:00:17,612
+Let's start with something
+familiar: if you flip a
 
 5
-00:00:16,933 --> 00:00:19,716
-Flip it again. Still
-random. Flip it a hundred
+00:00:17,612 --> 00:00:19,851
+fair coin, what you get is
+a random bit.
 
 6
-00:00:19,716 --> 00:00:22,313
-times, and it never gets
-easier to predict.
+00:00:20,433 --> 00:00:23,533
+Flip it again and it's still
+random, and even if you flip
 
 7
-00:00:23,000 --> 00:00:25,492
-Now, a qubit behaves
-differently.
+00:00:23,533 --> 00:00:26,577
+it a hundred times, it never
+gets any easier to predict.
 
 8
-00:00:25,467 --> 00:00:28,593
-There is a gate called
-H. Apply it once, and
+00:00:27,167 --> 00:00:30,841
+Now, a qubit behaves differently,
+and this is where it gets strange.
 
 9
-00:00:28,593 --> 00:00:31,428
-measuring the qubit is
-a fair coin flip.
+00:00:31,433 --> 00:00:34,316
+There is a gate called H,
+and if you apply it once and
 
 10
-00:00:31,400 --> 00:00:35,124
-Apply it a second time, and
-the outcome is certain again.
+00:00:34,316 --> 00:00:37,253
+then measure the qubit, the
+result is a fair coin flip.
 
 11
-00:00:36,100 --> 00:00:39,737
-So where did the randomness go? That's
-the question this lecture answers.
+00:00:37,833 --> 00:00:41,088
+But apply it a second time, and
+the outcome is certain again.
 
 12
-00:00:40,933 --> 00:00:44,467
-In this first section, we show
-that ordinary probability
+00:00:42,067 --> 00:00:44,666
+<font color="#7FD4E6">Wait, so where did
+the randomness go?</font>
 
 13
-00:00:44,467 --> 00:00:47,809
-can't do it. Then we see what
-quantum theory changes.
+00:00:45,733 --> 00:00:48,664
+That's exactly the question,
+where the randomness goes,
 
 14
-00:00:48,633 --> 00:00:51,088
-Let's start with a bit
-we're unsure about.
+00:00:48,664 --> 00:00:51,269
+and the answer is stranger
+than you might expect.
 
 15
-00:00:51,067 --> 00:00:53,845
-We describe it with two
-numbers: the probability
+00:00:51,767 --> 00:00:54,074
+So let's begin with a bit
+that we're unsure about.
 
 16
-00:00:53,845 --> 00:00:56,860
+00:00:54,667 --> 00:00:57,396
+We can describe it with two
+numbers, the probability
+
+17
+00:00:57,397 --> 00:01:00,126
 that it is zero, and the
 probability that it is one.
 
-17
-00:00:56,833 --> 00:00:59,908
-Stack them in a column. This
-is a probability vector.
-
 18
-00:01:00,500 --> 00:01:04,071
-Both numbers are at least
-zero, and they add up to one.
+00:01:00,700 --> 00:01:03,262
+If you stack those two
+numbers in a column, like
 
 19
-00:01:04,067 --> 00:01:07,404
-For example, a bit that is
-zero seven times in ten is
+00:01:03,262 --> 00:01:05,879
+this, you get what's called
+a probability vector.
 
 20
-00:01:07,404 --> 00:01:10,291
-the vector zero point
-seven, zero point three.
+00:01:06,200 --> 00:01:10,502
+<font color="#7FD4E6">So both numbers are at least zero,
+and together they add up to one?</font>
 
 21
-00:01:10,633 --> 00:01:16,385
-Two vectors are special. E zero means
-certainly zero. E one means certainly one.
+00:01:10,833 --> 00:01:16,277
+Yes, at least zero and adding up to one,
+always. For example, a bit that is zero
 
 22
-00:01:16,367 --> 00:01:21,566
-Every probability vector is a mixture of
-these two. A fair coin is half of each.
+00:01:16,277 --> 00:01:21,170
+seven times out of ten is the vector
+zero point seven, zero point three.
 
 23
-00:01:22,400 --> 00:01:25,791
-Now let's do something
-to the bit. Take the NOT
+00:01:21,767 --> 00:01:25,978
+Two of these vectors are special:
+this one, E zero, means the bit
 
 24
-00:01:25,791 --> 00:01:29,256
-gate: it turns zero into
-one, and one into zero.
+00:01:25,978 --> 00:01:30,255
+is certainly zero, and this one,
+E one, means it is certainly one.
 
 25
-00:01:29,600 --> 00:01:32,867
-To write down what an
-operation does, we use a
+00:01:30,833 --> 00:01:33,852
+And every other probability
+vector is a mixture of these
 
 26
-00:01:32,867 --> 00:01:37,077
-matrix. And here's the trick:
-read it one column at a time.
+00:01:33,852 --> 00:01:36,871
+two, so a fair coin, for
+instance, is just half of each.
 
 27
-00:01:37,067 --> 00:01:41,709
-The first column says what happens
-to a bit that is certainly zero.
+00:01:37,867 --> 00:01:41,095
+Now let's actually do something
+to the bit, and take the NOT
 
 28
-00:01:41,709 --> 00:01:45,156
-The second column, to a bit that
-is certainly one.
+00:01:41,095 --> 00:01:44,268
+gate, which turns a zero into a
+one, and a one into a zero.
 
 29
-00:01:45,500 --> 00:01:50,454
-For NOT, zero certainly becomes one,
-so the first column is zero, one.
+00:01:44,867 --> 00:01:49,016
+To write down what an operation like
+this does, we use a matrix, and here's
 
 30
-00:01:50,433 --> 00:01:54,009
-One certainly becomes zero, so
-the second column is one, zero.
+00:01:49,016 --> 00:01:52,604
+the trick I'd like you to remember:
+read it one column at a time.
 
 31
-00:01:55,033 --> 00:02:00,172
-Now a noisy channel. It flips the bit
-with a small probability, epsilon.
+00:01:53,200 --> 00:01:56,960
+The first column tells you what happens
+to a bit that is certainly zero, and
 
 32
-00:02:00,167 --> 00:02:05,332
-A zero stays zero with probability
-one minus epsilon, and becomes one
+00:01:56,960 --> 00:02:00,068
+the second column, what happens to a
+bit that is certainly one.
 
 33
-00:02:05,332 --> 00:02:09,130
-with probability epsilon. That is
-the first column.
+00:02:01,167 --> 00:02:03,550
+So for NOT, a zero
+certainly becomes a
 
 34
-00:02:09,100 --> 00:02:11,421
-The second column
-works the same way.
+00:02:03,550 --> 00:02:06,319
+one, which makes the
+first column zero, one.
 
 35
-00:02:11,767 --> 00:02:15,011
-Each column is itself a
-probability vector.
+00:02:06,667 --> 00:02:12,013
+<font color="#7FD4E6">Then a one certainly becomes a zero, so
+the second column must be one, zero.</font>
 
 36
-00:02:15,011 --> 00:02:18,795
-Matrices like this are
-called stochastic matrices.
+00:02:12,333 --> 00:02:16,041
+Exactly, one, zero. Now let's
+try a noisy channel, which
 
 37
-00:02:20,267 --> 00:02:23,804
-One more example. Throw the
-bit away, and just flip a
+00:02:16,041 --> 00:02:19,749
+flips the bit only with some
+small probability, epsilon.
 
 38
-00:02:23,804 --> 00:02:26,933
-fair coin. Both columns are
-one half, one half.
+00:02:20,333 --> 00:02:24,732
+Here a zero stays zero with probability
+one minus epsilon, and becomes a one
 
 39
-00:02:26,900 --> 00:02:29,930
-Apply it twice, and
-nothing changes. A fair
+00:02:24,732 --> 00:02:28,251
+with probability epsilon, and that
+gives us the first column.
 
 40
-00:02:29,930 --> 00:02:32,887
-coin, flipped again, is
-still a fair coin.
+00:02:28,600 --> 00:02:32,405
+<font color="#7FD4E6">And in the second column, a one
+stays one with probability one</font>
 
 41
-00:02:33,733 --> 00:02:38,617
-Now for the key question. Could some
-stochastic matrix behave like H?
+00:02:32,405 --> 00:02:35,960
+<font color="#7FD4E6">minus epsilon, and flips to
+zero with probability epsilon.</font>
 
 42
-00:02:39,900 --> 00:02:45,209
-Let's suppose one does. A matrix M
-turns a certain zero into a fair coin.
+00:02:36,300 --> 00:02:39,724
+Exactly right, so that's
+epsilon on top and one minus
 
 43
-00:02:45,200 --> 00:02:51,077
-Apply M a second time. The bit is now zero
-half the time, and one half the time.
+00:02:39,724 --> 00:02:43,740
+epsilon below. Notice that each
+column is itself a probability
 
 44
-00:02:51,067 --> 00:02:53,524
-M acts on each
-case separately.
+00:02:43,740 --> 00:02:47,756
+vector, and matrices like this
+are called stochastic matrices.
 
 45
-00:02:54,100 --> 00:02:58,773
-Follow the first case. The bit
-is zero, and M makes it a fair
+00:02:48,733 --> 00:02:52,749
+Here's one more example: suppose we
+throw the bit away and just flip a
 
 46
-00:02:58,773 --> 00:03:02,900
-coin again. So one quarter of
-the time, we end at one.
+00:02:52,749 --> 00:02:56,357
+fair coin instead, so that both
+columns are one half, one half.
 
 47
-00:03:02,900 --> 00:03:07,472
-Now the second case. And here's
-the point. Whatever M does here,
+00:02:56,933 --> 00:02:59,736
+If you apply that twice,
+nothing changes, because a
 
 48
-00:03:07,472 --> 00:03:12,117
-it can only add probability. It
-can never take that quarter away.
+00:02:59,736 --> 00:03:02,596
+fair coin that's flipped
+again is still a fair coin.
 
 49
-00:03:12,900 --> 00:03:16,347
-So outcome one keeps a probability
-of at least one quarter.
+00:03:03,567 --> 00:03:07,581
+<font color="#7FD4E6">So couldn't one of these stochastic
+matrices just do what H does?</font>
 
 50
-00:03:16,667 --> 00:03:20,534
-Certainty doesn't come back.
-Probabilities add. They never cancel.
+00:03:09,067 --> 00:03:12,472
+Good question, so let's
+suppose one of them does. Say
 
 51
-00:03:23,033 --> 00:03:27,774
-So what does quantum theory do
-differently? Surprisingly little. It
+00:03:12,472 --> 00:03:15,812
+some matrix M turns a certain
+zero into a fair coin.
 
 52
-00:03:27,774 --> 00:03:32,731
-keeps the same picture: a column of
-two numbers, acted on by matrices.
+00:03:16,400 --> 00:03:19,599
+Now we apply M a second time,
+at a point where the bit is
 
 53
-00:03:33,067 --> 00:03:36,034
-Start with the fair coin:
-one half, one half.
+00:03:19,599 --> 00:03:22,170
+zero half of the time, and
+one the other half.
 
 54
-00:03:36,033 --> 00:03:40,184
-Now here's a qubit. One over root
-two, minus one over root two.
+00:03:22,767 --> 00:03:26,746
+And the thing I want you to notice is that
+M acts on each of those cases separately.
 
 55
-00:03:40,967 --> 00:03:45,875
-A minus sign. No probability vector
-looks like that. That's the first
+00:03:27,333 --> 00:03:31,110
+So follow the first case, where the
+bit is zero and M makes it a fair coin
 
 56
-00:03:45,875 --> 00:03:50,349
-change: the entries may be negative.
-They're called amplitudes.
+00:03:31,110 --> 00:03:34,473
+again, which means that one quarter of
+the time, we end up at one.
 
 57
-00:03:50,333 --> 00:03:54,614
-They can even be complex, but real
-numbers are all we need for now.
+00:03:35,067 --> 00:03:39,194
+Now for the second case, and here's
+the point: whatever M does down here,
 
 58
-00:03:55,200 --> 00:03:59,157
-So what keeps these numbers in
-check? Square each one. You
+00:03:39,194 --> 00:03:43,091
+it can only add probability, and it
+can never take that quarter away.
 
 59
-00:03:59,157 --> 00:04:02,906
-get one half, and one half,
-and together they make one.
+00:03:43,867 --> 00:03:48,711
+<font color="#7FD4E6">So outcome one keeps a probability of
+at least a quarter, whatever happens.</font>
 
 60
-00:04:02,900 --> 00:04:07,938
-That's the second change: the squares must
-total one, not the numbers themselves.
+00:03:49,033 --> 00:03:52,744
+Right, at least a quarter, and
+that means certainty never
 
 61
-00:04:08,533 --> 00:04:12,501
-Drop the minus sign, and you
-get another qubit: one over
+00:03:52,744 --> 00:03:55,924
+comes back. Probabilities add.
+They never cancel.
 
 62
-00:04:12,501 --> 00:04:16,685
-root two, one over root two.
-Its squares total one as well.
+00:03:57,600 --> 00:04:00,738
+So what does quantum theory
+do differently? Surprisingly
 
 63
-00:04:17,033 --> 00:04:20,518
-One more rule connects
-amplitudes to what we see. The
+00:04:00,738 --> 00:04:03,762
+little, actually, because it
+keeps the same picture, a
 
 64
-00:04:20,518 --> 00:04:24,472
-square of each amplitude is the
-probability of that outcome.
+00:04:03,761 --> 00:04:06,728
+column of two numbers that
+gets acted on by matrices.
 
 65
-00:04:24,467 --> 00:04:28,315
-So both of these qubits give
-zero and one half the time
+00:04:07,300 --> 00:04:10,632
+Let's start again from the
+fair coin, one half, one half.
 
 66
-00:04:28,315 --> 00:04:31,950
-each. Measured, each looks
-exactly like a fair coin.
+00:04:11,200 --> 00:04:13,776
+And now here is a qubit,
+whose entries are one
 
 67
-00:04:31,933 --> 00:04:36,318
-That is what one H produces: a fair
-coin, as far as a measurement can tell.
+00:04:13,776 --> 00:04:16,181
+over root two, and minus
+one over root two.
 
 68
-00:04:36,667 --> 00:04:41,375
-But look closely. The two vectors are
-different. They differ by a sign.
+00:04:16,967 --> 00:04:20,189
+That really is a minus sign,
+and no probability vector could
 
 69
-00:04:42,067 --> 00:04:46,654
-A measurement can't see that sign.
-A second H can. It sends the first
+00:04:20,189 --> 00:04:23,466
+ever look like that. So this is
+the first change: the entries
 
 70
-00:04:46,654 --> 00:04:50,769
-vector back to certainly zero, and
-the other to certainly one.
+00:04:23,466 --> 00:04:26,579
+are allowed to be negative, and
+they're called amplitudes.
 
 71
-00:04:51,100 --> 00:04:53,940
-And it works because
-amplitudes can cancel:
+00:04:27,167 --> 00:04:31,093
+They can even be complex numbers, but
+real ones are all we'll need for now.
 
 72
-00:04:53,940 --> 00:04:56,645
-a negative number
-against a positive one.
+00:04:31,667 --> 00:04:35,904
+So what keeps numbers like these in
+check? Well, try squaring each one,
 
 73
-00:04:59,033 --> 00:05:01,510
-Here are the two
-worlds, side by side.
+00:04:35,904 --> 00:04:39,898
+and you get one half and one half,
+which together make exactly one.
 
 74
-00:05:01,500 --> 00:05:07,476
-A random bit: two probabilities, changed
-by stochastic matrices, read by looking.
+00:04:40,467 --> 00:04:42,924
+And that's the second
+change: it's the squares
 
 75
-00:05:07,467 --> 00:05:12,766
-A qubit: two amplitudes, changed by
-unitary matrices, read by measuring.
+00:04:42,924 --> 00:04:45,653
+that have to total one, not
+the numbers themselves.
 
 76
-00:05:13,100 --> 00:05:18,084
-The next sections take these one at a
-time: states, measurement, a picture
+00:04:46,233 --> 00:04:50,244
+If you drop the minus sign you get
+another qubit, one over root two,
 
 77
-00:05:18,084 --> 00:05:22,727
-of a qubit, and gates, which is where
-unitary matrices get explained.
+00:04:50,244 --> 00:04:54,374
+one over root two, and its squares
+total one as well. On the sphere we
 
 78
-00:05:22,700 --> 00:05:25,983
-Then, in section one point
-six, we come back to the
+00:04:54,374 --> 00:04:58,145
+saw at the start, these two qubits
+point in opposite directions.
 
 79
-00:05:25,983 --> 00:05:29,003
-two H gates, and watch the
-cancellation happen.
+00:04:59,233 --> 00:05:03,030
+There's one more rule, and it's the one
+that connects amplitudes to what we
 
 80
-00:05:30,700 --> 00:05:32,228
-Let's recap.
+00:05:03,030 --> 00:05:06,980
+actually see: the square of each amplitude
+is the probability of that outcome.
 
 81
-00:05:32,200 --> 00:05:35,911
-One. A random bit is a
-probability vector. Operations
+00:05:07,300 --> 00:05:10,750
+<font color="#7FD4E6">So if I measure either of
+these, I get zero half the time</font>
 
 82
-00:05:35,911 --> 00:05:39,194
-are stochastic matrices, read
-column by column.
+00:05:10,750 --> 00:05:14,077
+<font color="#7FD4E6">and one half the time. They
+both look like a fair coin.</font>
 
 83
-00:05:39,167 --> 00:05:45,278
-Two. Probabilities only add. So no coin
-can turn randomness back into certainty.
+00:05:14,400 --> 00:05:17,896
+Exactly, they both look like a
+fair coin, and that is what a
 
 84
-00:05:45,267 --> 00:05:50,445
-Three. A qubit holds amplitudes. They can
-be negative, and their squares total one.
+00:05:17,896 --> 00:05:21,452
+single H produces, at least as
+far as a measurement can tell.
 
 85
-00:05:51,767 --> 00:05:56,298
-Three quick questions. Try each one
-yourself, before the answer appears.
+00:05:22,033 --> 00:05:24,509
+But look closely at the
+two vectors, because
 
 86
-00:05:56,633 --> 00:06:01,571
-Question one. Is zero point seven,
-zero point five a probability vector?
+00:05:24,509 --> 00:05:27,042
+they are not the same:
+they differ by a sign.
 
 87
-00:06:06,867 --> 00:06:10,632
-No. The entries add up to
-one point two, not one.
+00:05:27,833 --> 00:05:31,945
+A measurement can't see that sign,
+but a second H can, and it sends the
 
 88
-00:06:12,400 --> 00:06:17,124
-Question two. What is the second
-column of the NOT matrix, and why?
+00:05:31,945 --> 00:05:36,115
+first vector back to certainly zero,
+and the other one to certainly one.
 
 89
-00:06:22,400 --> 00:06:26,206
-One, zero. An input of one
-certainly becomes zero.
+00:05:36,700 --> 00:05:39,214
+And the reason it works
+is that amplitudes can
 
 90
-00:06:28,000 --> 00:06:32,479
-Question three. Is one half, one
-half a valid pair of amplitudes?
+00:05:39,214 --> 00:05:41,895
+cancel, a negative number
+against a positive one.
 
 91
-00:06:37,767 --> 00:06:44,028
-No. The squares add up to one half. One
-over root two, twice, is the valid pair.
+00:05:43,567 --> 00:05:46,406
+So here are the two worlds
+we've met, side by side.
 
 92
-00:06:47,200 --> 00:06:50,036
-Next up, section one
-point two: states.
+00:05:47,000 --> 00:05:49,838
+A random bit is two
+probabilities, which are changed
+
+93
+00:05:49,838 --> 00:05:53,233
+by stochastic matrices, and you
+read it out simply by looking.
+
+94
+00:05:53,800 --> 00:05:56,614
+A qubit is two amplitudes,
+which are changed by
+
+95
+00:05:56,614 --> 00:05:59,672
+unitary matrices, and you
+read it out by measuring.
+
+96
+00:06:00,267 --> 00:06:03,490
+But the puzzle we started with is
+still open, because we haven't
+
+97
+00:06:03,490 --> 00:06:06,560
+yet watched that cancellation
+happen between the two H gates.
+
+98
+00:06:07,533 --> 00:06:12,107
+And that's where we go next, starting
+with section one point two, on states.

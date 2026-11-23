@@ -16,6 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "pipeline"))
 from common import *  # noqa: E402,F401
 
 FULL_W = 14.222
+DROP = 0.3                    # the camera sits this much higher, which centres the picture
 ZOOM_W = 11.6                 # frame width while only one half is in view
 LEFT_X, RIGHT_X = -3.5, 3.5
 TOP_Y, GRID_Y, TALLY_Y = 2.95, -1.2, -2.1
@@ -25,7 +26,7 @@ class Main(NarratedScene):
     EP = "1.1"
 
     SCENES = [("i", "opening"), ("a", "puzzle"), ("b", "random_bit"), ("c", "operations"), ("d", "no_coin"),
-              ("e", "two_changes"), ("f", "side_by_side"), ("r", "closing")]
+              ("e", "two_changes"), ("f", "side_by_side"), ("z", "closing")]
 
     def construct(self):
         # ONLY=cd renders just scenes c and d (for quick drafts); unset renders everything.
@@ -48,7 +49,14 @@ class Main(NarratedScene):
         """The header and the puzzle badge, for drafts that skip scene A."""
         self.badge = self.make_badge()
         self.head = header("1.1  From bits to amplitudes")
-        self.add(self.badge, self.head)
+        self.wm = self.make_watermark()
+        self.camera.frame.move_to(UP * DROP)
+        self.add(self.badge, self.head, self.wm)
+
+    def make_watermark(self):
+        """The lab's mark. The top right corner belongs to the puzzle badge in this film, so it sits
+        at the bottom right, in the strip the burned-in subtitles used to need."""
+        return watermark().to_corner(DR, buff=0.3).shift(UP * DROP)
 
     # ------------------------------------------------------------ small helpers
     def tally(self, outcomes, x):
@@ -103,27 +111,22 @@ class Main(NarratedScene):
     # ------------------------------------------------------------ I. opening
     def opening(self):
         """Who is speaking, then what today is about. No header and no badge yet."""
-        logo_file = Path(__file__).resolve().parents[3] / "public" / "assets" / "img" / "logo-800.png"
-        # the logo is drawn for a light page, so it sits on a white disc
-        disc = Circle(radius=1.5, stroke_width=0, fill_color=RING, fill_opacity=1)
-        logo = ImageMobject(str(logo_file)).set(height=2.25).move_to(disc)
-        mark = Group(disc, logo).move_to([0, 1.35, 0])
         lab = T("QAICON Lab", size=54, bold=True).move_to([0, -0.85, 0])
         full = T("Quantum and AI for Computing, Optimization, and Networking", size=26, color=HILITE)
         full.next_to(lab, DOWN, buff=0.3)
         where = T("Western University", size=24, color=MUTED).next_to(full, DOWN, buff=0.25)
         with self.voice("i1"):
-            self.play(FadeIn(mark, scale=0.85), run_time=0.8)
+            mark = logo_reveal(self, [0, 1.35, 0])    # blurred "AI", the Q as a lens, the logo (as in 1.2)
             self.play(FadeIn(lab, shift=UP * 0.2), run_time=0.6)
-            self.hold(1.2)
+            self.hold(0.8)
             self.play(FadeIn(full, shift=UP * 0.15), run_time=0.7)
-            self.hold(2.6)
+            self.hold(2.2)
             self.play(FadeIn(where), run_time=0.5)
 
         series = T("Quantum Computing Workshop", size=28, color=MUTED).move_to([0, 1.2, 0])
         title = T("From bits to amplitudes", size=58, bold=True).move_to([0, 0.2, 0])
         number = T("Lecture 1  ·  Section 1.1", size=26, color=HILITE).next_to(title, DOWN, buff=0.4)
-        corner = Group(disc.copy(), logo.copy()).set(height=0.9).to_corner(DL, buff=0.4).shift(UP * 0.5)
+        corner = mark.copy().set(height=0.9).to_corner(DL, buff=0.4).shift(UP * 0.5)
         with self.voice("i2"):
             self.play(FadeOut(VGroup(lab, full, where)), ReplacementTransform(mark, corner), run_time=0.8)
             self.play(FadeIn(series), FadeIn(title, shift=UP * 0.2), run_time=0.7)
@@ -209,7 +212,7 @@ class Main(NarratedScene):
             label.move_to([0, TALLY_Y - 0.14, 0]).align_to(grid, RIGHT)
         qmark = T("?", size=110, color=HILITE, bold=True).move_to([0, 0.9, 0])
         with self.voice("a6"):
-            self.play(frame.animate.set(width=FULL_W).move_to(ORIGIN), FadeIn(left), run_time=1.0)
+            self.play(frame.animate.set(width=FULL_W).move_to(UP * DROP), FadeIn(left), run_time=1.0)
             self.play(tally_l.animate.align_to(grid_l, LEFT).shift(DOWN * 0.14),
                       tally_r.animate.align_to(grid_r, LEFT).shift(DOWN * 0.14),
                       run_time=0.4)
@@ -219,17 +222,13 @@ class Main(NarratedScene):
 
         # ---- the question becomes the badge that stays in the corner
         self.badge = self.make_badge()
-        step1 = T("1.  Ordinary probability cannot do it", size=32)
-        step2 = T("2.  What quantum theory changes", size=32)
-        plan = VGroup(step1, step2).arrange(DOWN, buff=0.55, aligned_edge=LEFT).move_to([0, 0.3, 0])
         with self.voice("a7"):
+            self.hold(2.6)                    # the question stays between the coin and the qubit
             self.play(FadeOut(VGroup(left, right, still, certain)), ReplacementTransform(qmark, self.badge),
                       run_time=0.9)
             self.set_header("1.1  From bits to amplitudes")
-            self.play(FadeIn(step1, shift=RIGHT * 0.3), run_time=0.6)
-            self.hold(1.6)
-            self.play(FadeIn(step2, shift=RIGHT * 0.3), run_time=0.6)
-        self.play(FadeOut(plan), run_time=0.5)
+            self.wm = self.make_watermark()
+            self.play(FadeIn(self.wm), run_time=0.4)
 
     # ------------------------------------------------------------ B. a random bit
     def random_bit(self):
@@ -351,8 +350,6 @@ class Main(NarratedScene):
             self.play(band.animate.move_to(g.band(1)), FadeOut(why0), FadeIn(why1, shift=LEFT * 0.2), run_time=0.6)
             self.play(FadeOut(ph[1]), FadeOut(ph[3]), Write(g.column(1, "1", "0")), run_time=0.9)
         not_all = VGroup(name, g.everything())
-        self.play(FadeOut(VGroup(band, why1, cols, rows, demo)), not_all.animate.scale(0.6).move_to([-5.15, 0.9, 0]),
-                  run_time=0.7)
 
         # ---- the noisy channel
         n = Grid2([0.6, 0.9, 0], dx=2.2, dy=1.0, size=40, widest=r"1-\varepsilon")
@@ -364,6 +361,9 @@ class Main(NarratedScene):
         noisy = VGroup(*[dot_look(Circle(radius=0.14), 0) for _ in range(12)]).arrange(RIGHT, buff=0.14)
         noisy.move_to([0.6, -1.65, 0])
         with self.voice("c6"):
+            # (moved inside the line: in the dialogue he confirms her answer straight away)
+            self.play(FadeOut(VGroup(band, why1, cols, rows, demo)),
+                      not_all.animate.scale(0.6).move_to([-5.15, 0.9, 0]), run_time=0.7)
             self.play(FadeIn(n.frame), FadeIn(n_name), *[FadeIn(p) for p in nph], run_time=0.6)
             self.hold(1.2)
             self.play(FadeIn(note), run_time=0.5)
@@ -626,12 +626,20 @@ class Main(NarratedScene):
         with self.voice("e6"):
             self.hold(1.4)
             self.play(Indicate(VGroup(sq3[0], sq3[1], one3), color=HILITE, scale_factor=1.12), run_time=1.0)
+        # the same two qubits on the sphere of scene A: opposite ends of one diameter
+        ball = Bloch(R=0.92, center=[xs[0], -1.45, 0])
+        ball_plus, ball_minus = ball.arrow([1, 0, 0]), ball.arrow([-1, 0, 0])
+        sphere = VGroup(ball, ball_plus, ball_minus)
         with self.voice("e7"):
             self.play(TransformFromCopy(v3, v2), FadeIn(titles[1]), run_time=0.9)
             self.hold(3.4)
             self.play(TransformFromCopy(v2.top, sq2[0]), TransformFromCopy(v2.bottom, sq2[1]), run_time=0.8)
             self.play(Transform(sq2[0], slab2[0]), Transform(sq2[1], slab2[1]), run_time=0.8)
             self.play(FadeIn(one2, shift=RIGHT * 0.1), run_time=0.4)
+            self.hold(0.9)
+            self.play(FadeIn(ball), run_time=0.6)
+            self.play(FadeIn(ball_plus), Indicate(v2, color=HILITE, scale_factor=1.06), run_time=0.7)
+            self.play(FadeIn(ball_minus), Indicate(v3, color=HILITE, scale_factor=1.06), run_time=0.7)
 
         # ---- the same areas become the probabilities: each slab turns into its bar
         rule = pill("probability of an outcome  =  square of its amplitude", color=HILITE, size=22)
@@ -650,7 +658,8 @@ class Main(NarratedScene):
         level = DashedLine([-5.7, by + bfull / 2, 0], [5.1, by + bfull / 2, 0], color=MUTED, stroke_width=2,
                            dash_length=0.12)
         with self.voice("e9"):
-            self.hold(3.3)
+            self.hold(2.8)
+            self.play(FadeOut(sphere), run_time=0.5)          # the coin's bars need this corner
             self.play(FadeIn(charts[0], shift=DOWN * 0.2), run_time=0.6)
             self.play(Create(level), run_time=0.9)
         tag = pill("what one H gives", color=HILITE, size=20).next_to(titles[1], UP, buff=0.14)
@@ -724,62 +733,19 @@ class Main(NarratedScene):
                     self.hold(0.9 if k == 0 else 0.6)
                     self.play(FadeIn(cell, shift=RIGHT * 0.2), run_time=0.5)
 
-        stops = ["1.2  States", "1.3  Measurement", "1.4  The Bloch sphere", "1.5  Gates", "1.6  Interference"]
-        px = np.linspace(-5.3, 5.3, 5)
-        track = Line([px[0], -1.6, 0], [px[-1], -1.6, 0], color=PURPLE, stroke_width=3)
-        dots = [Circle(radius=0.13, color=HILITE, stroke_width=2.5, fill_color=BG, fill_opacity=1).move_to([x, -1.6, 0])
-                for x in px]
-        labs = [T(s, size=19, color=INK).move_to([x, -2.1, 0]) for s, x in zip(stops, px)]
-        with self.voice("f4"):
-            self.play(Create(track), *[FadeIn(d) for d in dots], run_time=0.7)
-            self.hold(1.3)
-            for k in range(4):
-                self.play(dots[k].animate.set_fill(HILITE, opacity=1), FadeIn(labs[k]), run_time=0.45)
-                self.hold(0.35)
         back = self.badge.copy()
         with self.voice("f5"):
-            self.play(dots[4].animate.set_fill(HILITE, opacity=1).scale(1.5), FadeIn(labs[4]), run_time=0.6)
-            self.hold(1.4)
-            self.play(back.animate.scale(0.85).next_to(dots[4], UP, buff=0.25), run_time=0.9)
-            self.play(Indicate(back, color=HILITE, scale_factor=1.15), run_time=0.8)
-        self.play(FadeOut(VGroup(*heads, *names, rules, *left, *right, track, *dots, *labs, back)), run_time=0.5)
+            self.hold(0.8)
+            self.play(back.animate.scale(1.7).move_to([0, -1.75, 0]), run_time=0.9)
+            self.play(Indicate(back, color=HILITE, scale_factor=1.12), run_time=0.9)
+        self.play(FadeOut(VGroup(*heads, *names, rules, *left, *right, back)), run_time=0.5)
 
-    # ------------------------------------------------------------ R, Q, Z. recap, questions, end card
+    # ------------------------------------------------------------ Z. end card
     def closing(self):
-        self.recap([["A random bit is a probability vector.",
-                     "Operations are stochastic matrices, read column by column."],
-                    ["Probabilities only add.",
-                     "No coin can turn randomness back into certainty."],
-                    ["A qubit holds amplitudes.",
-                     "They can be negative, and their squares total one."]],
-                   ["r0", "r1", "r2", "r3"])
-
-        def row(*parts, buff=0.3):
-            return VGroup(*parts).arrange(RIGHT, buff=buff)
-
-        half = r"\begin{pmatrix}\tfrac12\\[0.2em]\tfrac12\end{pmatrix}"
-        root = r"\begin{pmatrix}\tfrac{1}{\sqrt2}\\[0.2em]\tfrac{1}{\sqrt2}\end{pmatrix}"
-        qas = [
-            ("q1", "q1a",
-             row(T("Is", size=30), M(r"\begin{pmatrix}0.7\\0.5\end{pmatrix}", size=40),
-                 T("a probability vector?", size=30)),
-             row(T("No.", size=30, bold=True), M(r"0.7 + 0.5 = 1.2 \neq 1", size=38))),
-            ("q2", "q2a",
-             row(T("What is the second column of", size=30),
-                 M(r"\mathrm{NOT} = \begin{pmatrix}0 & ?\\1 & ?\end{pmatrix}", size=40),
-                 T("and why?", size=30)),
-             row(M(r"\begin{pmatrix}1\\0\end{pmatrix}", size=40),
-                 T("An input of 1 certainly becomes 0.", size=28), buff=0.45)),
-            ("q3", "q3a",
-             row(T("Is", size=30), M(half, size=40), T("a valid pair of amplitudes?", size=30)),
-             row(T("No.", size=30, bold=True), M(r"\tfrac14 + \tfrac14 = \tfrac12 \neq 1", size=38),
-                 T("The valid pair is", size=26), M(root, size=34))),
-        ]
-        self.questions(qas, "q0")
-
-        end = T("Next:   1.2   States", size=44, bold=True)
-        self.play(FadeOut(VGroup(self.head, self.badge, self.note)), run_time=0.4)
+        """Only the pointer to the next section (the recap and the questions were removed)."""
+        end = T("Next:   1.2   States", size=44, bold=True).move_to([0, DROP, 0])
         with self.voice("z1"):
+            self.play(FadeOut(VGroup(self.head, self.badge, self.note)), run_time=0.4)
             self.play(FadeIn(end, shift=UP * 0.2), run_time=0.6)
         self.hold(0.8)
         self.play(FadeOut(end), run_time=0.6)
