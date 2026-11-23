@@ -1,0 +1,51 @@
+---
+// The light cone of an edge (u, v): the vertices a depth-p circuit can see, for p = 0, 1, 2.
+const u = [250, 140], v = [350, 140];
+// distance 1
+const a = [[170, 90], [170, 190], [430, 90], [430, 190]];
+// distance 2
+const b = [[90, 55], [90, 110], [90, 215], [510, 60], [510, 120], [510, 200]];
+// edges that appear with the first layer and with the second
+const e1 = [[u, a[0]], [u, a[1]], [v, a[2]], [v, a[3]], [a[2], a[3]]];
+const e2 = [[a[0], b[0]], [a[0], b[1]], [a[1], b[1]], [a[1], b[2]], [a[2], b[3]], [a[2], b[4]], [a[3], b[5]]];
+// edges leading on to the rest of the graph
+const out = [
+  [b[0], [30, 45]], [b[1], [30, 100]], [b[1], [30, 125]], [b[2], [30, 205]], [b[2], [30, 228]],
+  [b[3], [570, 48]], [b[3], [570, 72]], [b[4], [570, 120]], [b[5], [570, 188]], [b[5], [570, 214]],
+];
+---
+<svg viewBox="0 0 600 280" role="img" aria-label="The light cone of an edge: at depth one it contains the neighbours of the two endpoints, at depth two the vertices at distance two, and nothing beyond">
+  <rect class="f-soft lc-2" x="60" y="26" width="480" height="228" rx="26" />
+  <rect class="f-tint lc-1" x="140" y="62" width="320" height="156" rx="20" />
+  <text class="f-note lc-2" x="300" y="48" text-anchor="middle">p = 2</text>
+  <text class="f-note lc-1" x="300" y="84" text-anchor="middle">p = 1</text>
+
+  {out.map(([p, q]) => <line class="f-ghost lc-2" x1={p[0]} y1={p[1]} x2={q[0]} y2={q[1]} />)}
+  {e2.map(([p, q]) => <line class="f-thin lc-2" x1={p[0]} y1={p[1]} x2={q[0]} y2={q[1]} />)}
+  {e1.map(([p, q]) => <line class="f-thin lc-1" x1={p[0]} y1={p[1]} x2={q[0]} y2={q[1]} />)}
+  <line class="f-hot" x1={u[0]} y1={u[1]} x2={v[0]} y2={v[1]} />
+
+  {b.map(([x, y]) => <circle class="f-z lc-2" cx={x} cy={y} r="8" />)}
+  {a.map(([x, y]) => <circle class="f-x lc-1" cx={x} cy={y} r="8" />)}
+  <circle class="f-syn" cx={u[0]} cy={u[1]} r="10" />
+  <circle class="f-syn" cx={v[0]} cy={v[1]} r="10" />
+  <text class="f-it" x={u[0]} y="170" text-anchor="middle">u</text>
+  <text class="f-it" x={v[0]} y="170" text-anchor="middle">v</text>
+</svg>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .lc-1 { animation: lec6-lightcone-one 10s ease-in-out infinite; }
+    .lc-2 { animation: lec6-lightcone-two 10s ease-in-out infinite; }
+    @keyframes lec6-lightcone-one {
+      0%, 14% { opacity: 0; }
+      22%, 92% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    @keyframes lec6-lightcone-two {
+      0%, 40% { opacity: 0; }
+      48%, 92% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+  }
+</style>

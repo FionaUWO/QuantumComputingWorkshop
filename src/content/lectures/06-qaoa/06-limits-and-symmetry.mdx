@@ -4,6 +4,8 @@ board: false
 ---
 import Statement from '../../../components/Statement.astro';
 import Example from '../../../components/Example.astro';
+import Figure from '../../../components/Figure.astro';
+import WeightOrbits from '../../../components/figures/lec6/WeightOrbits.astro';
 
 ### What limits QAOA today
 
@@ -38,6 +40,10 @@ whose dimension is the number of orbits of $\Gamma$ acting on the bit strings $\
 <Example>
 For the complete graph $K_n$ every permutation is an automorphism. The orbits of $S_n$ on bit strings are the sets of strings with a given number of ones, so $\dim\mathcal{H}^\Gamma = n + 1$ instead of $2^n$. The whole QAOA evolution takes place in a space that $\lceil\log_2(n+1)\rceil$ qubits can hold.
 </Example>
+
+<Figure caption="The 16 bit strings of four qubits, grouped into the orbits of S<sub>4</sub>. A permutation of the qubits moves a string only within its column, so there are five orbits, one for each number of ones. The invariant subspace is spanned by the five uniform superpositions over the columns, and three qubits are enough to hold it." width="36rem">
+  <WeightOrbits />
+</Figure>
 
 The bit-flip symmetry $X^{\otimes n}$ of MaxCut halves the dimension again. When the invariant subspace is small, one can represent it directly on a smaller register and run the same optimisation there. Making that mapping explicit and efficient is the idea behind the lab's qubit-efficient QAOA.
 

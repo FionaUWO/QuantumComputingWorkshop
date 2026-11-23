@@ -2,6 +2,8 @@
 title: "Stabilizer codes"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import ErrorClasses from '../../../components/figures/ErrorClasses.astro';
 import Statement from '../../../components/Statement.astro';
 import Example from '../../../components/Example.astro';
 
@@ -28,6 +30,11 @@ Let $N(S)$ be the set of Pauli elements that commute with every element of $S$.
 - If $E \in S$, then $E|\psi\rangle = |\psi\rangle$. Nothing happened.
 - If $E \notin N(S)$, the syndrome is non-zero and the error is *detected*.
 - If $E \in N(S)$ but $E \notin S$, the syndrome is zero, yet $E$ acts non-trivially on the code space. This is an undetectable *logical error*. The elements of $N(S)$ outside $S$ are the *logical operators* of the code: they are how one computes on encoded qubits, and also how the code fails.
+
+
+<Figure caption="Every Pauli error falls in one of three regions. The code is in trouble only in the middle one: an error there passes every check and still changes the encoded state." width="32rem">
+  <ErrorClasses />
+</Figure>
 
 <Statement>
 **Theorem.** A set of errors $\{E_j\} \subset G_n$ is correctable by the stabilizer code $S$ if $E_j^\dagger E_k \notin N(S) \setminus S$ for all $j$ and $k$.

@@ -4,6 +4,8 @@ title: "From bits to amplitudes"
 import Try from '../../../components/Try.astro';
 import Example from '../../../components/Example.astro';
 import Video from '../../../components/Video.astro';
+import Figure from '../../../components/Figure.astro';
+import NormShapes from '../../../components/figures/lec1/NormShapes.astro';
 
 <Video src="assets/video/L1_1_From_bits_to_amplitudes.mp4" poster="assets/video/L1_1_From_bits_to_amplitudes.jpg" captions="assets/video/L1_1_From_bits_to_amplitudes.vtt" title="Video for this section (6 minutes). Subtitles can be switched on and off in the player. The notes below cover the same material." />
 
@@ -147,6 +149,10 @@ $$
 
 both allowed because $\big(\tfrac{1}{\sqrt2}\big)^2 + \big(\pm\tfrac{1}{\sqrt2}\big)^2 = \tfrac12 + \tfrac12 = 1$. The second has no counterpart among probability vectors.
 </Example>
+
+<Figure caption="Vectors with two real entries, drawn in the plane. Probability vectors fill the straight segment from e<sub>0</sub> to e<sub>1</sub>, where the entries sum to 1, and the fair coin sits at its midpoint. Amplitude vectors lie on the circle of radius 1, where the squares sum to 1. The circle reaches points with a negative entry, such as the lower of the two marked points, and the segment cannot." width="26rem">
+  <NormShapes />
+</Figure>
 
 <Example>
 Three quick checks of the rule.

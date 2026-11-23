@@ -3,6 +3,8 @@ title: "The circuit"
 board: false
 ---
 import Statement from '../../../components/Statement.astro';
+import Figure from '../../../components/Figure.astro';
+import TriangleLayer from '../../../components/figures/lec6/TriangleLayer.astro';
 
 Both layers compile into gates we already know.
 
@@ -29,6 +31,10 @@ The first factor is a global phase. For the second we use an identity for two qu
 *Proof.* On $|a, b\rangle$ the first CNOT writes the parity $a \oplus b$ into the second qubit, $R_z(\theta)$ multiplies by $e^{-i\theta/2}$ if the parity is $0$ and by $e^{i\theta/2}$ if it is $1$, and the second CNOT restores $b$. The left side multiplies $|a,b\rangle$ by $e^{-i\theta(-1)^{a+b}/2}$, the same phases. $\qquad\blacksquare$
 
 So each edge costs two CNOTs and one rotation, with $\theta = -\gamma$.
+
+<Figure caption="One QAOA layer for the triangle graph drawn on the left. After the Hadamards, each edge contributes a CNOT, the rotation R<sub>z</sub>(−γ) on the target qubit and a second CNOT. The layer ends with the mixer rotation R<sub>x</sub>(2β) on every qubit. In total there are 3 Hadamards, 6 CNOTs and 6 rotations." width="40rem">
+  <TriangleLayer />
+</Figure>
 
 <Statement>
 **Cost of one run.** A depth-$p$ QAOA circuit for a graph with $n$ vertices and $|E|$ edges uses $n$ Hadamards, $2p|E|$ CNOTs and $p(|E| + n)$ single-qubit rotations.

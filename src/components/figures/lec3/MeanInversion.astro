@@ -1,0 +1,88 @@
+---
+// One Grover iteration on the amplitudes, N = 8 and M = 1: the oracle flips the sign of the solution,
+// then the diffusion operator reflects every amplitude about the mean.
+// Animated: the middle panel shows the flip, then the right panel shows the reflection.
+// Without animation the three panels show the three states.
+const N = 8, sol = 5;
+const a0 = 1 / Math.sqrt(N);
+const start = Array.from({ length: N }, () => a0);
+const afterO = start.map((a, i) => (i === sol ? -a : a));
+const mean = afterO.reduce((s, a) => s + a, 0) / N;
+const afterD = afterO.map((a) => 2 * mean - a);
+
+const U = 110, base = 140, pitch = 16, bw = 12;
+const x0 = (p: number) => 28 + 220 * p;
+const bar = (a: number) => ({ y: (a >= 0 ? base - a * U : base).toFixed(1), height: (Math.abs(a) * U).toFixed(1) });
+const origin = `transform-origin: 0px ${base}px`;
+const meanY = (base - mean * U).toFixed(1);
+const shift = (-(a0 - mean) * U).toFixed(2);
+const titles = ['start: |s⟩', 'after the oracle O', 'after the diffusion D'];
+---
+<svg viewBox="0 0 660 215" role="img" aria-label="Amplitudes of eight basis states at the start, after the oracle, and after inversion about the mean">
+  <defs>
+    <marker id="meaninv-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto">
+      <path class="f-arrowhead" d="M0 0 L10 5 L0 10 z" />
+    </marker>
+  </defs>
+
+  {['O', 'D'].map((name, p) => (
+    <g>
+      <line class="f-flow" x1={x0(p) + 146} y1="70" x2={x0(p) + 206} y2="70" marker-end="url(#meaninv-arrow)" />
+      <text class="f-label" x={x0(p) + 176} y="58" text-anchor="middle">{name}</text>
+    </g>
+  ))}
+
+  <g>
+    {start.map((a, i) => <rect class={i === sol ? 'f-x' : 'bar'} x={x0(0) + i * pitch} width={bw} {...bar(a)} />)}
+  </g>
+
+  <g>
+    {afterO.map((a, i) => i === sol
+      ? <rect class="f-x mi-flip" style={origin} x={x0(1) + i * pitch} width={bw} {...bar(a)} />
+      : <rect class="bar" x={x0(1) + i * pitch} width={bw} {...bar(a)} />)}
+    <line class="f-ghost mi-mean" style={`--shift:${shift}px`} x1={x0(1) - 6} y1={meanY} x2={x0(1) + 134} y2={meanY} />
+    <text class="f-note" x={x0(1) + 138} y={Number(meanY) + 4}>mean</text>
+  </g>
+
+  <g class="mi-late">
+    {afterD.map((a, i) => (
+      <rect class={i === sol ? 'f-x mi-move' : 'bar mi-move'} style={`${origin}; --from:${(afterO[i] / a).toFixed(4)}`} x={x0(2) + i * pitch} width={bw} {...bar(a)} />
+    ))}
+    <line class="f-ghost" x1={x0(2) - 6} y1={meanY} x2={x0(2) + 134} y2={meanY} />
+    <text class="f-note" x={x0(2) + 138} y={Number(meanY) + 4}>mean</text>
+  </g>
+
+  {titles.map((t, p) => (
+    <g>
+      <line class="f-axis" x1={x0(p) - 6} y1={base} x2={x0(p) + 134} y2={base} />
+      <text class="f-note" x={x0(p) - 10} y={base + 4} text-anchor="end">0</text>
+      <text class="f-note" x={x0(p) + 62} y="207" text-anchor="middle">{t}</text>
+    </g>
+  ))}
+</svg>
+
+<style>
+  .bar { fill: var(--lilac); }
+  @media (prefers-reduced-motion: no-preference) {
+    .mi-flip { animation: meaninv-flip 12s ease-in-out infinite; }
+    .mi-mean { animation: meaninv-mean 12s ease-in-out infinite; }
+    .mi-late { animation: meaninv-late 12s ease-in-out infinite; }
+    .mi-move { animation: meaninv-move 12s ease-in-out infinite; }
+  }
+  @keyframes meaninv-flip {
+    0%, 12% { transform: scaleY(-1); }
+    28%, 100% { transform: scaleY(1); }
+  }
+  @keyframes meaninv-mean {
+    0%, 12% { transform: translateY(var(--shift)); }
+    28%, 100% { transform: translateY(0); }
+  }
+  @keyframes meaninv-late {
+    0%, 36% { opacity: 0.25; }
+    42%, 100% { opacity: 1; }
+  }
+  @keyframes meaninv-move {
+    0%, 50% { transform: scaleY(var(--from)); }
+    68%, 100% { transform: scaleY(1); }
+  }
+</style>

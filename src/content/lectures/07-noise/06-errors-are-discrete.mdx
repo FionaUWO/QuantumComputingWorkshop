@@ -2,6 +2,8 @@
 title: "Errors are discrete"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import Discretisation from '../../../components/figures/Discretisation.astro';
 import Statement from '../../../components/Statement.astro';
 
 The claim "arbitrary error" needs justification. The Pauli matrices together with the identity form a basis of the $2 \times 2$ complex matrices. So any operator $E$ acting on one qubit, unitary or not, can be written
@@ -17,6 +19,11 @@ E|\psi_L\rangle = e_0\,|\psi_L\rangle + e_1\,X|\psi_L\rangle + e_2\,Z|\psi_L\ran
 $$
 
 For a code that corrects $X$, $Z$ and $XZ$ on that qubit, the four terms have four different syndromes. Measuring the syndrome collapses the superposition onto one term, and the recovery for that syndrome returns $|\psi_L\rangle$. The coefficients $e_k$ affect only the probabilities of the syndromes, never the recovered state.
+
+
+<Figure caption="An arbitrary error E on one qubit of an encoded state |ψ⟩. Measuring the syndrome leaves one of four branches, with probability proportional to |e<sub>k</sub>|². Each branch has its own recovery, and all four end in the same state." width="40rem">
+  <Discretisation />
+</Figure>
 
 <Statement>
 **Theorem (discretisation of errors).** If a code and recovery procedure correct each error in a set $\{E_i\}$, they also correct every linear combination of the $E_i$. In particular, a code that corrects $X$, $Y$ and $Z$ on any single qubit corrects every single-qubit error.

@@ -1,0 +1,33 @@
+---
+// Z errors on a 6 x 6 toric code: an open chain with its two syndrome points (a),
+// a loop that bounds a region (b), and a loop that winds around the torus (c).
+const L = 6, s = 52, ox = 40, oy = 30;
+const X = (c: number) => ox + c * s;
+const Y = (r: number) => oy + r * s;
+const path = (pts: number[][], close = false) =>
+  'M' + pts.map(([c, r]) => `${X(c)} ${Y(r)}`).join(' L') + (close ? ' Z' : '');
+
+const chain = [[1, 1], [1, 2], [2, 2], [3, 2]];
+const loop = [[4, 1], [5, 1], [5, 3], [4, 3]];
+const wind = [[0, 4], [L, 4]];
+const W = X(L) + ox, H = Y(L) + oy;
+---
+<svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="An open error chain, a contractible loop and a loop around the torus">
+  {Array.from({ length: L }, (_, i) => <line class="f-grid" x1={X(0)} y1={Y(i)} x2={X(L)} y2={Y(i)} />)}
+  {Array.from({ length: L }, (_, i) => <line class="f-grid" x1={X(i)} y1={Y(0)} x2={X(i)} y2={Y(L)} />)}
+  <line class="f-grid f-dashed" x1={X(0)} y1={Y(L)} x2={X(L)} y2={Y(L)} />
+  <line class="f-grid f-dashed" x1={X(L)} y1={Y(0)} x2={X(L)} y2={Y(L)} />
+
+  <path class="f-face" d={path(loop, true)} />
+  <path class="f-err" d={path(chain)} />
+  <path class="f-err" d={path(loop, true)} />
+  <path class="f-err" d={path(wind)} />
+
+  {[chain[0], chain[chain.length - 1]].map(([c, r]) => <circle class="f-syn" cx={X(c)} cy={Y(r)} r="7.5" />)}
+
+  <g class="f-label">
+    <text x={X(2)} y={Y(2) - 12} text-anchor="middle">a</text>
+    <text x={X(4.5)} y={Y(2) + 5} text-anchor="middle">b</text>
+    <text x={X(3)} y={Y(4) - 12} text-anchor="middle">c</text>
+  </g>
+</svg>

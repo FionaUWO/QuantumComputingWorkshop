@@ -1,0 +1,35 @@
+---
+// The Kronecker product of two single-qubit states as a multiplication table:
+// rows are the amplitudes of A, columns the amplitudes of B, each cell is one amplitude of the pair.
+const x0 = 150, y0 = 80, w = 110, h = 70;
+const rows = ['α', 'β'];
+const cols = ['γ', 'δ'];
+const cells = rows.flatMap((r, i) => cols.map((c, j) => ({
+  x: x0 + j * w, y: y0 + i * h, amp: r + c, ket: `|${i}${j}⟩`,
+})));
+---
+<svg viewBox="0 0 400 235" role="img" aria-label="The four amplitudes of a product state as a table of products of the amplitudes of A and B">
+  <text class="f-note" x={x0 + w} y="20" text-anchor="middle">qubit B</text>
+  <text class="f-note" transform={`translate(24 ${y0 + h}) rotate(-90)`} text-anchor="middle">qubit A</text>
+
+  {cols.map((c, j) => (
+    <g text-anchor="middle">
+      <text class="f-note" x={x0 + j * w + w / 2} y="44">|{j}⟩</text>
+      <text class="f-it" x={x0 + j * w + w / 2} y="68">{c}</text>
+    </g>
+  ))}
+  {rows.map((r, i) => (
+    <g text-anchor="middle">
+      <text class="f-note" x="82" y={y0 + i * h + h / 2 + 5}>|{i}⟩</text>
+      <text class="f-it" x="124" y={y0 + i * h + h / 2 + 6}>{r}</text>
+    </g>
+  ))}
+
+  {cells.map(({ x, y, amp, ket }) => (
+    <g text-anchor="middle">
+      <rect class="f-cell" x={x} y={y} width={w} height={h} />
+      <text class="f-it" x={x + w / 2} y={y + h / 2 - 2}>{amp}</text>
+      <text class="f-note" x={x + w / 2} y={y + h / 2 + 20}>{ket}</text>
+    </g>
+  ))}
+</svg>

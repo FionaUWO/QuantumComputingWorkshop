@@ -1,0 +1,26 @@
+---
+// The 16 bit strings of four qubits, grouped into the five orbits of S_4 (one per number of ones).
+const n = 4;
+const all = Array.from({ length: 2 ** n }, (_, i) => i.toString(2).padStart(n, '0'));
+const ones = (s: string) => [...s].filter((c) => c === '1').length;
+const cw = 60, ch = 24, pitch = 30, midY = 124, pad = 9;
+const cols = Array.from({ length: n + 1 }, (_, k) => {
+  const strings = all.filter((s) => ones(s) === k);
+  const h = strings.length * pitch - (pitch - ch);
+  return { k, strings, cx: 70 + 115 * k, top: midY - h / 2, h };
+});
+---
+<svg viewBox="0 0 600 252" role="img" aria-label="The sixteen bit strings of four qubits arranged in five columns by their number of ones; each column is one orbit of the permutation group">
+  {cols.map(({ k, strings, cx, top, h }) => (
+    <g>
+      <rect class="f-tint" x={cx - cw / 2 - pad} y={top - pad} width={cw + 2 * pad} height={h + 2 * pad} rx="12" />
+      {strings.map((s, i) => (
+        <g>
+          <rect class="f-cell" x={cx - cw / 2} y={top + i * pitch} width={cw} height={ch} rx="4" />
+          <text x={cx} y={top + i * pitch + 17} text-anchor="middle" style="font-size:14px;letter-spacing:0.08em">{s}</text>
+        </g>
+      ))}
+      <text class="f-note" x={cx} y="244" text-anchor="middle">{k === 1 ? '1 one' : `${k} ones`}</text>
+    </g>
+  ))}
+</svg>

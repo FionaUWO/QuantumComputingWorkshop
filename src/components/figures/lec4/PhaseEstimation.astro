@@ -1,0 +1,58 @@
+---
+// Phase estimation with t = 3 control qubits. The control of weight 2^j (j = 2 on top, j = 0
+// at the bottom) controls U^(2^j); then the inverse Fourier transform and a measurement.
+const c = [40, 85, 130];          // control wires, most significant on top
+const u = 190;                    // the eigenvector register
+const x0 = 70;
+const hx = 95;
+// control wire index, x, label of the box, angle kicked back onto that wire
+const us = [
+  [2, 150, 'U', '2π · φ'],
+  [1, 210, 'U²', '2π · 2φ'],
+  [0, 270, 'U⁴', '2π · 4φ'],
+] as const;
+const noteX = 328;
+const qx = 385, qw = 60;          // the inverse transform
+const mx = 470;                   // left edge of the meters
+---
+<svg viewBox="0 0 600 220" role="img" aria-label="Phase estimation circuit with three control qubits controlling U, U squared and U to the fourth, followed by the inverse Fourier transform and measurement">
+  <text class="f-note" x={noteX} y="14" text-anchor="middle">angle on |1⟩</text>
+
+  <g class="f-label" text-anchor="end">
+    {c.map((y) => <text x={x0 - 8} y={y + 5}>|0⟩</text>)}
+    <text x={x0 - 8} y={u + 5}>|u⟩</text>
+  </g>
+
+  {c.map((y) => <line class="f-wire" x1={x0} y1={y} x2={mx} y2={y} />)}
+  <line class="f-wire" x1={x0} y1={u} x2="540" y2={u} />
+  <text class="f-label" x="548" y={u + 5}>|u⟩</text>
+
+  {c.map((y) => (
+    <g>
+      <rect class="f-box" x={hx - 14} y={y - 14} width="28" height="28" rx="4" />
+      <text class="f-label" x={hx} y={y + 5} text-anchor="middle">H</text>
+    </g>
+  ))}
+
+  {us.map(([i, x, name, angle]) => (
+    <g>
+      <line class="f-wire" x1={x} y1={c[i]} x2={x} y2={u} />
+      <circle class="f-dot" cx={x} cy={c[i]} r="4.5" />
+      <rect class="f-box" x={x - 22} y={u - 15} width="44" height="30" rx="4" />
+      <text class="f-label" x={x} y={u + 5} text-anchor="middle">{name}</text>
+      <text class="f-note" x={noteX} y={c[i] - 8} text-anchor="middle">{angle}</text>
+    </g>
+  ))}
+
+  <rect class="f-box" x={qx} y={c[0] - 18} width={qw} height={c[2] - c[0] + 36} rx="6" />
+  <text class="f-label" x={qx + qw / 2} y={c[1] + 5} text-anchor="middle">QFT†</text>
+
+  {c.map((y) => (
+    <g>
+      <rect class="f-box" x={mx} y={y - 14} width="36" height="28" rx="4" />
+      <path class="f-wire" fill="none" d={`M${mx + 8} ${y + 7} a10 10 0 0 1 20 0`} />
+      <line class="f-wire" x1={mx + 18} y1={y + 7} x2={mx + 27} y2={y - 8} />
+    </g>
+  ))}
+  <text class="f-label" x={mx + 48} y={c[1] + 5}>a ≈ 8φ</text>
+</svg>

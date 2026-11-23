@@ -1,6 +1,8 @@
 ---
 title: "Product or entangled"
 ---
+import Figure from '../../../components/Figure.astro';
+import RankTest from '../../../components/figures/lec2/RankTest.astro';
 import Statement from '../../../components/Statement.astro';
 import Try from '../../../components/Try.astro';
 
@@ -25,6 +27,10 @@ $$
 $$
 
 Neither qubit of a Bell pair has a state of its own. There is no vector in $\mathbb{C}^2$ that describes $A$ alone.
+
+<Figure caption="The amplitude matrix M of two states, with darker cells for larger amplitudes. On the left the two rows are proportional, so M has rank one and the state factors. On the right the weight sits on the diagonal, neither row is a multiple of the other, and the determinant is not zero." width="32rem">
+  <RankTest />
+</Figure>
 
 <Try runs={[
   { do: 'reset,HA,HB', label: 'Apply H to A and to B' },

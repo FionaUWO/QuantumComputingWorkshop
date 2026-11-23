@@ -1,0 +1,83 @@
+---
+// The eight energy levels of H(t) = (1 - t/T) H_B + (t/T) H_P on three qubits, computed
+// numerically, with H_B = -(X1 + X2 + X3) and the Ising example H_P = Z1 + Z1 Z2 + Z2 Z3
+// (ground state 101). The gap between the two lowest levels is smallest at t/T = 1/2,
+// where it is about 0.765.
+const n = 3, N = 1 << n;
+const sgn = (z: number, j: number) => 1 - 2 * ((z >> (n - 1 - j)) & 1);   // qubit 1 is the leftmost bit
+const cost = (z: number) => sgn(z, 0) + sgn(z, 0) * sgn(z, 1) + sgn(z, 1) * sgn(z, 2);
+const ham = (s: number) =>
+  Array.from({ length: N }, (_, a) => Array.from({ length: N }, (_, b) => {
+    if (a === b) return s * cost(a);
+    const d = a ^ b;
+    return (d & (d - 1)) === 0 ? -(1 - s) : 0;      // -X_j connects strings that differ in one bit
+  }));
+// eigenvalues of a real symmetric matrix by cyclic Jacobi rotations, sorted ascending
+const eig = (M: number[][]) => {
+  const A = M.map((r) => r.slice());
+  for (let sweep = 0; sweep < 60; sweep++) {
+    let off = 0;
+    for (let p = 0; p < N; p++) for (let q = p + 1; q < N; q++) off += A[p][q] ** 2;
+    if (off < 1e-20) break;
+    for (let p = 0; p < N; p++) for (let q = p + 1; q < N; q++) {
+      if (Math.abs(A[p][q]) < 1e-15) continue;
+      const th = 0.5 * Math.atan2(2 * A[p][q], A[q][q] - A[p][p]);
+      const c = Math.cos(th), sn = Math.sin(th);
+      for (let k = 0; k < N; k++) { const x = A[k][p], y = A[k][q]; A[k][p] = c * x - sn * y; A[k][q] = sn * x + c * y; }
+      for (let k = 0; k < N; k++) { const x = A[p][k], y = A[q][k]; A[p][k] = c * x - sn * y; A[q][k] = sn * x + c * y; }
+    }
+  }
+  return A.map((r, i) => r[i]).sort((a, b) => a - b);
+};
+
+const K = 80;
+const levels = Array.from({ length: K + 1 }, (_, i) => eig(ham(i / K)));
+let iMin = 0;
+levels.forEach((e, i) => { if (e[1] - e[0] < levels[iMin][1] - levels[iMin][0] - 1e-9) iMin = i; });
+
+const x0 = 70, x1 = 450, yMid = 150, yScale = 38;
+const px = (s: number) => x0 + s * (x1 - x0);
+const py = (v: number) => yMid - v * yScale;
+const path = (k: number) => levels.map((e, i) => `${i === 0 ? 'M' : 'L'}${px(i / K).toFixed(1)} ${py(e[k]).toFixed(1)}`).join(' ');
+const yb = py(-3.4), ytop = py(3.4);
+const yt = [-3, -1, 1, 3];
+const sMin = iMin / K, eLo = levels[iMin][0], eHi = levels[iMin][1];
+---
+<svg viewBox="0 0 520 322" role="img" aria-label="Energy levels along the adiabatic path. The ground level stays separated from the level above it, and the separation is smallest in the middle of the sweep">
+  <line class="f-axis" x1={x0} y1={yb} x2={x1} y2={yb} />
+  <line class="f-axis" x1={x0} y1={yb} x2={x0} y2={ytop} />
+  <g class="f-note">
+    {[0, 1].map((s) => (
+      <g>
+        <line class="f-axis" x1={px(s)} y1={yb} x2={px(s)} y2={yb + 5} />
+        <text x={px(s)} y={yb + 20} text-anchor="middle">{s}</text>
+      </g>
+    ))}
+    {yt.map((v) => (
+      <g>
+        <line class="f-axis" x1={x0 - 5} y1={py(v)} x2={x0} y2={py(v)} />
+        <text x={x0 - 10} y={py(v) + 4} text-anchor="end">{v < 0 ? `−${-v}` : v}</text>
+      </g>
+    ))}
+    <text x={px(0.5)} y={yb + 38} text-anchor="middle">t / T</text>
+    <text transform={`translate(20 ${yMid}) rotate(-90)`} text-anchor="middle">energy</text>
+  </g>
+  <text class="f-label" x={px(0)} y="12" text-anchor="middle">H<tspan dy="4" font-size="11">B</tspan></text>
+  <text class="f-label" x={px(1)} y="12" text-anchor="middle">H<tspan dy="4" font-size="11">P</tspan></text>
+
+  {[2, 3, 4, 5, 6, 7].map((k) => <path class="ag-high" d={path(k)} />)}
+  <path class="ag-first" d={path(1)} />
+  <path class="f-curve" d={path(0)} />
+
+  <line class="f-hot" x1={px(sMin)} y1={py(eHi) + 3} x2={px(sMin)} y2={py(eLo) - 3} />
+  <text class="f-label f-strong" x={px(sMin) + 9} y={(py(eHi) + py(eLo)) / 2 + 5}>Δ</text>
+
+  <text class="f-note" x={px(0.5)} y={py(levels[K / 2][0]) + 22} text-anchor="middle">ground state</text>
+  <text class="f-label" x={x1 + 10} y={py(levels[K][0]) + 5}>|101⟩</text>
+  <text class="f-label" x={x0 + 10} y={py(levels[0][0]) - 24}>|+++⟩</text>
+</svg>
+
+<style>
+  .ag-high { fill: none; stroke: var(--lilac); stroke-width: 1.5; }
+  .ag-first { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+</style>

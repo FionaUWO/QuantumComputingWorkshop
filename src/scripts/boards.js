@@ -1,13 +1,15 @@
 /* Starts every simulator on the page and connects the "try it" buttons to the main one.
-   Markup:  <div class="board" data-widget="bloch|pair|teleport" [data-sliders] [data-main]>
+   Markup:  <div class="board" data-widget="bloch|pair|teleport|noise" [data-sliders] [data-main]>
             <button data-run="reset,H,sample">  */
 import './bloch.js';
 import './multi.js';
+import './noise.js';
 
 const make = {
   bloch: (el) => new window.BlochSphere(el, { sliders: el.hasAttribute('data-sliders') }),
   pair: (el) => new window.TwoQubit(el),
   teleport: (el) => new window.Teleport(el),
+  noise: (el) => new window.NoiseSphere(el),
 };
 
 document.querySelectorAll('[data-widget]').forEach((el) => {

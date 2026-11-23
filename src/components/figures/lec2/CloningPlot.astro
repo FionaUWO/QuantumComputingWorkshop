@@ -1,0 +1,30 @@
+---
+// The no-cloning proof as a plot: the overlap c before cloning against c^2 after it.
+// A unitary keeps overlaps, so cloning needs c = c^2, which holds only at 0 and 1.
+const px = (c: number) => 70 + 320 * c;
+const py = (v: number) => 250 - 220 * v;
+const curve = 'M' + Array.from({ length: 51 }, (_, i) => `${px(i / 50).toFixed(1)} ${py((i / 50) ** 2).toFixed(1)}`).join(' L');
+const ticks = [0, 0.5, 1];
+---
+<svg viewBox="0 0 420 300" role="img" aria-label="The overlap of two states and its square agree only at zero and one">
+  <line class="f-axis" x1={px(0)} y1={py(0)} x2={px(1)} y2={py(0)} />
+  <line class="f-axis" x1={px(0)} y1={py(0)} x2={px(0)} y2={py(1)} />
+  {ticks.map((t) => (
+    <g class="f-note">
+      <line class="f-axis" x1={px(t)} y1={py(0)} x2={px(t)} y2={py(0) + 5} />
+      <text x={px(t)} y={py(0) + 20} text-anchor="middle">{t === 0.5 ? '½' : t}</text>
+      <line class="f-axis" x1={px(0) - 5} y1={py(t)} x2={px(0)} y2={py(t)} />
+      <text x={px(0) - 10} y={py(t) + 4} text-anchor="end">{t === 0.5 ? '½' : t}</text>
+    </g>
+  ))}
+
+  <line class="f-ghost" x1={px(0)} y1={py(0)} x2={px(1)} y2={py(1)} />
+  <path class="f-curve" d={curve} />
+  <circle class="f-syn" cx={px(0)} cy={py(0)} r="6" />
+  <circle class="f-syn" cx={px(1)} cy={py(1)} r="6" />
+
+  <text class="f-note" x={px(0.5)} y={py(0.66)} text-anchor="end">before: ⟨ψ|φ⟩</text>
+  <text class="f-note" x={px(0.66)} y={py(0.2)}>after: ⟨ψ|φ⟩²</text>
+  <text class="f-note" x={px(0.5)} y="294" text-anchor="middle">overlap ⟨ψ|φ⟩ of the two states to be copied</text>
+  <text class="f-note" transform={`translate(22 ${py(0.5)}) rotate(-90)`} text-anchor="middle">overlap of the two-qubit states</text>
+</svg>

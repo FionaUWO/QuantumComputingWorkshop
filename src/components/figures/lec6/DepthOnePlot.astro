@@ -1,0 +1,45 @@
+---
+// Depth-one score per edge at beta = pi/8, as a function of gamma, for d-regular triangle-free graphs:
+// 1/2 + 1/2 sin(gamma) cos^(d-1)(gamma), for d = 1, 2, 3.
+const H = Math.PI / 2;
+const px = (g: number) => 70 + 320 * (g / H);
+const py = (v: number) => 250 - 440 * (v - 0.5);
+const f = (d: number, g: number) => 0.5 + 0.5 * Math.sin(g) * Math.cos(g) ** (d - 1);
+const N = 80;
+const curve = (d: number) =>
+  'M' + Array.from({ length: N + 1 }, (_, i) => `${px((i / N) * H).toFixed(1)} ${py(f(d, (i / N) * H)).toFixed(1)}`).join(' L');
+// maxima: tan^2(gamma) = 1/(d-1)
+const best = [1, 2, 3].map((d) => {
+  const g = d === 1 ? H : Math.atan(1 / Math.sqrt(d - 1));
+  return { d, g, v: f(d, g) };
+});
+const xt = [[0, '0'], [H / 2, 'π/4'], [H, 'π/2']] as const;
+const yt = [[0.5, '½'], [best[2].v, '0.69'], [0.75, '¾'], [1, '1']] as const;
+---
+<svg viewBox="0 0 420 300" role="img" aria-label="Depth-one score per edge against gamma at beta equal to pi over eight, for degree 1, 2 and 3; the maxima are 1, three quarters and 0.69">
+  <line class="f-axis" x1={px(0)} y1={py(0.5)} x2={px(H)} y2={py(0.5)} />
+  <line class="f-axis" x1={px(0)} y1={py(0.5)} x2={px(0)} y2={py(1)} />
+  {xt.map(([g, name]) => (
+    <g class="f-note">
+      <line class="f-axis" x1={px(g)} y1={py(0.5)} x2={px(g)} y2={py(0.5) + 5} />
+      <text x={px(g)} y={py(0.5) + 20} text-anchor="middle">{name}</text>
+    </g>
+  ))}
+  {yt.map(([v, name]) => (
+    <g class="f-note">
+      <line class="f-axis" x1={px(0) - 5} y1={py(v)} x2={px(0)} y2={py(v)} />
+      <text x={px(0) - 10} y={py(v) + 4} text-anchor="end">{name}</text>
+    </g>
+  ))}
+
+  {best.map(({ g, v }) => <line class="f-ghost" x1={px(0)} y1={py(v)} x2={px(g)} y2={py(v)} />)}
+  {[1, 2, 3].map((d) => <path class="f-curve" d={curve(d)} />)}
+  {best.map(({ g, v }) => <circle class="f-syn" cx={px(g)} cy={py(v)} r="6" />)}
+
+  <text class="f-label" x="386" y="58" text-anchor="end">d = 1</text>
+  <text class="f-label" x="264" y="134">d = 2</text>
+  <text class="f-label" x="196" y="204" text-anchor="middle">d = 3</text>
+
+  <text class="f-note" x={px(H / 2)} y="294" text-anchor="middle">cost angle γ</text>
+  <text class="f-note" transform={`translate(20 ${py(0.75)}) rotate(-90)`} text-anchor="middle">score per edge at β = π/8</text>
+</svg>

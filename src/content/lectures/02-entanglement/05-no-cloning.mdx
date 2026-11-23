@@ -2,6 +2,8 @@
 title: "No cloning"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import CloningPlot from '../../../components/figures/lec2/CloningPlot.astro';
 import Statement from '../../../components/Statement.astro';
 
 CNOT copies $|0\rangle$ and $|1\rangle$: it sends $|b\rangle|0\rangle$ to $|b\rangle|b\rangle$. It does not copy $|+\rangle$; it produced a Bell pair instead of $|+\rangle|+\rangle$. In general, for $|\psi\rangle = \alpha|0\rangle + \beta|1\rangle$,
@@ -26,6 +28,10 @@ $$
 $$
 
 Hence $\langle\psi|\phi\rangle$ is $0$ or $1$: the two states are orthogonal or equal. A machine can copy an orthonormal basis and nothing more. $\qquad\blacksquare$
+
+<Figure caption="The proof as a picture, for an overlap that is a real number between 0 and 1. Before cloning the two pairs of qubits have overlap ⟨ψ|φ⟩ (dashed line), and after cloning they would have its square (curve). A unitary cannot change an overlap, so cloning is possible only where the two meet, at 0 and at 1." width="26rem">
+  <CloningPlot />
+</Figure>
 
 The same argument works if the blank qubit starts in any fixed state $|s\rangle$ instead of $|0\rangle$, and it is the reason non-orthogonal states cannot be told apart reliably: a device that identified them could then prepare fresh copies.
 

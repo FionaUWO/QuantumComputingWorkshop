@@ -1,0 +1,27 @@
+---
+// The Steane code: seven qubits, and one circle for each row of the Hamming matrix H.
+// Row 1 = {4,5,6,7} (top), row 2 = {2,3,6,7} (left), row 3 = {1,3,5,7} (right).
+const circles = [
+  { cx: 180, cy: 130, name: 'row 1', lx: 180, ly: 30 },
+  { cx: 135, cy: 205, name: 'row 2', lx: 62, ly: 300 },
+  { cx: 225, cy: 205, name: 'row 3', lx: 298, ly: 300 },
+];
+const qubits: [number, number, number][] = [
+  [4, 180, 85], [6, 128, 155], [5, 232, 155], [7, 180, 180],
+  [2, 90, 240], [3, 180, 237], [1, 270, 240],
+];
+---
+<svg viewBox="0 0 360 312" role="img" aria-label="The seven qubits of the Steane code and its three overlapping checks">
+  {circles.map((c) => (
+    <g>
+      <circle class="f-tint" cx={c.cx} cy={c.cy} r="85" />
+      <text class="f-note" x={c.lx} y={c.ly} text-anchor="middle">{c.name}</text>
+    </g>
+  ))}
+  {qubits.map(([n, x, y]) => (
+    <g>
+      <circle class="f-box" cx={x} cy={y} r="14" />
+      <text class="f-label" x={x} y={y + 5} text-anchor="middle">{n}</text>
+    </g>
+  ))}
+</svg>

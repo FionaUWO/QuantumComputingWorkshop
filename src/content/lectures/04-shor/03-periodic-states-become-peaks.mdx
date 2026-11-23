@@ -2,6 +2,8 @@
 title: "Periodic states become peaks"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import PeriodPeaks from '../../../components/figures/lec4/PeriodPeaks.astro';
 import Statement from '../../../components/Statement.astro';
 
 Suppose a state is supported on an arithmetic progression. Let $r$ divide $N$, fix an offset $0 \le x_0 \lt r$, and put
@@ -21,6 +23,10 @@ $$
 *Proof.* The amplitude of $|k\rangle$ is $\tfrac{\sqrt r}{N}\,\omega^{x_0 k} \sum_m \omega^{mrk}$. The sum runs over the $N/r$ powers of $\omega^{rk}$, an $(N/r)$-th root of unity. It equals $N/r$ if $\omega^{rk} = 1$, that is if $k$ is a multiple of $N/r$, and $0$ otherwise. $\qquad\blacksquare$
 
 Two things have happened. The period $r$ of the input has turned into the spacing $N/r$ of the output, as with any Fourier transform. And the offset $x_0$, which a direct measurement of $|\phi\rangle$ would have returned mixed up with a random $m$, now appears only in phases that do not affect the measurement. Measuring gives a uniformly random multiple of $N/r$, whatever $x_0$ was. From $lN/r$ we learn the fraction $l/r$, and from a few such fractions we learn $r$.
+
+<Figure caption="Measurement probabilities for N = 32 and r = 4. Before the transform there are eight spikes of height 1/8, spaced r apart and starting at the offset x<sub>0</sub>. After it there are four peaks of height 1/4 at 0, 8, 16 and 24. As the offset changes the upper picture shifts and the lower one stays the same." width="34rem">
+  <PeriodPeaks />
+</Figure>
 
 When $r$ does not divide $N$ the peaks are not perfectly sharp, but most of the probability still falls on the integers nearest to multiples of $N/r$. Handling that is the job of phase estimation.
 

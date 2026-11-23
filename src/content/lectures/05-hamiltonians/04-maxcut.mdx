@@ -4,6 +4,8 @@ board: false
 ---
 import Statement from '../../../components/Statement.astro';
 import Example from '../../../components/Example.astro';
+import Figure from '../../../components/Figure.astro';
+import MaxCutGraphs from '../../../components/figures/lec5/MaxCutGraphs.astro';
 
 Let $G = (V, E)$ be a graph with vertices $1, \dots, n$. A *cut* is a partition of the vertices into two sets, recorded as a bit string $z \in \{0,1\}^n$ with $z_i$ naming the side of vertex $i$. An edge is *cut* if its endpoints lie on different sides. The *MaxCut* problem asks for the largest number of edges that can be cut:
 
@@ -26,6 +28,10 @@ Flipping every bit swaps the two sides and leaves the cut unchanged: $C(\bar z) 
 <Example>
 For the triangle, at most two of the three edges can be cut, and the six strings other than $000$ and $111$ all achieve it: $C_{\max} = 2$. For the $4$-cycle, the alternating strings $0101$ and $1010$ cut all four edges: $C_{\max} = 4$. In general a graph has a cut containing every edge exactly when it is bipartite.
 </Example>
+
+<Figure caption="The two graphs of the example. Filled vertices have z<sub>i</sub> = 1 and open vertices have z<sub>i</sub> = 0. Thick edges join the two sides and are cut, and the dashed edge is not. The triangle always keeps one edge uncut, while alternating sides on the 4-cycle cuts all four." width="32rem">
+  <MaxCutGraphs />
+</Figure>
 
 ### Hardness
 

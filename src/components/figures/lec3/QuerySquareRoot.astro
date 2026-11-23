@@ -1,0 +1,42 @@
+---
+// Queries against the number of candidates N, both on logarithmic scales: classical search grows like N,
+// Grover like sqrt N, and the lower bound rules out everything below sqrt N (up to a constant).
+const L2 = Math.log10(2);
+const nMax = 60;
+const px = (n: number) => 70 + 5.5 * n;            // n = log2 N
+const py = (l: number) => 250 - 11 * l;            // l = log10 (queries)
+const cEnd = py(nMax * L2), gEnd = py((nMax * L2) / 2);
+const xt = [[0, '1'], [20, '2²⁰'], [40, '2⁴⁰'], [60, '2⁶⁰']] as const;
+const yt = [[0, '1'], [6, '10⁶'], [12, '10¹²'], [18, '10¹⁸']] as const;
+---
+<svg viewBox="0 0 460 300" role="img" aria-label="Classical search needs about N queries, Grover about the square root of N, and no quantum algorithm can use fewer">
+  <polygon class="f-face" points={`${px(0)},${py(0)} ${px(nMax)},${gEnd.toFixed(1)} ${px(nMax)},${py(0)}`} />
+  <line class="f-axis" x1={px(0)} y1={py(0)} x2={px(nMax)} y2={py(0)} />
+  <line class="f-axis" x1={px(0)} y1={py(0)} x2={px(0)} y2={py(18.5)} />
+  {xt.map(([n, name]) => (
+    <g class="f-note">
+      <line class="f-axis" x1={px(n)} y1={py(0)} x2={px(n)} y2={py(0) + 5} />
+      <text x={px(n)} y={py(0) + 20} text-anchor="middle">{name}</text>
+    </g>
+  ))}
+  {yt.map(([l, name]) => (
+    <g class="f-note">
+      <line class="f-axis" x1={px(0) - 5} y1={py(l)} x2={px(0)} y2={py(l)} />
+      <text x={px(0) - 10} y={py(l) + 4} text-anchor="end">{name}</text>
+    </g>
+  ))}
+
+  <line class="f-ghost" x1={px(0)} y1={py(0)} x2={px(nMax)} y2={cEnd.toFixed(1)} />
+  <line class="f-curve" x1={px(0)} y1={py(0)} x2={px(nMax)} y2={gEnd.toFixed(1)} />
+  <circle class="f-quiet" cx={px(nMax)} cy={cEnd.toFixed(1)} r="5" />
+  <circle class="f-syn" cx={px(nMax)} cy={gEnd.toFixed(1)} r="6" />
+  <g class="f-note">
+    <text x={px(nMax) + 11} y={(cEnd + 4).toFixed(1)}>10¹⁸</text>
+    <text x={px(nMax) + 11} y={(gEnd + 4).toFixed(1)}>10⁹</text>
+    <text x="245" y="135" text-anchor="end">classical: about N</text>
+    <text x="388" y="143" text-anchor="end">Grover: about √N</text>
+    <text x="300" y="234" text-anchor="middle">ruled out by the lower bound</text>
+    <text x={px(nMax / 2)} y="294" text-anchor="middle">number of candidates N</text>
+    <text transform={`translate(16 ${py(9)}) rotate(-90)`} text-anchor="middle">number of queries</text>
+  </g>
+</svg>

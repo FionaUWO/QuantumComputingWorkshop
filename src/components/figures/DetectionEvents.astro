@@ -1,0 +1,39 @@
+---
+// Five rounds of syndrome measurement on the five-qubit repetition code. A filled point is a
+// detection event: a check whose outcome differs from the round before.
+const checks = ['Z₁Z₂', 'Z₂Z₃', 'Z₃Z₄', 'Z₄Z₅'];
+const rounds = 5;
+const X = (c: number) => 130 + c * 72;
+const Y = (r: number) => 62 + r * 44;
+
+// [check, round], zero-based
+const dataPair = [[1, 1], [2, 1]];   // bit flip on qubit 3 before round 2
+const measPair = [[3, 3], [3, 4]];   // check Z4 Z5 misread in round 4
+const events = [...dataPair, ...measPair];
+const isEvent = (c: number, r: number) => events.some(([ec, er]) => ec === c && er === r);
+const xr = X(checks.length - 1) + 30;
+---
+<svg viewBox="0 0 590 260" role="img" aria-label="Detection events from a data error and from a measurement error">
+  <g class="f-label" text-anchor="middle">
+    {checks.map((name, c) => <text x={X(c)} y="28">{name}</text>)}
+  </g>
+  <g class="f-note" text-anchor="end">
+    {Array.from({ length: rounds }, (_, r) => <text x="92" y={Y(r) + 4}>round {r + 1}</text>)}
+  </g>
+
+  {checks.map((_, c) => <line class="f-grid" x1={X(c)} y1={Y(0)} x2={X(c)} y2={Y(rounds - 1)} />)}
+
+  <line class="f-err" x1={X(dataPair[0][0])} y1={Y(dataPair[0][1])} x2={X(dataPair[1][0])} y2={Y(dataPair[1][1])} />
+  <line class="f-err" x1={X(measPair[0][0])} y1={Y(measPair[0][1])} x2={X(measPair[1][0])} y2={Y(measPair[1][1])} />
+
+  {checks.map((_, c) => Array.from({ length: rounds }, (_, r) =>
+    isEvent(c, r)
+      ? <circle class="f-syn" cx={X(c)} cy={Y(r)} r="7.5" />
+      : <circle class="f-quiet" cx={X(c)} cy={Y(r)} r="5" />
+  ))}
+
+  <g class="f-note">
+    <text x={xr} y={Y(1) + 4}>bit flip on qubit 3</text>
+    <text x={xr} y={Y(3.5) + 4}>check misread in round 4</text>
+  </g>
+</svg>

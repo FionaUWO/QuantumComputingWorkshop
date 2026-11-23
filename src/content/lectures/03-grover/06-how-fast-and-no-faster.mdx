@@ -2,6 +2,8 @@
 title: "How fast, and no faster"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import QuerySquareRoot from '../../../components/figures/lec3/QuerySquareRoot.astro';
 import Statement from '../../../components/Statement.astro';
 
 ### Cost
@@ -17,6 +19,10 @@ If $M$ is unknown the number of iterations cannot be chosen in advance. Two reme
 </Statement>
 
 So Grover's algorithm is optimal up to a constant, and a quantum computer cannot solve unstructured search in $\mathrm{polylog}(N)$ steps. The consequence for hard problems is sobering. An NP-complete problem with $n$ variables can be attacked as a search over $2^n$ candidates, and Grover reduces that to $2^{n/2}$, still exponential. Exponential quantum speed-ups need structure in the problem, such as the periodicity that lecture 4 exploits.
+
+<Figure caption="Number of queries against the number of candidates, both on logarithmic scales and ignoring constant factors. The dashed line is classical search and the solid line is Grover's algorithm, with half the slope. At N = 2<sup>60</sup> they stand at about 10<sup>18</sup> and 10<sup>9</sup>. The shaded region is closed to every quantum algorithm by the lower bound." width="30rem">
+  <QuerySquareRoot />
+</Figure>
 
 ### Where this leaves us
 

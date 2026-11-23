@@ -1,0 +1,52 @@
+---
+// The trial energy F(θ) = sin θ + cos θ of the family R_y(θ)|0> for H = X + Z.
+// It stays between the eigenvalues -√2 and +√2 and touches the lower one at θ = 5π/4.
+const x0 = 70, x1 = 470, yMid = 150, yScale = 70, lim = 1.7;
+const px = (th: number) => x0 + (th / (2 * Math.PI)) * (x1 - x0);
+const py = (v: number) => yMid - v * yScale;
+const F = (th: number) => Math.sin(th) + Math.cos(th);
+const steps = 120;
+const curve = Array.from({ length: steps + 1 }, (_, k) => {
+  const th = (2 * Math.PI * k) / steps;
+  return `${k === 0 ? 'M' : 'L'}${px(th).toFixed(1)} ${py(F(th)).toFixed(1)}`;
+}).join(' ');
+const r2 = Math.SQRT2;
+const thMin = (5 * Math.PI) / 4;
+const xt = [[0, '0'], [Math.PI / 2, 'π/2'], [Math.PI, 'π'], [(3 * Math.PI) / 2, '3π/2'], [2 * Math.PI, '2π']] as const;
+const yt = [-1, 0, 1];
+const yb = py(-lim), ytop = py(lim);
+---
+<svg viewBox="0 0 570 318" role="img" aria-label="The trial energy sin θ plus cos θ never goes below the ground energy minus root two and reaches it at θ equal to five π over four">
+  <rect class="f-face" x={x0} y={py(-r2)} width={x1 - x0} height={yb - py(-r2)} />
+  <line class="f-axis" x1={x0} y1={yb} x2={x1} y2={yb} />
+  <line class="f-axis" x1={x0} y1={yb} x2={x0} y2={ytop} />
+  <line class="f-axis" x1={x0} y1={py(0)} x2={x1} y2={py(0)} />
+  <g class="f-note">
+    {xt.map(([th, s]) => (
+      <g>
+        <line class="f-axis" x1={px(th)} y1={yb} x2={px(th)} y2={yb + 5} />
+        <text x={px(th)} y={yb + 20} text-anchor="middle">{s}</text>
+      </g>
+    ))}
+    {yt.map((v) => (
+      <g>
+        <line class="f-axis" x1={x0 - 5} y1={py(v)} x2={x0} y2={py(v)} />
+        <text x={x0 - 10} y={py(v) + 4} text-anchor="end">{v < 0 ? `−${-v}` : v}</text>
+      </g>
+    ))}
+    <text x={px(Math.PI)} y={yb + 42} text-anchor="middle">θ</text>
+    <text transform={`translate(20 ${yMid}) rotate(-90)`} text-anchor="middle">⟨ψ(θ)|H|ψ(θ)⟩</text>
+    <text x={px(0.55 * Math.PI)} y={yb - 6} text-anchor="middle">no state lies below E₀</text>
+  </g>
+
+  <line class="f-ghost" x1={x0} y1={py(r2)} x2={x1} y2={py(r2)} />
+  <line class="f-ghost" x1={x0} y1={py(-r2)} x2={x1} y2={py(-r2)} />
+  <text class="f-label" x={x1 + 10} y={py(r2) + 5}>E<tspan dy="4" font-size="11">max</tspan><tspan dy="-4"> = √2</tspan></text>
+  <text class="f-label" x={x1 + 10} y={py(-r2) + 5}>E₀ = −√2</text>
+
+  <path class="f-curve" d={curve} />
+
+  <line class="f-ghost" x1={px(thMin)} y1={py(-r2)} x2={px(thMin)} y2={yb + 5} />
+  <text class="f-label f-strong" x={px(thMin)} y={yb + 20} text-anchor="middle" style="font-size:13px">5π/4</text>
+  <circle class="f-syn" cx={px(thMin)} cy={py(F(thMin))} r="6" />
+</svg>

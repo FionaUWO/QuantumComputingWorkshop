@@ -1,0 +1,38 @@
+---
+// A patch of the toric code lattice: qubits on the edges, one vertex check and one face check.
+const s = 70, ox = 50, oy = 45, cols = 6, rows = 4, stub = 26;
+const X = (c: number) => ox + c * s;
+const Y = (r: number) => oy + r * s;
+
+// every edge midpoint carries a qubit
+const qubits: [number, number][] = [];
+for (let r = 0; r < rows; r++) for (let c = 0; c < cols - 1; c++) qubits.push([X(c) + s / 2, Y(r)]);
+for (let r = 0; r < rows - 1; r++) for (let c = 0; c < cols; c++) qubits.push([X(c), Y(r) + s / 2]);
+
+const v = [1, 1];   // the vertex of the vertex check
+const f = [3, 1];   // top-left corner of the face of the face check
+const xq = [[X(v[0]) - s / 2, Y(v[1])], [X(v[0]) + s / 2, Y(v[1])], [X(v[0]), Y(v[1]) - s / 2], [X(v[0]), Y(v[1]) + s / 2]];
+const zq = [[X(f[0]) + s / 2, Y(f[1])], [X(f[0]) + s / 2, Y(f[1] + 1)], [X(f[0]), Y(f[1]) + s / 2], [X(f[0] + 1), Y(f[1]) + s / 2]];
+const W = X(cols - 1) + ox, H = Y(rows - 1) + oy;
+---
+<svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Vertex check and face check of the toric code">
+  {Array.from({ length: rows }, (_, r) => <line class="f-grid" x1={X(0) - stub} y1={Y(r)} x2={X(cols - 1) + stub} y2={Y(r)} />)}
+  {Array.from({ length: cols }, (_, c) => <line class="f-grid" x1={X(c)} y1={Y(0) - stub} x2={X(c)} y2={Y(rows - 1) + stub} />)}
+
+  <rect class="f-face" x={X(f[0])} y={Y(f[1])} width={s} height={s} />
+  <rect class="f-hot" fill="none" x={X(f[0])} y={Y(f[1])} width={s} height={s} />
+  <path class="f-hot" d={`M${X(v[0]) - s} ${Y(v[1])} h${2 * s} M${X(v[0])} ${Y(v[1]) - s} v${2 * s}`} />
+
+  {qubits.map(([x, y]) => <circle class="f-qubit" cx={x} cy={y} r="4" />)}
+
+  {xq.map(([x, y]) => (
+    <g><circle class="f-x" cx={x} cy={y} r="11" /><text class="f-x-t" x={x} y={y + 4.5} text-anchor="middle">X</text></g>
+  ))}
+  {zq.map(([x, y]) => (
+    <g><circle class="f-z" cx={x} cy={y} r="11" /><text class="f-z-t" x={x} y={y + 4.5} text-anchor="middle">Z</text></g>
+  ))}
+
+  <circle class="f-dot" cx={X(v[0])} cy={Y(v[1])} r="5" />
+  <text class="f-label f-it" x={X(v[0]) + 9} y={Y(v[1]) - 9}>A<tspan dy="4" font-size="11">v</tspan></text>
+  <text class="f-label f-it" x={X(f[0]) + s / 2} y={Y(f[1]) + s / 2 + 5} text-anchor="middle">B<tspan dy="4" font-size="11">f</tspan></text>
+</svg>

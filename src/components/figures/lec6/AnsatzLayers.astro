@@ -1,0 +1,34 @@
+---
+// The QAOA ansatz as a circuit: p layers, each a cost unitary followed by a mixer.
+const wires = [50, 85, 120, 155];
+const top = 32, bottom = 173, mid = (top + bottom) / 2;
+const w = 62;
+// left edge of the cost box of each layer, and the index shown in the subscript
+const layers = [{ x: 84, s: '1' }, { x: 248, s: '2' }, { x: 440, s: 'p' }];
+const gap = [396, 428];   // the wires are interrupted here for the dots
+---
+<svg viewBox="0 0 620 210" role="img" aria-label="The QAOA circuit: p layers, each a cost unitary followed by a mixer unitary, applied to qubits that start in the plus state">
+  <g class="f-label" text-anchor="end">
+    {wires.map((y) => <text x="50" y={y + 5}>|+⟩</text>)}
+  </g>
+  {wires.map((y) => (
+    <g>
+      <line class="f-wire" x1="60" y1={y} x2={gap[0]} y2={y} />
+      <line class="f-wire" x1={gap[1]} y1={y} x2="600" y2={y} />
+      <text class="f-note" x={(gap[0] + gap[1]) / 2} y={y + 4} text-anchor="middle">⋯</text>
+    </g>
+  ))}
+
+  {layers.map(({ x, s }) => (
+    <g>
+      <text class="f-note" x={x + w / 2} y="22" text-anchor="middle">cost</text>
+      <text class="f-note" x={x + w + 12 + w / 2} y="22" text-anchor="middle">mixer</text>
+      <rect class="f-blob" x={x} y={top} width={w} height={bottom - top} rx="6" />
+      <rect class="f-box" x={x + w + 12} y={top} width={w} height={bottom - top} rx="6" />
+      <text class="f-label" x={x + w / 2} y={mid + 5} text-anchor="middle">U<tspan dy="4" font-size="11">C</tspan><tspan dy="-4">(γ</tspan><tspan dy="4" font-size="11">{s}</tspan><tspan dy="-4">)</tspan></text>
+      <text class="f-label" x={x + w + 12 + w / 2} y={mid + 5} text-anchor="middle">U<tspan dy="4" font-size="11">B</tspan><tspan dy="-4">(β</tspan><tspan dy="4" font-size="11">{s}</tspan><tspan dy="-4">)</tspan></text>
+      <path class="f-axis" fill="none" d={`M${x} 181 v6 H${x + 2 * w + 12} v-6`} />
+      <text class="f-note" x={x + w + 6} y="204" text-anchor="middle">layer {s}</text>
+    </g>
+  ))}
+</svg>

@@ -2,6 +2,8 @@
 title: "The search problem"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import MeanInversion from '../../../components/figures/lec3/MeanInversion.astro';
 import Statement from '../../../components/Statement.astro';
 
 Let $N = 2^n$ and suppose $f(x) = 1$ for exactly $M$ of the $N$ inputs, the *solutions*, with $1 \le M \le N$. The task is to find one. Nothing else is known about $f$; this is *unstructured search*.
@@ -33,5 +35,9 @@ a layer of Hadamards on each side of a gate that flips the sign of every basis s
 </Statement>
 
 One iteration costs one query. Watch what it does to the amplitudes when $M = 1$: the oracle makes the solution's amplitude negative, which lowers the mean slightly; inversion about the mean then pushes the solution well above the others. Each round moves a little more weight onto the solution.
+
+<Figure caption="One Grover iteration on the amplitudes for N = 8 and M = 1, with the solution drawn dark. The oracle turns the solution's amplitude from 0.35 to −0.35, which lowers the mean from 0.35 to 0.27. The diffusion operator then reflects every bar about the dashed mean line: the seven others drop to 0.18 and the solution rises to 0.88." width="40rem">
+  <MeanInversion />
+</Figure>
 
 <p class="reading">Reading: Nielsen and Chuang, Sections 6.1.1 and 6.1.2.</p>

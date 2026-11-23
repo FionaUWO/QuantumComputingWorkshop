@@ -1,6 +1,8 @@
 ---
 title: "Deutsch and Deutsch-Jozsa"
 ---
+import Figure from '../../../components/Figure.astro';
+import SignSum from '../../../components/figures/lec3/SignSum.astro';
 import Statement from '../../../components/Statement.astro';
 import Try from '../../../components/Try.astro';
 
@@ -37,6 +39,10 @@ $$
 <Statement>
 **Theorem (Deutsch-Jozsa).** The amplitude of $|0\rangle^{\otimes n}$ in the final state is $\tfrac{1}{2^n}\sum_x (-1)^{f(x)}$. It is $\pm 1$ if $f$ is constant and $0$ if $f$ is balanced. So one query decides between the two cases with certainty.
 </Statement>
+
+<Figure caption="The signs (−1)<sup>f(x)</sup> for n = 3, one bar for each of the eight inputs. The amplitude of |0…0⟩ after the last layer of Hadamards is the average of these signs. For a constant function the bars all point the same way and the average is ±1. For a balanced function four point up and four point down, so they cancel exactly." width="34rem">
+  <SignSum />
+</Figure>
 
 A deterministic classical algorithm needs $2^{n-1} + 1$ queries in the worst case, since the first $2^{n-1}$ answers might all agree. That is an exponential separation, with a caveat: a classical algorithm that samples a few random inputs is wrong only with tiny probability. The separation is against exact classical computation. Its value is as a template: superpose, query once, interfere.
 

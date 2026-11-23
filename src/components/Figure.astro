@@ -1,0 +1,11 @@
+---
+// A drawing inside the notes, with a caption. The label "Figure N." is added by CSS (site.css),
+// so start the caption with the description itself. Put the drawing (an inline SVG component
+// from ./figures/) in the default slot.
+interface Props { caption: string; width?: string }
+const { caption, width = '34rem' } = Astro.props;
+---
+<figure class="fig" style={`--fig-w:${width}`}>
+  <div class="fig-art"><slot /></div>
+  <figcaption set:html={caption} />
+</figure>

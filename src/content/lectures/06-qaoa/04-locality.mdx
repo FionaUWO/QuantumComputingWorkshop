@@ -3,6 +3,8 @@ title: "Locality"
 board: false
 ---
 import Statement from '../../../components/Statement.astro';
+import Figure from '../../../components/Figure.astro';
+import LightCone from '../../../components/figures/lec6/LightCone.astro';
 
 Why was the answer for one edge independent of the rest of the graph? Write the edge term in the Heisenberg picture:
 
@@ -15,6 +17,10 @@ Conjugate $Z_u Z_v$ by the layers one at a time, from the inside out. Gates that
 <Statement>
 **Proposition (light cone).** At depth $p$, the expectation of the term for edge $(u,v)$ depends only on the subgraph of $G$ induced by the vertices within distance $p$ of $u$ or $v$.
 </Statement>
+
+<Figure caption="The light cone of the edge (u, v). One layer brings in the neighbours of u and v, and a second layer brings in the vertices at distance two. The dashed edges lead to the rest of the graph, which a circuit of depth two cannot see." width="36rem">
+  <LightCone />
+</Figure>
 
 Two consequences pull in opposite directions.
 

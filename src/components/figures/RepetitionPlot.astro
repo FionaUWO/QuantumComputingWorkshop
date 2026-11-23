@@ -1,0 +1,29 @@
+---
+// Failure probability of the three-bit repetition code against the error rate of one bit.
+const px = (p: number) => 70 + 320 * p;
+const py = (v: number) => 250 - 220 * v;
+const f = (p: number) => 3 * p * p - 2 * p * p * p;
+const curve = 'M' + Array.from({ length: 51 }, (_, i) => `${px(i / 50).toFixed(1)} ${py(f(i / 50)).toFixed(1)}`).join(' L');
+const ticks = [0, 0.5, 1];
+---
+<svg viewBox="0 0 420 300" role="img" aria-label="The repetition code helps when the error probability is below one half">
+  <line class="f-axis" x1={px(0)} y1={py(0)} x2={px(1)} y2={py(0)} />
+  <line class="f-axis" x1={px(0)} y1={py(0)} x2={px(0)} y2={py(1)} />
+  {ticks.map((t) => (
+    <g class="f-note">
+      <line class="f-axis" x1={px(t)} y1={py(0)} x2={px(t)} y2={py(0) + 5} />
+      <text x={px(t)} y={py(0) + 20} text-anchor="middle">{t === 0.5 ? '½' : t}</text>
+      <line class="f-axis" x1={px(0) - 5} y1={py(t)} x2={px(0)} y2={py(t)} />
+      <text x={px(0) - 10} y={py(t) + 4} text-anchor="end">{t === 0.5 ? '½' : t}</text>
+    </g>
+  ))}
+
+  <line class="f-ghost" x1={px(0)} y1={py(0)} x2={px(1)} y2={py(1)} />
+  <path class="f-curve" d={curve} />
+  <circle class="f-syn" cx={px(0.5)} cy={py(0.5)} r="6" />
+
+  <text class="f-note" x={px(0.24)} y={py(0.36)} text-anchor="middle">one bit</text>
+  <text class="f-note" x={px(0.42)} y={py(0.08)}>three bits, majority vote</text>
+  <text class="f-note" x={px(0.5)} y="294" text-anchor="middle">error probability p of each bit</text>
+  <text class="f-note" transform={`translate(22 ${py(0.5)}) rotate(-90)`} text-anchor="middle">probability of a wrong answer</text>
+</svg>

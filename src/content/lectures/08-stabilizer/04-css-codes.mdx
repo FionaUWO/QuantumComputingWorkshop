@@ -2,6 +2,8 @@
 title: "CSS codes"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import CssOverlap from '../../../components/figures/CssOverlap.astro';
 import Statement from '../../../components/Statement.astro';
 
 The Shor and Steane codes share a feature: every check is made only of $X$s or only of $Z$s. Such codes are called *CSS codes*, after Calderbank, Shor and Steane, and they can be built from classical codes.
@@ -19,6 +21,11 @@ In that case they define a stabilizer code with $k = n - \operatorname{rank} H_X
 </Statement>
 
 *Proof.* An $X$-type and a $Z$-type check anticommute once for each qubit on which both act, so they commute exactly when their rows overlap in an even number of positions, that is when their inner product over $\mathbb{F}_2$ vanishes. Checks of the same type always commute. $\qquad\blacksquare$
+
+
+<Figure caption="Two checks of the Steane code: X₁X₃X₅X₇ from row 3 of H, and Z₂Z₃Z₆Z₇ from row 2. On qubits 3 and 7 the X and the Z anticommute. Two sign changes cancel, so the checks commute." width="32rem">
+  <CssOverlap />
+</Figure>
 
 The two kinds of error are then handled separately by classical decoding. $Z$-type checks detect $X$ errors, with syndrome $H_Z e$ for the pattern $e \in \mathbb{F}_2^n$ of bit flips; $X$-type checks detect $Z$ errors, with syndrome $H_X e'$. A $Y$ error shows up in both.
 

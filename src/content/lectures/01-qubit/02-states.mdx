@@ -4,6 +4,8 @@ title: "States"
 import Statement from '../../../components/Statement.astro';
 import Example from '../../../components/Example.astro';
 import Video from '../../../components/Video.astro';
+import Figure from '../../../components/Figure.astro';
+import AmplitudePlanes from '../../../components/figures/lec1/AmplitudePlanes.astro';
 
 <Video src="assets/video/L1_2_States.mp4" poster="assets/video/L1_2_States.jpg" captions="assets/video/L1_2_States.vtt" title="Video for this section (6 minutes). Subtitles can be switched on and off in the player. The notes below cover the same material." />
 
@@ -48,6 +50,10 @@ $$
 
 is a state. We will carry it through the lecture. Since $1 + i = \sqrt2\,e^{i\pi/4}$, its amplitudes have moduli $\tfrac{1}{\sqrt3}$ and $\sqrt{\tfrac23}$, and the second is rotated by $\pi/4$ relative to the first.
 </Example>
+
+<Figure caption="The two amplitudes of the example, each drawn as an arrow in the complex plane. The circle has radius 1. The arrow for α lies along the real axis and has length 1/√3. The arrow for β is longer, with length √(2/3), and is turned through the angle π/4." width="32rem">
+  <AmplitudePlanes />
+</Figure>
 
 ### Other bases
 

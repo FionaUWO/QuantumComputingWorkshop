@@ -2,6 +2,8 @@
 title: "Phase kickback"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import Kickback from '../../../components/figures/lec3/Kickback.astro';
 import Statement from '../../../components/Statement.astro';
 
 The trick that makes interference possible is to put the answer qubit in the state $|-\rangle = \tfrac{1}{\sqrt2}(|0\rangle - |1\rangle)$.
@@ -23,6 +25,10 @@ O_f\,|x\rangle = (-1)^{f(x)}\,|x\rangle ,
 $$
 
 a diagonal matrix with entries $\pm 1$. On a basis state this sign is a global phase and invisible. On a superposition it is a pattern of relative phases, and those are what interference detects.
+
+<Figure caption="Phase kickback as a circuit. The answer qubit enters in the state |−⟩ and leaves in the same state. The value f(x) does not appear in the answer qubit at all: it appears as the sign (−1)<sup>f(x)</sup> on the input register." width="32rem">
+  <Kickback />
+</Figure>
 
 We also need the Hadamard transform of a general basis state. From $H|x\rangle = \tfrac{1}{\sqrt2}\big(|0\rangle + (-1)^x|1\rangle\big)$ for a single bit,
 

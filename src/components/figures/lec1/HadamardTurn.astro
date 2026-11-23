@@ -1,0 +1,106 @@
+---
+// H as a half turn of the Bloch sphere about the axis h midway between x and z. One H carries
+// |0> to |+> along half of a circle about h; a second H completes the circle. A marker travels
+// round the circle when motion is allowed. Same view as BlochSphere.astro.
+const rad = Math.PI / 180;
+const A = 20 * rad, E = 25 * rad, R = 120, cx = 180, cy = 160;
+type V = [number, number, number];
+const P = ([x, y, z]: V) => [
+  cx + R * (-x * Math.sin(A) + y * Math.cos(A)),
+  cy - R * (z * Math.cos(E) - (x * Math.cos(A) + y * Math.sin(A)) * Math.sin(E)),
+];
+const f = (n: number) => n.toFixed(1);
+const path = (pts: V[]) => 'M' + pts.map((p) => P(p).map(f).join(' ')).join(' L');
+const steps = (n: number) => Array.from({ length: n + 1 }, (_, i) => i / n);
+const s = Math.SQRT1_2;
+
+// Rotating (0,0,1) by the angle t about h = (1,0,1)/sqrt(2), right-handed:
+// the circle has centre (1/2, 0, 1/2) and radius 1/sqrt(2), and t = pi is the point (1,0,0).
+const turn = (t: number): V => [0.5 - 0.5 * Math.cos(t), -s * Math.sin(t), 0.5 + 0.5 * Math.cos(t)];
+const seg = (from: number, to: number) => path(steps(18).map((u) => turn(from + (to - from) * u)));
+
+const eq = (a: number): V => [Math.cos(a), Math.sin(a), 0];
+const eqFront = path(steps(40).map((u) => eq(A - Math.PI / 2 + Math.PI * u)));
+const eqBack = path(steps(40).map((u) => eq(A + Math.PI / 2 + Math.PI * u)));
+
+const O = P([0, 0, 0]), zp = P([0, 0, 1]), xp = P([1, 0, 0]);
+const ze = P([0, 0, 1.3]), xe = P([1.3, 0, 0]);
+const he = P([1.35 * s, 0, 1.35 * s]), hb = P([-s, 0, -s]), hf = P([s, 0, s]);
+const left = P(turn((7 * Math.PI) / 12));
+
+// 25 positions of the marker, 15 degrees apart, handed to the keyframes as custom properties
+const stops = Array.from({ length: 25 }, (_, k) => P(turn((k * Math.PI) / 12)));
+const vars = stops.map((p, k) => `--x${k}:${f(p[0])}px;--y${k}:${f(p[1])}px`).join(';');
+---
+<svg viewBox="0 0 360 290" role="img" aria-label="The Hadamard gate as a half turn of the Bloch sphere that carries the state zero to the state plus and back">
+  <defs>
+    <marker id="hadamardturn-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto">
+      <path class="f-arrowhead" d="M0 0 L10 5 L0 10 z" />
+    </marker>
+  </defs>
+
+  <circle class="f-ring" cx={cx} cy={cy} r={R} />
+  <path class="f-ghost" d={eqBack} />
+  <path class="f-ring" d={eqFront} />
+
+  <line class="f-axis" x1={f(O[0])} y1={f(O[1])} x2={f(ze[0])} y2={f(ze[1])} />
+  <line class="f-axis" x1={f(O[0])} y1={f(O[1])} x2={f(xe[0])} y2={f(xe[1])} />
+  <line class="f-thin f-dashed" x1={f(hb[0])} y1={f(hb[1])} x2={f(hf[0])} y2={f(hf[1])} />
+  <line class="f-thin" x1={f(hf[0])} y1={f(hf[1])} x2={f(he[0])} y2={f(he[1])} />
+  <circle class="f-dot" cx={f(hf[0])} cy={f(hf[1])} r="2.5" />
+
+  <path class="f-curve" d={seg(0, Math.PI / 2)} marker-end="url(#hadamardturn-arrow)" />
+  <path class="f-curve" d={seg(Math.PI / 2, Math.PI)} />
+  <path class="f-curve f-dashed" d={seg(Math.PI, 1.5 * Math.PI)} marker-end="url(#hadamardturn-arrow)" />
+  <path class="f-curve f-dashed" d={seg(1.5 * Math.PI, 2 * Math.PI)} />
+
+  <circle class="f-dot" cx={f(zp[0])} cy={f(zp[1])} r="4.5" />
+  <circle class="f-dot" cx={f(xp[0])} cy={f(xp[1])} r="4.5" />
+  <circle class="f-syn ht-mover" cx="0" cy="0" r="6.5" style={vars} />
+
+  <text class="f-label" x={f(zp[0] + 9)} y={f(zp[1] - 19)}>|0⟩</text>
+  <text class="f-label" x={f(xp[0] + 7)} y={f(xp[1] + 21)}>|+⟩</text>
+  <text class="f-it" x={f(he[0] - 6)} y={f(he[1] - 3)} text-anchor="end">h</text>
+  <g class="f-note">
+    <text x={f(xe[0] - 6)} y={f(xe[1] + 12)} text-anchor="end">x</text>
+    <text x={f(ze[0] - 7)} y={f(ze[1] + 5)} text-anchor="end">z</text>
+    <text x={f(left[0] + 10)} y={f(left[1] + 4)}>first H</text>
+    <text x={cx + 32} y={cy + 71} text-anchor="middle">second H</text>
+  </g>
+</svg>
+
+<style>
+  /* Without motion the marker rests at |+>, the state after one H. */
+  .ht-mover { transform: translate(var(--x12), var(--y12)); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ht-mover { animation: hadamardturn-go 12s linear infinite; }
+    @keyframes hadamardturn-go {
+      0%, 8% { transform: translate(var(--x0), var(--y0)); }
+      10.83% { transform: translate(var(--x1), var(--y1)); }
+      13.67% { transform: translate(var(--x2), var(--y2)); }
+      16.5% { transform: translate(var(--x3), var(--y3)); }
+      19.33% { transform: translate(var(--x4), var(--y4)); }
+      22.17% { transform: translate(var(--x5), var(--y5)); }
+      25% { transform: translate(var(--x6), var(--y6)); }
+      27.83% { transform: translate(var(--x7), var(--y7)); }
+      30.67% { transform: translate(var(--x8), var(--y8)); }
+      33.5% { transform: translate(var(--x9), var(--y9)); }
+      36.33% { transform: translate(var(--x10), var(--y10)); }
+      39.17% { transform: translate(var(--x11), var(--y11)); }
+      42%, 58% { transform: translate(var(--x12), var(--y12)); }
+      60.83% { transform: translate(var(--x13), var(--y13)); }
+      63.67% { transform: translate(var(--x14), var(--y14)); }
+      66.5% { transform: translate(var(--x15), var(--y15)); }
+      69.33% { transform: translate(var(--x16), var(--y16)); }
+      72.17% { transform: translate(var(--x17), var(--y17)); }
+      75% { transform: translate(var(--x18), var(--y18)); }
+      77.83% { transform: translate(var(--x19), var(--y19)); }
+      80.67% { transform: translate(var(--x20), var(--y20)); }
+      83.5% { transform: translate(var(--x21), var(--y21)); }
+      86.33% { transform: translate(var(--x22), var(--y22)); }
+      89.17% { transform: translate(var(--x23), var(--y23)); }
+      92%, 100% { transform: translate(var(--x24), var(--y24)); }
+    }
+  }
+</style>

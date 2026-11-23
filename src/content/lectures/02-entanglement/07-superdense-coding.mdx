@@ -1,6 +1,8 @@
 ---
 title: "Superdense coding"
 ---
+import Figure from '../../../components/Figure.astro';
+import SuperdenseCircuit from '../../../components/figures/lec2/SuperdenseCircuit.astro';
 import Statement from '../../../components/Statement.astro';
 import Try from '../../../components/Try.astro';
 
@@ -22,6 +24,10 @@ Alice and Bob share $|\beta_{00}\rangle = \tfrac{1}{\sqrt2}(|00\rangle + |11\ran
 | $11$ | $X$, then $Z$ | $\lvert\beta_{11}\rangle$ |
 
 Alice acted on a single qubit, yet the pair has moved between four orthogonal states. She sends her qubit to Bob. He now holds both, runs the Bell circuit backwards (CNOT, then $H$ on the first qubit) and measures: the result is $x$ on the first qubit and $y$ on the second, with certainty.
+
+<Figure caption="Superdense coding as a circuit. Alice touches only the top qubit, applying X if y is 1 and then Z if x is 1, and then sends it to Bob. Bob runs the Bell circuit backwards and both measurements are certain: the top one gives x and the bottom one gives y." width="34rem">
+  <SuperdenseCircuit />
+</Figure>
 
 <Try runs={[
   { do: 'reset,HA,CAB,XA,CAB,HA,sample', label: 'Send 01' },

@@ -3,6 +3,8 @@ title: "The bit flip code"
 board: false
 ---
 import Statement from '../../../components/Statement.astro';
+import Figure from '../../../components/Figure.astro';
+import BitFlipCircuit from '../../../components/figures/BitFlipCircuit.astro';
 
 Encode one qubit into three by
 
@@ -30,6 +32,12 @@ $Z_1 Z_2$ has eigenvalue $+1$ on basis states whose first two bits agree and $-1
 | $X_3$ | $\alpha\lvert 001\rangle + \beta\lvert 110\rangle$ | $+1$ | $-1$ | apply $X_3$ |
 
 The pair of outcomes is the *error syndrome*. It identifies the error and says nothing about $\alpha$ and $\beta$, so the superposition survives the measurement. That answers the second obstacle. In a circuit, each parity is copied onto an extra *ancilla* qubit with two CNOTs and the ancilla is measured.
+
+<Figure caption="The bit flip code as a circuit. Two CNOTs encode |ψ⟩ into three qubits, and an error E acts. Each ancilla collects the parity of two data qubits and is measured, giving the eigenvalues of Z₁Z₂ and Z₂Z₃. The two classical outcomes select the recovery R. No data qubit is measured." width="42rem">
+  <BitFlipCircuit />
+</Figure>
+
+Why does the ancilla end up holding the parity? A CNOT flips its target when the control is $|1\rangle$. Starting from $|0\rangle$, the first ancilla is flipped once for each of qubits 1 and 2 that is in $|1\rangle$, so it ends in $|0\rangle$ when they agree and $|1\rangle$ when they differ. Outcome $0$ is the eigenvalue $+1$ of $Z_1 Z_2$ and outcome $1$ is the eigenvalue $-1$.
 
 <Statement>
 **Proposition.** If each qubit suffers a bit flip independently with probability $p$, the three-qubit code with syndrome measurement and recovery fails with probability $3p^2 - 2p^3$, which is less than $p$ when $p \lt \tfrac12$.

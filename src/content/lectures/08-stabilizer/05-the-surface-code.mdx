@@ -3,6 +3,9 @@ title: "The surface code"
 board: false
 ---
 import Statement from '../../../components/Statement.astro';
+import Figure from '../../../components/Figure.astro';
+import ToricChecks from '../../../components/figures/ToricChecks.astro';
+import ToricChains from '../../../components/figures/ToricChains.astro';
 
 The codes above have checks that involve qubits far apart, and their distance is fixed. The surface code, in its original form the *toric code*, is a family of CSS codes of growing distance in which every check touches four neighbouring qubits on a two-dimensional grid. It is the leading candidate for building a large quantum computer.
 
@@ -15,6 +18,10 @@ A_v = \prod_{e \ni v} X_e, \qquad B_f = \prod_{e \in \partial f} Z_e ,
 $$
 
 the product of $X$ over the four edges meeting at $v$, and the product of $Z$ over the four edges around $f$.
+
+<Figure caption="A patch of the lattice. Each grey point is a qubit, sitting on an edge. The vertex check A<sub>v</sub> applies X to the four edges that meet at v. The face check B<sub>f</sub> applies Z to the four edges around f." width="30rem">
+  <ToricChecks />
+</Figure>
 
 <Statement>
 **Proposition.** All the checks commute. They satisfy exactly two relations, $\prod_v A_v = I$ and $\prod_f B_f = I$. Hence the toric code has $2L^2 - 2$ independent checks and encodes $k = 2$ logical qubits.
@@ -32,6 +39,10 @@ A closed loop of errors has no endpoints and so no syndrome. There are two kinds
 - A loop that winds around the torus is not a product of checks. It is a logical operator.
 
 The torus has two independent non-contractible loops, and they give the logical $Z$ operators of the two encoded qubits; the logical $X$ operators are the corresponding loops on the dual lattice. The shortest such loop has length $L$.
+
+<Figure caption="Z errors on a 6 × 6 toric code. The dashed sides are identified with the opposite sides. (a) An open chain of three errors: only the vertex checks at its two ends are violated. (b) A loop that bounds a region is the product of the two face checks inside it, and does nothing. (c) A loop around the torus violates no check and is not a product of checks: a logical operator, of weight 6." width="24rem">
+  <ToricChains />
+</Figure>
 
 <Statement>
 **Theorem.** The toric code on an $L \times L$ lattice is a $[[2L^2, 2, L]]$ code.

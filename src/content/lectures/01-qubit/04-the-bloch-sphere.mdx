@@ -3,6 +3,8 @@ title: "The Bloch sphere"
 ---
 import Statement from '../../../components/Statement.astro';
 import Example from '../../../components/Example.astro';
+import Figure from '../../../components/Figure.astro';
+import BlochSphere from '../../../components/figures/lec1/BlochSphere.astro';
 
 A measurement in one basis shows two squared moduli and hides the rest. To picture the whole state at once we first need to know exactly how much there is to picture.
 
@@ -46,6 +48,10 @@ For readers who know some topology: the map $S^3 \to S^2$, $(\alpha, \beta) \map
 | State | $\lvert 0\rangle$ | $\lvert 1\rangle$ | $\lvert +\rangle$ | $\lvert -\rangle$ | $\lvert {+i}\rangle$ | $\lvert {-i}\rangle$ |
 | --- | --- | --- | --- | --- | --- | --- |
 | $\vec n$ | $(0,0,1)$ | $(0,0,-1)$ | $(1,0,0)$ | $(-1,0,0)$ | $(0,1,0)$ | $(0,-1,0)$ |
+
+<Figure caption="The Bloch sphere. A state |ψ⟩ sits at polar angle θ, measured down from the z-axis, and azimuth φ, measured in the equatorial plane from the x-axis. The six states of the table lie at the ends of the three axes. Hollow dots mark the three states on the far side of the sphere." width="26rem">
+  <BlochSphere />
+</Figure>
 
 <Example>
 For $|\psi\rangle = \tfrac{1}{\sqrt3}\big(|0\rangle + (1+i)|1\rangle\big)$ we have $\bar\alpha\beta = \tfrac{1+i}{3}$, so

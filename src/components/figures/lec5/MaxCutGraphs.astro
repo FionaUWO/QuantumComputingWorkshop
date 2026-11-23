@@ -1,0 +1,28 @@
+---
+// The two graphs of the example. Triangle with z = 001: two of three edges cut (the maximum).
+// 4-cycle with z = 0101: all four edges cut. Filled vertices have z_i = 1.
+type G = { pos: [number, number][]; edges: [number, number][]; z: string; cx: number };
+const graphs: G[] = [
+  { pos: [[130, 40], [60, 160], [200, 160]], edges: [[1, 2], [2, 3], [1, 3]], z: '001', cx: 130 },
+  { pos: [[340, 40], [460, 40], [460, 160], [340, 160]], edges: [[1, 2], [2, 3], [3, 4], [4, 1]], z: '0101', cx: 400 },
+];
+const isCut = (g: G, [i, j]: [number, number]) => g.z[i - 1] !== g.z[j - 1];
+const C = (g: G) => g.edges.filter((e) => isCut(g, e)).length;
+---
+<svg viewBox="0 0 520 226" role="img" aria-label="A triangle with one vertex on the other side, cutting two of its three edges, and a four cycle with alternating sides, cutting all four edges">
+  {graphs.map((g) => (
+    <g>
+      {g.edges.map((e) => (
+        <line class={isCut(g, e) ? 'f-hot' : 'f-wire f-dashed'}
+          x1={g.pos[e[0] - 1][0]} y1={g.pos[e[0] - 1][1]} x2={g.pos[e[1] - 1][0]} y2={g.pos[e[1] - 1][1]} />
+      ))}
+      {g.pos.map(([x, y], k) => (
+        <g>
+          <circle class={g.z[k] === '1' ? 'f-x' : 'f-z'} cx={x} cy={y} r="15" />
+          <text class={g.z[k] === '1' ? 'f-x-t' : 'f-z-t'} x={x} y={y + 4.5} text-anchor="middle">{k + 1}</text>
+        </g>
+      ))}
+      <text class="f-label" x={g.cx} y="214" text-anchor="middle">z = {g.z},  C(z) = {C(g)}</text>
+    </g>
+  ))}
+</svg>

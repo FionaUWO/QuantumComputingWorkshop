@@ -2,6 +2,8 @@
 title: "From orders to factors"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import ShorFlow from '../../../components/figures/lec4/ShorFlow.astro';
 import Statement from '../../../components/Statement.astro';
 import Example from '../../../components/Example.astro';
 
@@ -29,6 +31,10 @@ The proof uses the Chinese remainder theorem and the fact that $(\mathbb{Z}/p^a\
 3. Find the order $r$ of $x$ modulo $N$ with the quantum order-finding routine.
 4. If $r$ is even and $x^{r/2} \not\equiv -1 \pmod N$, compute $\gcd(x^{r/2} \pm 1, N)$ and return a non-trivial factor. Otherwise go back to step 2.
 </Statement>
+
+<Figure caption="Steps 2 to 4 of the algorithm as a loop, with the values for N = 15 and x = 7 written underneath. Only the shaded box needs a quantum computer. The test on r fails for at most a quarter of the choices of x, so the loop is repeated only a few times on average." width="36rem">
+  <ShorFlow />
+</Figure>
 
 Every step except the third is efficient classically. The total cost is $O(L^3)$ gates, polynomial in the number of digits, whereas the best known classical algorithm, the number field sieve, takes time about $\exp\big(c\,L^{1/3}(\log L)^{2/3}\big)$.
 

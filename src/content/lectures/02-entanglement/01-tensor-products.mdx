@@ -1,6 +1,8 @@
 ---
 title: "Tensor products"
 ---
+import Figure from '../../../components/Figure.astro';
+import ProductGrid from '../../../components/figures/lec2/ProductGrid.astro';
 import Statement from '../../../components/Statement.astro';
 
 A probability distribution over two bits is a vector with four entries, one for each of $00, 01, 10, 11$. The quantum rule is the same with amplitudes in place of probabilities.
@@ -18,6 +20,10 @@ Here $|ij\rangle$ is shorthand for $|i\rangle \otimes |j\rangle$. If $A$ is in t
 $$
 \begin{pmatrix} \alpha \\ \beta \end{pmatrix} \otimes \begin{pmatrix} \gamma \\ \delta \end{pmatrix} = \begin{pmatrix} \alpha\gamma \\ \alpha\delta \\ \beta\gamma \\ \beta\delta \end{pmatrix}.
 $$
+
+<Figure caption="The four amplitudes of a product state, laid out as a multiplication table. Each row belongs to a value of qubit A and each column to a value of qubit B, and the entry is the product of the two single-qubit amplitudes. Reading the cells row by row gives the Kronecker product above." width="24rem">
+  <ProductGrid />
+</Figure>
 
 ### Rules for computing
 

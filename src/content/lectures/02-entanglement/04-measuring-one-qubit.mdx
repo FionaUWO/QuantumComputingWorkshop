@@ -1,6 +1,9 @@
 ---
 title: "Measuring one qubit"
 ---
+import Figure from '../../../components/Figure.astro';
+import MeasureRow from '../../../components/figures/lec2/MeasureRow.astro';
+import ChshAxes from '../../../components/figures/lec2/ChshAxes.astro';
 import Statement from '../../../components/Statement.astro';
 import Try from '../../../components/Try.astro';
 
@@ -11,6 +14,10 @@ $$
 $$
 
 In terms of $M$: the outcome picks a row, and that row, normalised, is the new state of $B$.
+
+<Figure caption="Measuring A reads off one row of the amplitude matrix. The squared length of each row is the probability of that outcome, and the row that is picked, rescaled to unit length, is the state B is left in." width="33rem">
+  <MeasureRow />
+</Figure>
 
 For the Bell state each row has a single non-zero entry. Alice's result is a fair coin, and Bob's qubit is then certain to give the same value, however far away it is. Nothing travels: Bob sees a fair coin too, and only by comparing notes do they discover the agreement.
 
@@ -53,6 +60,10 @@ Now let Alice and Bob share the Bell state $|\beta_{11}\rangle = \tfrac{1}{\sqrt
 $$
 Q = Z, \qquad R = X, \qquad S = \frac{-Z - X}{\sqrt2}, \qquad T = \frac{Z - X}{\sqrt2} .
 $$
+
+<Figure caption="The four measurement axes in the plane of the Bloch sphere that contains the x and z axes. For the state β<sub>11</sub> the correlation is minus the cosine of the angle between Alice's axis and Bob's. Three of the pairs are 135° apart and give 1/√2. The pair Q and T is 45° apart and gives −1/√2, and that is the term which enters with a minus sign." width="24rem">
+  <ChshAxes />
+</Figure>
 
 Each of $\mathbb{E}[QS]$, $\mathbb{E}[RS]$, $\mathbb{E}[RT]$ equals $\tfrac{1}{\sqrt2}$ and $\mathbb{E}[QT] = -\tfrac{1}{\sqrt2}$, so the combination is
 

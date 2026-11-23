@@ -2,6 +2,9 @@
 title: "Oracles and the query model"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import OracleBox from '../../../components/figures/lec3/OracleBox.astro';
+
 The first quantum algorithms are stated in a setting where costs are easy to count. We are given a function
 
 $$
@@ -17,6 +20,10 @@ U_f\,|x\rangle|y\rangle = |x\rangle|y \oplus f(x)\rangle, \qquad x \in \{0,1\}^n
 $$
 
 $U_f$ permutes the computational basis states and is its own inverse, so it is unitary. Any classical circuit for $f$ can be turned into a quantum circuit for $U_f$ of comparable size; we take that for granted and count calls to $U_f$.
+
+<Figure caption="A classical box returns f(x) and discards x, so it cannot be run backwards. The quantum box U<sub>f</sub> passes the n-qubit input through unchanged and adds f(x) into the answer qubit. Applying it twice adds f(x) twice, which restores y." width="36rem">
+  <OracleBox />
+</Figure>
 
 ### Quantum parallelism
 

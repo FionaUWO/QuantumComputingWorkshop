@@ -1,0 +1,48 @@
+---
+// P(0) = cos^2(phi/2) at the output of H, P(phi), H applied to |0>, with the four middle gates
+// of the table marked: none (phi = 0), T (pi/4), S (pi/2) and Z (pi).
+const px = (phi: number) => +(70 + (340 * phi) / (2 * Math.PI)).toFixed(1);
+const py = (v: number) => +(240 - 190 * v).toFixed(1);
+const p0 = (phi: number) => Math.cos(phi / 2) ** 2;
+const curve = 'M' + Array.from({ length: 121 }, (_, i) => {
+  const phi = (2 * Math.PI * i) / 120;
+  return `${px(phi)} ${py(p0(phi))}`;
+}).join(' L');
+const xt = [[0, '0'], [0.5, 'π/2'], [1, 'π'], [1.5, '3π/2'], [2, '2π']] as const;
+const yt = [[0, '0'], [0.5, '½'], [1, '1']] as const;
+const marks = [
+  { phi: 0, name: 'no gate', dx: 10, dy: -10 },
+  { phi: Math.PI / 4, name: 'T', dx: 10, dy: -2 },
+  { phi: Math.PI / 2, name: 'S', dx: 10, dy: -2 },
+  { phi: Math.PI, name: 'Z', dx: -5, dy: -14 },
+];
+---
+<svg viewBox="0 0 440 295" role="img" aria-label="The probability of outcome zero as a function of the phase, equal to cosine squared of half the phase">
+  <line class="f-axis" x1={px(0)} y1={py(0)} x2={px(2 * Math.PI)} y2={py(0)} />
+  <line class="f-axis" x1={px(0)} y1={py(0)} x2={px(0)} y2={py(1)} />
+  <g class="f-note">
+    {xt.map(([t, name]) => (
+      <g>
+        <line class="f-axis" x1={px(t * Math.PI)} y1={py(0)} x2={px(t * Math.PI)} y2={py(0) + 5} />
+        <text x={px(t * Math.PI)} y={py(0) + 20} text-anchor="middle">{name}</text>
+      </g>
+    ))}
+    {yt.map(([t, name]) => (
+      <g>
+        <line class="f-axis" x1={px(0) - 5} y1={py(t)} x2={px(0)} y2={py(t)} />
+        <text x={px(0) - 10} y={py(t) + 4} text-anchor="end">{name}</text>
+      </g>
+    ))}
+  </g>
+
+  <path class="f-curve" d={curve} />
+  {marks.map(({ phi, name, dx, dy }) => (
+    <g>
+      <circle class="f-syn" cx={px(phi)} cy={py(p0(phi))} r="6" />
+      <text class="f-label" x={px(phi) + dx} y={py(p0(phi)) + dy}>{name}</text>
+    </g>
+  ))}
+
+  <text class="f-note" x={px(Math.PI)} y="288" text-anchor="middle">phase φ of the middle gate</text>
+  <text class="f-note" transform={`translate(22 ${py(0.5)}) rotate(-90)`} text-anchor="middle">probability of outcome 0</text>
+</svg>

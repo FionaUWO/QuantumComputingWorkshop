@@ -2,6 +2,8 @@
 title: "The Shor code"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import ShorLayout from '../../../components/figures/ShorLayout.astro';
 import Statement from '../../../components/Statement.astro';
 
 Shor's solution is to *concatenate* the two codes. First encode with the phase flip code, $|0\rangle \mapsto |{+}{+}{+}\rangle$ and $|1\rangle \mapsto |{-}{-}{-}\rangle$. Then encode each of the three qubits with the bit flip code, so that $|\pm\rangle \mapsto \tfrac{1}{\sqrt2}\big(|000\rangle \pm |111\rangle\big)$. The result uses nine qubits:
@@ -20,6 +22,11 @@ X_1 X_2 X_3 X_4 X_5 X_6 \qquad\text{and}\qquad X_4 X_5 X_6 X_7 X_8 X_9 .
 $$
 
 These locate the block whose sign flipped, and applying $Z$ to any qubit of that block repairs it. Note that $Z_1$, $Z_2$ and $Z_3$ have the same effect on the code space, so the code does not need to tell them apart. Codes with this property are called *degenerate*; nothing like it exists classically.
+
+
+<Figure caption="The nine qubits in three blocks. Six ZZ checks compare neighbours inside a block and locate a bit flip. Two six-qubit X checks compare the signs of neighbouring blocks and locate the block that suffered a phase flip." width="38rem">
+  <ShorLayout />
+</Figure>
 
 **Both.** A $Y$ error on one qubit is a bit flip and a phase flip on that qubit. The two sets of checks detect each part separately and both are corrected.
 

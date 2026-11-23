@@ -1,0 +1,39 @@
+---
+// A general error is a superposition of four Pauli errors; the syndrome measurement picks one
+// branch, and the matching recovery brings every branch back to the encoded state.
+const ys = [45, 105, 165, 225], mid = 135;
+const branches = [
+  { state: '|ψ⟩', prob: '|e₀|²', fix: 'I' },
+  { state: 'X|ψ⟩', prob: '|e₁|²', fix: 'X' },
+  { state: 'Z|ψ⟩', prob: '|e₂|²', fix: 'Z' },
+  { state: 'XZ|ψ⟩', prob: '|e₃|²', fix: 'ZX' },
+];
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+---
+<svg viewBox="0 0 640 260" role="img" aria-label="Syndrome measurement turns a continuous error into one of four discrete ones">
+  <defs>
+    <marker id="dz-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto">
+      <path class="f-arrowhead" d="M0 0 L10 5 L0 10 z" />
+    </marker>
+  </defs>
+  <g class="f-note" text-anchor="middle">
+    <text x="170" y="14">measure the syndrome</text>
+    <text x="445" y="14">recover</text>
+  </g>
+
+  {branches.map((b, i) => (
+    <g>
+      <line class="f-flow" x1="112" y1={mid} x2="226" y2={ys[i]} marker-end="url(#dz-arrow)" />
+      <line class="f-flow" x1="352" y1={ys[i]} x2="526" y2={mid} marker-end="url(#dz-arrow)" />
+      <text class="f-note" x="198" y={ys[i] + (i < 2 ? -10 : 20)} text-anchor="middle">{b.prob}</text>
+      <text class="f-label" x="392" y={lerp(ys[i], mid, 0.22) - 8} text-anchor="middle">{b.fix}</text>
+      <rect class={i === 0 ? 'f-cell' : 'f-box f-dashed'} x="230" y={ys[i] - 18} width="120" height="36" rx="6" />
+      <text class="f-label" x="290" y={ys[i] + 5} text-anchor="middle">{b.state}</text>
+    </g>
+  ))}
+
+  <rect class="f-box" x="20" y={mid - 20} width="90" height="40" rx="6" />
+  <text class="f-label" x="65" y={mid + 5} text-anchor="middle">E|ψ⟩</text>
+  <rect class="f-blob" x="530" y={mid - 20} width="90" height="40" rx="6" />
+  <text class="f-label" x="575" y={mid + 5} text-anchor="middle">|ψ⟩</text>
+</svg>

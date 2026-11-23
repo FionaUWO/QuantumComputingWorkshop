@@ -3,6 +3,9 @@ title: "Hamiltonians on many qubits"
 board: false
 ---
 import Statement from '../../../components/Statement.astro';
+import Figure from '../../../components/Figure.astro';
+import IsingLandscape from '../../../components/figures/lec5/IsingLandscape.astro';
+import TrotterSteps from '../../../components/figures/lec5/TrotterSteps.astro';
 
 On $n$ qubits a Hamiltonian is a $2^n \times 2^n$ matrix, far too large to write down. The ones that occur in nature, and the ones we will build, are sums of terms that each touch only a few qubits. Write
 
@@ -28,6 +31,10 @@ $$
 
 The eigenvectors are the bit strings and the eigenvalues are the values of a function $E : \{0,1\}^n \to \mathbb{R}$. Finding the ground state of an Ising Hamiltonian is the same as minimising $E$ over bit strings: a combinatorial optimisation problem in disguise.
 
+<Figure caption="An Ising Hamiltonian on three qubits as a cost function. Each bit string z is an eigenvector, and the height of its marker is the eigenvalue E(z). The ground state is the string with the lowest marker, here 101 with energy −3." width="30rem">
+  <IsingLandscape />
+</Figure>
+
 ### Sums that do not commute
 
 For terms that commute, $e^{-i(A+B)t} = e^{-iAt}e^{-iBt}$, and each factor acts on a few qubits, so the evolution is a short circuit. When $A$ and $B$ do not commute this fails, but only slightly for short times.
@@ -43,5 +50,9 @@ and for finite $m$ the error is $O(t^2/m)$.
 </Statement>
 
 The reason is that $e^{-iA\delta}e^{-iB\delta} = e^{-i(A+B)\delta} + O(\delta^2)$, with the correction proportional to the commutator $[A, B] = AB - BA$. Evolution under a sum of local terms can thus be approximated by alternating short evolutions under each term. This is how a quantum computer simulates a physical system, and the alternating pattern is the skeleton of QAOA.
+
+<Figure caption="The Trotter formula as a circuit, with time running from left to right. Evolution under A + B for time t is replaced by m short steps. Each step applies the evolution under B and then the evolution under A, both for time t/m, and the approximation improves as m grows." width="40rem">
+  <TrotterSteps />
+</Figure>
 
 <p class="reading">Reading: Nielsen and Chuang, Sections 4.7.1 and 4.7.2.</p>

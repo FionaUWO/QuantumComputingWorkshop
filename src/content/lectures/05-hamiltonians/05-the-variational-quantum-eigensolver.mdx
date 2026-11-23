@@ -2,6 +2,9 @@
 title: "The variational quantum eigensolver"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import VqeLoop from '../../../components/figures/lec5/VqeLoop.astro';
+
 The variational principle suggests a way to use a small quantum computer.
 
 1. Choose a parametrised circuit $U(\vec\theta)$, the *ansatz*, and let $|\psi(\vec\theta)\rangle = U(\vec\theta)|0\rangle^{\otimes n}$.
@@ -9,6 +12,10 @@ The variational principle suggests a way to use a small quantum computer.
 3. On a classical computer, update $\vec\theta$ to lower $F$. Repeat.
 
 By the variational principle $F(\vec\theta) \ge E_0$ throughout, and the final value is an upper bound on the ground energy. This hybrid loop is the *variational quantum eigensolver*. The quantum computer is used only for what is hard classically: preparing a state in a $2^n$-dimensional space and sampling from it.
+
+<Figure caption="The variational quantum eigensolver as a loop. The quantum computer prepares the trial state for the current parameters θ and returns an estimate of the energy F(θ). The classical computer uses that number to choose new parameters, and the two alternate until F stops decreasing." width="38rem">
+  <VqeLoop />
+</Figure>
 
 ### Estimating an average
 

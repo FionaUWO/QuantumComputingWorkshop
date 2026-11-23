@@ -4,7 +4,7 @@ board: false
 ---
 1. Show that the bit flip channel leaves $|+\rangle$ and $|-\rangle$ unchanged, and the phase flip channel leaves $|0\rangle$ and $|1\rangle$ unchanged.
 2. Verify $3p^2 - 2p^3 \lt p$ for $0 \lt p \lt \tfrac12$. For $p = 0.01$, by what factor does the three-qubit code reduce the error probability?
-3. Draw the encoding circuit of the bit flip code, and a circuit that measures $Z_1 Z_2$ using one ancilla qubit and two CNOTs.
+3. Draw the circuit of the phase flip code in the style of the figure in Section 7.3: the encoder, and a measurement of $X_1 X_2$ using one ancilla qubit. Which gates must be added to the bit flip circuit?
 4. What happens in the bit flip code if qubits $1$ and $2$ both flip? Follow the syndrome and the recovery, and identify the final state.
 5. Show that $Z_1$, $Z_2$ and $Z_3$ act identically on the code space of the bit flip code, and that this action is a logical phase flip.
 6. Write $H$ as a linear combination of $I$, $X$, $Z$ and $XZ$. If $H$ is applied by mistake to the first qubit of the Shor code, what are the possible syndromes and their probabilities?

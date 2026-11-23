@@ -1,0 +1,38 @@
+---
+// A linear sweep from H_B to H_C cut into p steps. Step l becomes one QAOA layer with
+// gamma_l = (T/p) s_l and beta_l = (T/p)(1 - s_l), where s_l is the midpoint of the step.
+const p = 6;
+const px = (s: number) => 70 + 340 * s;
+const py = (w: number) => 240 - 190 * w;   // w is the angle in units of T/p
+const steps = Array.from({ length: p }, (_, i) => {
+  const s = (i + 0.5) / p;
+  return { l: i + 1, x0: px(i / p), x1: px((i + 1) / p), xm: px(s), g: py(s), b: py(1 - s) };
+});
+const marks = Array.from({ length: p + 1 }, (_, i) => px(i / p));
+---
+<svg viewBox="0 0 460 290" role="img" aria-label="A linear sweep cut into six steps: the cost angles rise from step to step and the mixer angles fall, following the two ramps of the continuous sweep">
+  <line class="f-axis" x1={px(0)} y1={py(0)} x2={px(1)} y2={py(0)} />
+  <line class="f-axis" x1={px(0)} y1={py(0)} x2={px(0)} y2={py(1) - 6} />
+  {marks.map((x) => <line class="f-axis" x1={x} y1={py(0)} x2={x} y2={py(0) + 5} />)}
+  <g class="f-note">
+    <line class="f-axis" x1={px(0) - 5} y1={py(1)} x2={px(0)} y2={py(1)} />
+    <text x={px(0) - 10} y={py(1) + 4} text-anchor="end">T/p</text>
+    <text x={px(0) - 10} y={py(0) + 4} text-anchor="end">0</text>
+    {steps.map(({ l, xm }) => <text x={xm} y={py(0) + 19} text-anchor="middle">{l}</text>)}
+    <text x={px(0)} y="282">t = 0</text>
+    <text x={px(0.5)} y="282" text-anchor="middle">step l of the sweep</text>
+    <text x={px(1)} y="282" text-anchor="end">t = T</text>
+    <text transform={`translate(22 ${py(0.5)}) rotate(-90)`} text-anchor="middle">angle of the layer</text>
+  </g>
+
+  <line class="f-ghost" x1={px(0)} y1={py(1)} x2={px(1)} y2={py(0)} />
+  <line class="f-ghost" x1={px(0)} y1={py(0)} x2={px(1)} y2={py(1)} />
+
+  {steps.map(({ x0, x1, b }) => <line class="f-wire" x1={x0 + 3} y1={b} x2={x1 - 3} y2={b} />)}
+  {steps.map(({ x0, x1, g }) => <line class="f-hot" x1={x0 + 3} y1={g} x2={x1 - 3} y2={g} />)}
+  {steps.map(({ xm, b }) => <circle class="f-z" cx={xm} cy={b} r="5" />)}
+  {steps.map(({ xm, g }) => <circle class="f-syn" cx={xm} cy={g} r="6" />)}
+
+  <text class="f-label" x={px(0) + 6} y="32">β<tspan dy="4" font-size="11">l</tspan><tspan dy="-4">, mixer</tspan></text>
+  <text class="f-label" x={px(1)} y="32" text-anchor="end">γ<tspan dy="4" font-size="11">l</tspan><tspan dy="-4">, cost</tspan></text>
+</svg>

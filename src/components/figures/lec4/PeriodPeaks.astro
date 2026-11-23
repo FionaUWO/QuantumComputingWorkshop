@@ -1,0 +1,96 @@
+---
+// Measurement probabilities before and after QFT_32 for a state of period r = 4.
+// Before: N/r = 8 spikes of height r/N at x0 + 4m. After: r = 4 peaks of height 1/r at the
+// multiples of N/r = 8, wherever the offset x0 was. The animation steps x0 through 0..3.
+const N = 32, r = 4, x0 = 1;
+const X = (k: number) => 50 + 16 * k;
+const baseA = 110, baseB = 270;
+const H = 280;                                   // pixels per unit of probability
+const hA = H * (r / N), hB = H * (1 / r);        // 35 and 70
+const spikes = Array.from({ length: N / r }, (_, m) => x0 + m * r);
+const peaks = Array.from({ length: r }, (_, l) => (l * N) / r);
+const all = Array.from({ length: N }, (_, k) => k);
+const marks = [0, 8, 16, 24];
+// the bracket showing the period sits between the third and fourth spikes
+const bA = X(spikes[2]), bB = X(spikes[3]);
+---
+<svg viewBox="0 0 600 300" role="img" aria-label="A comb of eight spikes with period 4 is turned by the Fourier transform into four peaks at 0, 8, 16 and 24, for every offset">
+  <defs>
+    <marker id="periodpeaks-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto">
+      <path class="f-arrowhead" d="M0 0 L10 5 L0 10 z" />
+    </marker>
+  </defs>
+
+  <text class="f-note" x={X(0)} y="30">before: N = 32, period r = 4</text>
+  <g class="f-note" text-anchor="end">
+    <text class="pp-l1" x={X(31)} y="30">offset x₀ = 1</text>
+    <text class="pp-l2" x={X(31)} y="30">offset x₀ = 2</text>
+    <text class="pp-l3" x={X(31)} y="30">offset x₀ = 3</text>
+    <text class="pp-l0" x={X(31)} y="30">offset x₀ = 0</text>
+  </g>
+
+  <!-- before -->
+  <line class="f-axis" x1={X(0) - 8} y1={baseA} x2={X(31) + 8} y2={baseA} />
+  {all.map((k) => <line class="f-axis" x1={X(k)} y1={baseA} x2={X(k)} y2={baseA + (k % 8 === 0 ? 6 : 3)} />)}
+  <g class="f-note" text-anchor="middle">
+    {marks.map((k) => <text x={X(k)} y={baseA + 20}>{k}</text>)}
+  </g>
+  <g class="pp-comb">
+    {spikes.map((k) => <rect class="f-x" x={X(k) - 2.5} y={baseA - hA} width="5" height={hA} />)}
+    <path class="f-thin" d={`M${bA} ${baseA - hA - 8} v-8 M${bB} ${baseA - hA - 8} v-8 M${bA} ${baseA - hA - 12} H${bB}`} />
+    <text class="f-note" x={(bA + bB) / 2} y={baseA - hA - 18} text-anchor="middle">r</text>
+  </g>
+
+  <line class="f-flow" x1="330" y1="136" x2="330" y2="162" marker-end="url(#periodpeaks-arrow)" />
+  <text class="f-label" x="342" y="154">QFT</text>
+
+  <!-- after -->
+  <text class="f-note" x={X(0)} y="184">after: peaks N/r = 8 apart</text>
+  <line class="f-axis" x1={X(0) - 8} y1={baseB} x2={X(31) + 8} y2={baseB} />
+  {all.map((k) => <line class="f-axis" x1={X(k)} y1={baseB} x2={X(k)} y2={baseB + (k % 8 === 0 ? 6 : 3)} />)}
+  <g class="f-note" text-anchor="middle">
+    {marks.map((k) => <text x={X(k)} y={baseB + 20}>{k}</text>)}
+  </g>
+  {peaks.map((k) => <rect class="f-x" x={X(k) - 2.5} y={baseB - hB} width="5" height={hB} />)}
+</svg>
+
+<style>
+  .pp-l2, .pp-l3, .pp-l0 { opacity: 0; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pp-comb { animation: periodpeaks-comb 14s ease-in-out infinite; }
+    .pp-l1 { animation: periodpeaks-l1 14s linear infinite; }
+    .pp-l2 { animation: periodpeaks-l2 14s linear infinite; }
+    .pp-l3 { animation: periodpeaks-l3 14s linear infinite; }
+    .pp-l0 { animation: periodpeaks-l0 14s linear infinite; }
+  }
+
+  /* one step of x0 is 16 units; the drawn position is x0 = 1 */
+  @keyframes periodpeaks-comb {
+    0%, 19% { transform: translateX(0); }
+    25%, 44% { transform: translateX(16px); }
+    50%, 69% { transform: translateX(32px); }
+    75%, 94% { transform: translateX(-16px); }
+    100% { transform: translateX(0); }
+  }
+  @keyframes periodpeaks-l1 {
+    0%, 19% { opacity: 1; }
+    22%, 97% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes periodpeaks-l2 {
+    0%, 22% { opacity: 0; }
+    25%, 44% { opacity: 1; }
+    47%, 100% { opacity: 0; }
+  }
+  @keyframes periodpeaks-l3 {
+    0%, 47% { opacity: 0; }
+    50%, 69% { opacity: 1; }
+    72%, 100% { opacity: 0; }
+  }
+  @keyframes periodpeaks-l0 {
+    0%, 72% { opacity: 0; }
+    75%, 94% { opacity: 1; }
+    97%, 100% { opacity: 0; }
+  }
+</style>

@@ -1,0 +1,36 @@
+---
+// Success probability P_k = sin^2((2k+1) theta/2) for N = 64, M = 1, against the number of iterations.
+const half = Math.asin(1 / 8);
+const P = (k: number) => Math.sin((2 * k + 1) * half) ** 2;
+const K = 12, best = 6;
+const px = (k: number) => 60 + 30 * k;
+const py = (v: number) => 240 - 190 * v;
+const curve = 'M' + Array.from({ length: 121 }, (_, i) => `${px(i / 10).toFixed(1)} ${py(P(i / 10)).toFixed(1)}`).join(' L');
+const ks = Array.from({ length: K + 1 }, (_, k) => k);
+const xt = [0, 3, 6, 9, 12], yt = [0, 0.5, 1];
+---
+<svg viewBox="0 0 460 290" role="img" aria-label="The success probability of the Grover algorithm rises to almost one at six iterations and then falls again">
+  <line class="f-axis" x1={px(0)} y1={py(0)} x2={px(K)} y2={py(0)} />
+  <line class="f-axis" x1={px(0)} y1={py(0)} x2={px(0)} y2={py(1)} />
+  <line class="f-ghost" x1={px(0)} y1={py(1)} x2={px(K)} y2={py(1)} />
+  {xt.map((t) => (
+    <g class="f-note">
+      <line class="f-axis" x1={px(t)} y1={py(0)} x2={px(t)} y2={py(0) + 5} />
+      <text x={px(t)} y={py(0) + 20} text-anchor="middle">{t}</text>
+    </g>
+  ))}
+  {yt.map((t) => (
+    <g class="f-note">
+      <line class="f-axis" x1={px(0) - 5} y1={py(t)} x2={px(0)} y2={py(t)} />
+      <text x={px(0) - 10} y={py(t) + 4} text-anchor="end">{t === 0.5 ? '½' : t}</text>
+    </g>
+  ))}
+
+  <path class="f-curve" d={curve} />
+  {ks.map((k) => <circle class={k === best ? 'f-syn' : 'f-z'} cx={px(k)} cy={py(P(k)).toFixed(1)} r={k === best ? 6 : 4} />)}
+
+  <text class="f-note" x={px(best)} y={py(1) - 16} text-anchor="middle">k = {best}</text>
+  <text class="f-note" x={px(K)} y={py(1) - 16} text-anchor="end">N = 64, M = 1</text>
+  <text class="f-note" x={px(K / 2)} y="284" text-anchor="middle">number of iterations k</text>
+  <text class="f-note" transform={`translate(18 ${py(0.5)}) rotate(-90)`} text-anchor="middle">probability of a solution</text>
+</svg>

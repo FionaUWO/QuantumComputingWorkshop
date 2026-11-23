@@ -1,0 +1,39 @@
+---
+// Measuring A picks a row of the amplitude matrix; the row is the (unnormalised) new state of B.
+const x0 = 80, y0 = 50, w = 80, h = 50;
+const sub = ['₀', '₁'];
+const rows = [0, 1].map((i) => ({
+  y: y0 + i * h + h / 2,
+  cells: [0, 1].map((j) => `a${sub[i]}${sub[j]}`),
+  state: `a${sub[i]}₀|0⟩ + a${sub[i]}₁|1⟩`,
+  prob: `probability |a${sub[i]}₀|² + |a${sub[i]}₁|²`,
+}));
+const ax0 = x0 + 2 * w + 10, ax1 = ax0 + 42, tx = ax1 + 10;
+---
+<svg viewBox="0 0 520 170" role="img" aria-label="Each outcome of measuring A selects one row of the amplitude matrix, which becomes the state of B">
+  <defs>
+    <marker id="lec2-measurerow-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto">
+      <path class="f-arrowhead" d="M0 0 L10 5 L0 10 z" />
+    </marker>
+  </defs>
+
+  {[0, 1].map((j) => (
+    <text class="f-note" x={x0 + j * w + w / 2} y="40" text-anchor="middle">B = {j}</text>
+  ))}
+  <text class="f-note" x={tx} y="40">state of B, before rescaling</text>
+
+  {rows.map(({ y, cells, state, prob }, i) => (
+    <g>
+      <text class="f-note" x={x0 - 10} y={y + 4} text-anchor="end">A = {i}</text>
+      {cells.map((c, j) => (
+        <g>
+          <rect class="f-cell" x={x0 + j * w} y={y - h / 2} width={w} height={h} />
+          <text class="f-label" x={x0 + j * w + w / 2} y={y + 5} text-anchor="middle">{c}</text>
+        </g>
+      ))}
+      <line class="f-flow" x1={ax0} y1={y} x2={ax1} y2={y} marker-end="url(#lec2-measurerow-arrow)" />
+      <text class="f-label" x={tx} y={y - 3}>{state}</text>
+      <text class="f-note" x={tx} y={y + 15}>{prob}</text>
+    </g>
+  ))}
+</svg>

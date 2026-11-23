@@ -1,0 +1,28 @@
+---
+// The hybrid loop: the quantum computer prepares the trial state and returns an estimate of
+// F(θ); the classical computer chooses new parameters to lower it.
+const bw = 230, bh = 80, yBox = 70;
+const q = { x: 20 }, c = { x: 350 };
+const qx = q.x + bw / 2, cx = c.x + bw / 2;      // 135 and 465
+const top = yBox - 4, bot = yBox + bh + 4;
+---
+<svg viewBox="0 0 600 220" role="img" aria-label="The quantum computer sends an estimate of the energy to the classical computer, which sends back new parameters, in a loop">
+  <defs>
+    <marker id="vqe-loop-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto">
+      <path class="f-arrowhead" d="M0 0 L10 5 L0 10 z" />
+    </marker>
+  </defs>
+
+  <path class="f-flow" d={`M${qx} ${top} C${qx} ${top - 46} ${cx} ${top - 46} ${cx} ${top}`} marker-end="url(#vqe-loop-arrow)" />
+  <path class="f-flow" d={`M${cx} ${bot} C${cx} ${bot + 46} ${qx} ${bot + 46} ${qx} ${bot}`} marker-end="url(#vqe-loop-arrow)" />
+  <text class="f-label" x="300" y="18" text-anchor="middle">estimate of F(θ)</text>
+  <text class="f-label" x="300" y="212" text-anchor="middle">new θ</text>
+
+  <rect class="f-blob" x={q.x} y={yBox} width={bw} height={bh} rx="8" />
+  <text class="f-label f-strong" x={qx} y={yBox + 32} text-anchor="middle">quantum computer</text>
+  <text class="f-note" x={qx} y={yBox + 56} text-anchor="middle">prepare U(θ)|0…0⟩ and measure</text>
+
+  <rect class="f-box" x={c.x} y={yBox} width={bw} height={bh} rx="8" />
+  <text class="f-label f-strong" x={cx} y={yBox + 32} text-anchor="middle">classical computer</text>
+  <text class="f-note" x={cx} y={yBox + 56} text-anchor="middle">update θ to lower F</text>
+</svg>

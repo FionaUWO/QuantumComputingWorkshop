@@ -4,6 +4,8 @@ board: false
 ---
 import Statement from '../../../components/Statement.astro';
 import Example from '../../../components/Example.astro';
+import Figure from '../../../components/Figure.astro';
+import VariationalCurve from '../../../components/figures/lec5/VariationalCurve.astro';
 
 A Hamiltonian is also an observable, in the sense of lecture 1: measuring it returns an energy $E_k$ with probability $|\langle E_k|\psi\rangle|^2$, and the average is $\langle\psi|H|\psi\rangle$.
 
@@ -36,5 +38,9 @@ $$
 
 which is minimised at $\theta = \tfrac{5\pi}{4}$ with value $-\sqrt2$. This family happens to contain the ground state, so the bound is tight.
 </Example>
+
+<Figure caption="The energy of the trial state |ψ(θ)⟩ for H = X + Z, as a function of θ. The curve stays between the two eigenvalues, drawn as dashed lines, and never enters the shaded region below E<sub>0</sub>. It touches E<sub>0</sub> at θ = 5π/4, where the trial state is the ground state." width="36rem">
+  <VariationalCurve />
+</Figure>
 
 <p class="reading">Reading: Nielsen and Chuang, Section 2.2.5 for observables and averages.</p>

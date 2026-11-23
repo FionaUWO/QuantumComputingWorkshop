@@ -2,6 +2,9 @@
 title: "Three codes"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import SteaneVenn from '../../../components/figures/SteaneVenn.astro';
+
 ### The Shor code, $[[9, 1, 3]]$
 
 The eight checks found in lecture 7 generate its stabilizer:
@@ -10,7 +13,7 @@ $$
 Z_1 Z_2,\; Z_2 Z_3,\; Z_4 Z_5,\; Z_5 Z_6,\; Z_7 Z_8,\; Z_8 Z_9,\; X_1 X_2 X_3 X_4 X_5 X_6,\; X_4 X_5 X_6 X_7 X_8 X_9 .
 $$
 
-They commute: each $Z$-type check shares zero or two qubits with each $X$-type check. With $n = 9$ and eight generators, $k = 1$. The logical operators can be taken to be $X^{\otimes 9}$ and $Z^{\otimes 9}$.
+They commute: each $Z$-type check shares zero or two qubits with each $X$-type check. With $n = 9$ and eight generators, $k = 1$. The logical operators can be taken to be $X^{\otimes 9}$ and $Z^{\otimes 9}$, with the roles exchanged. $Z^{\otimes 9}$ flips the sign inside each of the three blocks, so it swaps $|0_L\rangle$ and $|1_L\rangle$ and acts as the logical $X$. $X^{\otimes 9}$ leaves $|0_L\rangle$ alone and multiplies $|1_L\rangle$ by $(-1)^3 = -1$, so it acts as the logical $Z$.
 
 ### The Steane code, $[[7, 1, 3]]$
 
@@ -28,6 +31,11 @@ This is the parity check matrix of the classical Hamming code. Each row gives tw
 | $IIIZZZZ$ | $IZZIIZZ$ | $ZIZIZIZ$ |
 
 Any two rows of $H$ overlap in an even number of positions, so the $X$-type and $Z$-type checks commute. Six generators on seven qubits leave one logical qubit, with logical operators $X^{\otimes 7}$ and $Z^{\otimes 7}$. A single $X$ error on qubit $j$ anticommutes with the $Z$-type checks in the pattern given by column $j$ of $H$, which is $j$ in binary: the syndrome spells out the location of the error.
+
+
+<Figure caption="The Steane code. Each circle is one row of H and carries two checks: X on its four qubits, and Z on the same four. Any two circles share two qubits, so the checks commute. An X error on qubit 5 lies in circles 1 and 3 only, giving the syndrome 101, which is 5 in binary." width="20rem">
+  <SteaneVenn />
+</Figure>
 
 ### The five-qubit code, $[[5, 1, 3]]$
 

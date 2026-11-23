@@ -3,6 +3,8 @@ title: "Depth one by hand"
 board: false
 ---
 import Statement from '../../../components/Statement.astro';
+import Figure from '../../../components/Figure.astro';
+import DepthOnePlot from '../../../components/figures/lec6/DepthOnePlot.astro';
 
 For $p = 1$ the score can be computed in closed form. By linearity it is a sum over edges,
 
@@ -41,6 +43,10 @@ The factor $\cos^{d-1}\gamma$ comes from the $d - 1$ other edges at each endpoin
 | single edge | $1$ | $1$ |
 | cycle | $2$ | $\tfrac34$ |
 | $3$-regular, no triangles | $3$ | $\tfrac12 + \tfrac{1}{3\sqrt3} \approx 0.6924$ |
+
+<Figure caption="The depth-one score per edge from the theorem, at β = π/8, as a function of γ for d = 1, 2 and 3. The dots mark the maxima listed in the table. A larger degree lowers the peak and moves it to a smaller angle γ." width="28rem">
+  <DepthOnePlot />
+</Figure>
 
 For the even cycle $C_{\max} = |E|$, so depth one reaches three quarters of the optimum. For cycles it is known that depth $p$ reaches $\tfrac{2p+1}{2p+2}$.
 

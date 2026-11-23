@@ -2,7 +2,10 @@
 title: "Thresholds"
 board: false
 ---
+import ThresholdPlot from '../../../components/figures/ThresholdPlot.astro';
 import Statement from '../../../components/Statement.astro';
+import Figure from '../../../components/Figure.astro';
+import DetectionEvents from '../../../components/figures/DetectionEvents.astro';
 
 Error correction uses more qubits and more gates, all of them faulty, including the ones that measure syndromes. Does it help or does it make matters worse?
 
@@ -22,15 +25,37 @@ If $c\,p \lt 1$ the error falls doubly exponentially in $k$, while the number of
 
 So below the threshold, arbitrarily long quantum computations are possible with modest overhead, and above it error correction makes things worse. The value of $p_{\mathrm{th}}$ depends on the code and the noise.
 
+### When the syndrome itself is wrong
+
+So far the syndrome has been treated as exact. It is not. Each check is read out by a small circuit, an ancilla and a few CNOTs followed by a measurement, and any of these can fail. Suppose one check is reported wrongly and we trust it. We then apply a correction to a state that had no error, and the correction is itself an error. A single round of measurement cannot be relied on.
+
+The remedy is to measure every check again and again, and to look at how the outcomes *change*. A *detection event* is a check whose outcome differs from its outcome in the previous round. The two kinds of fault leave different marks.
+
+- **A data error** changes the checks next to it, and they stay changed in every later round. It produces detection events at neighbouring checks in the same round: a pair separated in space.
+- **A measurement error** gives one wrong outcome in one round. The outcome differs from the round before, and the next round differs from it again. It produces two detection events at the same check in consecutive rounds: a pair separated in time.
+
+<Figure caption="Five rounds of syndrome measurement on the five-qubit repetition code. Filled points are detection events. A bit flip on qubit 3 before round 2 changes the two checks that contain it, and they stay changed, so the events are side by side. Misreading Z₄Z₅ in round 4 gives one event in that round and one in the next.">
+  <DetectionEvents />
+</Figure>
+
+Time has become one more direction of the lattice. For the repetition code the detection events live on a two-dimensional grid of position and time, and for the surface code on a three-dimensional one. Faults are again chains, the events are again their endpoints, and the decoder again pairs them up by short paths, now allowed to run through time as well as space. A chain along the time axis is as dangerous as one in space, so a logical operation on a code of distance $d$ is protected by about $d$ rounds of measurement.
+
+Noisy measurement lowers the threshold. With perfect syndromes the surface code tolerates an error rate of about $10\%$. When each measurement outcome is also wrong with the same probability the figure is about $3\%$, and when every gate in the readout circuit can fail it is about $1\%$.
+
 ### The surface code in practice
 
-For the surface code one does not concatenate; one increases the distance. Below threshold the logical error rate per round behaves like
+For the surface code one does not concatenate; one increases the distance and repeats the measurements. Below threshold the logical error rate per round behaves like
 
 $$
 p_L \approx A \Big( \frac{p}{p_{\mathrm{th}}} \Big)^{(d+1)/2} ,
 $$
 
 since $\tfrac{d+1}{2}$ errors are needed to fool the decoder. Its threshold is about $1\%$ under realistic circuit noise, far higher than for concatenated codes, and it needs only nearest-neighbour gates on a planar chip. Those two properties are why most hardware roadmaps are built around it.
+
+
+<Figure caption="The formula above for d = 3, 5 and 7, with A = 0.1 and p<sub>th</sub> = 10⁻², on logarithmic axes. To the left of the threshold a larger code is better, and each step in distance gains more as p falls. To the right a larger code is worse." width="25rem">
+  <ThresholdPlot />
+</Figure>
 
 The cost is in qubits. With physical error rates around $10^{-3}$, reaching the logical error rates that Shor's algorithm needs takes a distance in the twenties, on the order of a thousand physical qubits for each logical one. Experiments have now shown the key behaviour on real devices: the logical error rate of a surface code memory decreasing as the distance grows from $3$ to $5$ to $7$. Lowering the overhead, with better codes and better decoders, is an active area of research.
 

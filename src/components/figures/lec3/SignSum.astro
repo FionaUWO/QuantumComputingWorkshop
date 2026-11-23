@@ -1,0 +1,25 @@
+---
+// Deutsch-Jozsa: the amplitude of |0...0> is the average of the signs (-1)^f(x).
+// Drawn for n = 3: a constant f and a balanced f.
+const base = 100, h = 45, pitch = 24, bw = 16;
+const panels = [
+  { x0: 50, title: 'f constant', signs: [1, 1, 1, 1, 1, 1, 1, 1] },
+  { x0: 340, title: 'f balanced', signs: [1, -1, 1, 1, -1, -1, 1, -1] },
+].map((p) => ({ ...p, mean: p.signs.reduce((s, v) => s + v, 0) / p.signs.length }));
+---
+<svg viewBox="0 0 580 195" role="img" aria-label="The signs of a constant function add up; the signs of a balanced function cancel">
+  {panels.map(({ x0, title, signs, mean }) => (
+    <g>
+      <text class="f-label" x={x0 + 4 * pitch - 4} y="22" text-anchor="middle">{title}</text>
+      <g class="f-note" text-anchor="end">
+        <text x={x0 - 14} y={base - h + 4}>+1</text>
+        <text x={x0 - 14} y={base + h + 4}>−1</text>
+      </g>
+      {signs.map((s, i) => (
+        <rect class={s > 0 ? 'f-face' : 'f-x'} x={x0 + i * pitch} y={s > 0 ? base - h : base} width={bw} height={h} />
+      ))}
+      <line class="f-axis" x1={x0 - 8} y1={base} x2={x0 + 8 * pitch} y2={base} />
+      <text class="f-note" x={x0 + 4 * pitch - 4} y="185" text-anchor="middle">average of the signs = {mean}</text>
+    </g>
+  ))}
+</svg>

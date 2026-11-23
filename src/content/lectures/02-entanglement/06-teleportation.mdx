@@ -2,6 +2,8 @@
 title: "Teleportation"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import TeleportCircuit from '../../../components/figures/lec2/TeleportCircuit.astro';
 import Teleport from '../../../components/Teleport.astro';
 
 Alice has a qubit $M$ in an unknown state $|\psi\rangle = \alpha|0\rangle + \beta|1\rangle$ and wants Bob to have it. She cannot measure it and send the result, and she cannot copy it. But if she and Bob already share a Bell pair, two classical bits are enough.
@@ -9,6 +11,10 @@ Alice has a qubit $M$ in an unknown state $|\psi\rangle = \alpha|0\rangle + \bet
 1. Alice applies CNOT from $M$ to her half $A$ of the pair, then $H$ to $M$.
 2. She measures $M$ and $A$, getting bits $m$ and $a$, and sends them to Bob.
 3. Bob applies $X$ to his qubit if $a = 1$, then $Z$ if $m = 1$.
+
+<Figure caption="The whole protocol as one circuit, with time running from left to right. Single lines carry qubits and double lines carry the classical bits m and a that Alice sends to Bob. Bob applies X only if a is 1 and then Z only if m is 1, after which his qubit is in the state the qubit M started in." width="38rem">
+  <TeleportCircuit />
+</Figure>
 
 Why it works is a single identity, obtained by expanding and regrouping:
 

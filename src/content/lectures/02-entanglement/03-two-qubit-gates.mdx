@@ -1,6 +1,8 @@
 ---
 title: "Two-qubit gates"
 ---
+import Figure from '../../../components/Figure.astro';
+import BellCircuit from '../../../components/figures/lec2/BellCircuit.astro';
 import Try from '../../../components/Try.astro';
 
 Gates are still unitary matrices, now $4 \times 4$. Applying $U$ to qubit $A$ and leaving $B$ alone is the matrix $U \otimes I$; acting on $B$ alone is $I \otimes U$. Such gates never change $|\det M|$ (why?), so they cannot create entanglement.
@@ -16,6 +18,10 @@ On basis states it is a classical reversible gate. Its quantum character appears
 $$
 |00\rangle \xrightarrow{\;H \otimes I\;} \tfrac{1}{\sqrt2}\big(|00\rangle + |10\rangle\big) \xrightarrow{\;\mathrm{CNOT}\;} \tfrac{1}{\sqrt2}\big(|00\rangle + |11\rangle\big).
 $$
+
+<Figure caption="The circuit that makes a Bell pair, read from left to right. The state of the pair is written under each dashed line. The Hadamard gate puts the control qubit A into superposition, and the CNOT then flips B only in the branch where A is 1." width="32rem">
+  <BellCircuit />
+</Figure>
 
 ### The Bell basis
 

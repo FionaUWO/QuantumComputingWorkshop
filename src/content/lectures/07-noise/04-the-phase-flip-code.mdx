@@ -2,9 +2,19 @@
 title: "The phase flip code"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import PauliSwaps from '../../../components/figures/PauliSwaps.astro';
+
 The bit flip code does nothing against $Z$ errors. Worse, a phase flip on any one of the three qubits sends $\alpha|000\rangle + \beta|111\rangle$ to $\alpha|000\rangle - \beta|111\rangle$, so the encoded qubit is now three times as exposed.
 
-But $Z$ acts on the basis $\{|+\rangle, |-\rangle\}$ exactly as $X$ acts on $\{|0\rangle, |1\rangle\}$: it swaps the two. Since $HZH = X$, changing basis with Hadamards converts one problem into the other. The *phase flip code* is
+But $Z$ acts on the basis $\{|+\rangle, |-\rangle\}$ exactly as $X$ acts on $\{|0\rangle, |1\rangle\}$: it swaps the two. Since $HZH = X$, changing basis with Hadamards converts one problem into the other.
+
+
+<Figure caption="Four states on the x–z circle of the Bloch sphere. X exchanges |0⟩ and |1⟩ and leaves |+⟩ and |−⟩ where they are. Z does the same with the two pairs exchanged. A Hadamard turns one picture into the other." width="30rem">
+  <PauliSwaps />
+</Figure>
+
+The *phase flip code* is
 
 $$
 |0_L\rangle = |{+}{+}{+}\rangle, \qquad |1_L\rangle = |{-}{-}{-}\rangle ,

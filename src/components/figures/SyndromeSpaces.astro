@@ -1,0 +1,59 @@
+---
+// The eight-dimensional space of three qubits, cut in half by each check of the bit flip code.
+// With motion allowed it plays in three steps: the whole space, then the half kept by the first
+// check, then the quarter kept by both. Without motion it shows the last step.
+const cw = 160, ch = 90, x0 = 110, y0 = 44;
+const cells = [
+  { c: 0, r: 0, text: '|000⟩, |111⟩' },
+  { c: 1, r: 0, text: '|100⟩, |011⟩' },
+  { c: 0, r: 1, text: '|001⟩, |110⟩' },
+  { c: 1, r: 1, text: '|010⟩, |101⟩' },
+];
+const mid = x0 + cw;
+---
+<svg viewBox="0 0 450 268" role="img" aria-label="The two checks of the bit flip code split the space of three qubits into four parts">
+  <g class="f-note" text-anchor="middle">
+    <text x={x0 + cw / 2} y="28">Z₁Z₂ = +1</text>
+    <text x={x0 + cw * 1.5} y="28">Z₁Z₂ = −1</text>
+  </g>
+  <g class="f-note" text-anchor="end">
+    <text x={x0 - 12} y={y0 + ch / 2 + 4}>Z₂Z₃ = +1</text>
+    <text x={x0 - 12} y={y0 + ch * 1.5 + 4}>Z₂Z₃ = −1</text>
+  </g>
+
+  {cells.map(({ c, r }) => <rect class="f-cell" x={x0 + c * cw} y={y0 + r * ch} width={cw} height={ch} />)}
+
+  <!-- step 1: no condition yet, all eight dimensions -->
+  <g class="ss-step ss-all">
+    <rect class="f-blob" x={x0} y={y0} width={2 * cw} height={2 * ch} />
+    <text class="f-label" x={mid} y="256" text-anchor="middle">no condition: dimension 8</text>
+  </g>
+  <!-- step 2: the first check keeps the left column -->
+  <g class="ss-step ss-half">
+    <rect class="f-blob" x={x0} y={y0} width={cw} height={2 * ch} />
+    <text class="f-label" x={mid} y="256" text-anchor="middle">Z₁Z₂ = +1: dimension 4</text>
+  </g>
+  <!-- step 3: the second check keeps the top row of what is left -->
+  <g class="ss-step ss-code">
+    <rect class="f-blob" x={x0} y={y0} width={cw} height={ch} />
+    <rect class="f-hot" fill="none" x={x0} y={y0} width={cw} height={ch} />
+    <text class="f-note" x={x0 + cw / 2} y={y0 + ch - 12} text-anchor="middle">code space</text>
+    <text class="f-label" x={mid} y="256" text-anchor="middle">both checks +1: dimension 2</text>
+  </g>
+
+  {cells.map(({ c, r, text }) => (
+    <text class="f-label" x={x0 + c * cw + cw / 2} y={y0 + r * ch + ch / 2 + 5} text-anchor="middle">{text}</text>
+  ))}
+</svg>
+
+<style>
+  .ss-all, .ss-half { opacity: 0; }
+  @media (prefers-reduced-motion: no-preference) {
+    .ss-all { animation: syndromespaces-all 12s linear infinite; }
+    .ss-half { animation: syndromespaces-half 12s linear infinite; }
+    .ss-code { animation: syndromespaces-code 12s linear infinite; }
+    @keyframes syndromespaces-all { 0%, 27% { opacity: 1; } 31%, 100% { opacity: 0; } }
+    @keyframes syndromespaces-half { 0%, 27% { opacity: 0; } 31%, 56% { opacity: 1; } 60%, 100% { opacity: 0; } }
+    @keyframes syndromespaces-code { 0%, 56% { opacity: 0; } 60%, 100% { opacity: 1; } }
+  }
+</style>

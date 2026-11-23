@@ -451,3 +451,51 @@ p { margin: 1rem 0 0; }
 @keyframes art-step { to { transform: rotate(-360deg); } }
 @keyframes art-draw { 0%, 100% { stroke-dashoffset: 0; } 12% { stroke-dashoffset: 1; } 80% { stroke-dashoffset: 0; } }
 @keyframes art-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+/* ---------- drawings in the notes (Figure.astro and components/figures/) ---------- */
+.notes { counter-reset: example sub fig; }
+.fig { margin: 1.8rem 0 0; counter-increment: fig; }
+.fig-art { overflow-x: auto; }
+.fig svg { display: block; width: 100%; max-width: var(--fig-w, 34rem); min-width: calc(var(--fig-w, 34rem) * 0.62); height: auto; margin: 0 auto; overflow: visible; }
+.fig figcaption { max-width: 40rem; margin: 0.8rem auto 0; font-size: var(--small); line-height: 1.5; color: var(--muted); }
+.fig figcaption::before { content: "Figure " counter(fig) ". "; font-weight: 700; color: var(--ink); }
+.fig text { font-family: var(--sans); font-size: 15px; fill: var(--ink); }
+.fig .f-note text, .fig text.f-note { font-size: 13px; fill: var(--muted); }
+.fig .f-it { font-family: var(--serif); font-style: italic; font-size: 17px; }
+.fig .f-wire { stroke: var(--ink); stroke-width: 1.5; stroke-linecap: round; }
+.fig .f-classical { fill: none; stroke: var(--ink); stroke-width: 1; }
+.fig .f-dot { fill: var(--ink); }
+.fig .f-target { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; }
+.fig .f-box { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; }
+.fig .f-dashed { stroke-dasharray: 5 4; }
+.fig .f-box.f-dashed { fill: var(--soft); stroke: var(--purple); }
+.fig .f-grid { stroke: var(--lilac); stroke-width: 1.2; }
+.fig .f-qubit { fill: var(--silver); }
+.fig .f-face { fill: var(--lavender); stroke: none; }
+.fig .f-hot { stroke: var(--purple); stroke-width: 3; stroke-linecap: round; }
+.fig .f-x { fill: var(--purple); }
+.fig text.f-x-t { fill: #fff; font-size: 13px; font-weight: 600; }
+.fig .f-z { fill: var(--paper); stroke: var(--purple); stroke-width: 2; }
+.fig text.f-z-t { fill: var(--purple); font-size: 13px; font-weight: 600; }
+.fig .f-err { fill: none; stroke: var(--purple); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.fig .f-syn { fill: var(--purple-dark); stroke: var(--paper); stroke-width: 2.5; }
+.fig .f-quiet { fill: var(--paper); stroke: var(--lilac); stroke-width: 1.5; }
+.fig text.f-strong { font-weight: 600; }
+.fig .f-axis { stroke: var(--silver); stroke-width: 1.2; }
+.fig .f-ghost { fill: none; stroke: var(--lilac); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.fig .f-ring { fill: none; stroke: var(--lilac); stroke-width: 1.5; }
+.fig .f-curve { fill: none; stroke: var(--purple); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.fig .f-blob { fill: var(--lavender); stroke: var(--purple); stroke-width: 2; }
+.fig .f-soft { fill: var(--soft); stroke: var(--lilac); stroke-width: 1.5; }
+.fig .f-cell { fill: var(--paper); stroke: var(--lilac); stroke-width: 1.5; }
+.fig .f-tint { fill: var(--purple); fill-opacity: 0.1; stroke: var(--purple); stroke-width: 2; }
+.fig .f-arrowhead { fill: var(--purple); }
+.fig .f-flow { fill: none; stroke: var(--purple); stroke-width: 1.8; }
+.fig .f-thin { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+
+/* A simulator used as a figure (the noise demo in 7.1). */
+.fig .board { max-width: var(--fig-w, 34rem); margin: 0 auto; }
+.noise .row.channels { display: grid; grid-template-columns: repeat(2, 1fr); }
+.noise .row.channels button { min-width: 0; padding-inline: 0.4rem; }
+.noise button[aria-pressed="true"] { background: var(--lilac); color: var(--purple-dark); }
+.noise .trace { align-items: flex-start; }

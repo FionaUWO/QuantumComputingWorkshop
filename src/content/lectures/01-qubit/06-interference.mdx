@@ -2,6 +2,9 @@
 title: "Interference"
 ---
 import Try from '../../../components/Try.astro';
+import Figure from '../../../components/Figure.astro';
+import InterferencePaths from '../../../components/figures/lec1/InterferencePaths.astro';
+import PhaseFringe from '../../../components/figures/lec1/PhaseFringe.astro';
 
 We return to the two buttons of Section 1.1: one $H$ gives a coin flip, two give certainty.
 
@@ -17,6 +20,10 @@ $$
 $$
 
 There are two paths to the outcome $1$, through $|0\rangle$ and through $|1\rangle$, with amplitudes $+\tfrac12$ and $-\tfrac12$. They cancel. The two paths to $0$ both have amplitude $+\tfrac12$ and add to $1$.
+
+<Figure caption="Two Hadamards applied to |0⟩, drawn as paths. Each arrow carries the entry of H that multiplies the amplitude along it, and the amplitude of a path is the product of its two arrows. Both paths into |0⟩ have amplitude ½ and add to 1. The paths into |1⟩ have amplitudes ½ and −½, because of the one negative entry drawn in bold, and cancel." width="38rem">
+  <InterferencePaths />
+</Figure>
 
 That is where the randomness went. Nothing was lost after one $H$: the state $|+\rangle$ only looks like a coin flip to a measurement, and it is a different state from $|-\rangle$, which looks the same. The second $H$ tells them apart. It can do so because one of its own entries is negative, so the two contributions to outcome $1$ cancel.
 
@@ -47,6 +54,10 @@ The relative phase, invisible to a direct measurement, has been converted into a
 | $T$ | $\pi/4$ | $\tfrac12\big(1 + \tfrac{1}{\sqrt2}\big) \approx 0.854$ |
 | $S$ | $\pi/2$ | $\tfrac12$ |
 | $Z$ | $\pi$ | $0$ |
+
+<Figure caption="The probability of outcome 0 at the end of the circuit H, P(φ), H, plotted against the phase φ. The curve is cos<sup>2</sup>(φ/2). The four marked points are the rows of the table: no middle gate, T, S and Z." width="28rem">
+  <PhaseFringe />
+</Figure>
 
 <Try runs={[
   { do: 'reset,H,H,sample', label: 'H, H, then measure 100 copies' },

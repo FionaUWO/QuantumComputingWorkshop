@@ -1,0 +1,44 @@
+---
+// Probability vectors lie on a segment (entries sum to 1); real amplitude vectors lie on the
+// unit circle (squares sum to 1). Drawn in the plane of the two entries.
+const ox = 210, oy = 200, U = 140;
+const X = (v: number) => +(ox + U * v).toFixed(1);
+const Y = (v: number) => +(oy - U * v).toFixed(1);
+const r = Math.SQRT1_2;
+---
+<svg viewBox="0 0 440 430" role="img" aria-label="Probability vectors form a line segment and amplitude vectors form a circle">
+  <line class="f-axis" x1={X(-1.2)} y1={oy} x2={X(1.2)} y2={oy} />
+  <line class="f-axis" x1={ox} y1={Y(-1.2)} x2={ox} y2={Y(1.2)} />
+
+  <circle class="f-curve" cx={ox} cy={oy} r={U} />
+  <line class="ns-seg" x1={X(1)} y1={Y(0)} x2={X(0)} y2={Y(1)} />
+
+  <circle class="f-dot" cx={X(1)} cy={Y(0)} r="5" />
+  <circle class="f-dot" cx={X(0)} cy={Y(1)} r="5" />
+  <circle class="f-dot" cx={X(0.5)} cy={Y(0.5)} r="5" />
+  <circle class="f-syn" cx={X(r)} cy={Y(r)} r="6" />
+  <circle class="f-syn" cx={X(r)} cy={Y(-r)} r="6" />
+
+  <text class="f-label" x={X(1) + 8} y={oy - 10}>e₀</text>
+  <text class="f-label" x={ox + 10} y={Y(1) - 10}>e₁</text>
+  <g class="f-note">
+    <text x={X(1) + 8} y={oy + 18}>1</text>
+    <text x={ox - 10} y={Y(1) - 10} text-anchor="end">1</text>
+    <text x={X(-1) - 8} y={oy + 18} text-anchor="end">−1</text>
+    <text x={ox - 10} y={Y(-1) + 18} text-anchor="end">−1</text>
+  </g>
+
+  <text class="f-label" x={X(0.5) - 12} y={Y(0.5) + 18} text-anchor="end">(½, ½)</text>
+  <text class="f-note" x={X(0.5) - 12} y={Y(0.5) + 35} text-anchor="end">fair coin</text>
+  <text class="f-label" x={X(r) + 10} y={Y(r) - 7}>(1/√2, 1/√2)</text>
+  <text class="f-label" x={X(r) + 10} y={Y(-r) + 13}>(1/√2, −1/√2)</text>
+
+  <line class="ns-seg" x1="90" y1="392" x2="118" y2="392" />
+  <text class="f-note" x="128" y="396">probability vectors: entries sum to 1</text>
+  <line class="f-curve" x1="90" y1="414" x2="118" y2="414" />
+  <text class="f-note" x="128" y="418">real amplitude vectors: squares sum to 1</text>
+</svg>
+
+<style>
+  .ns-seg { stroke: var(--ink); stroke-width: 3.5; stroke-linecap: round; }
+</style>

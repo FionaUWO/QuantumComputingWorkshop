@@ -3,6 +3,8 @@ title: "Gates"
 ---
 import Statement from '../../../components/Statement.astro';
 import Try from '../../../components/Try.astro';
+import Figure from '../../../components/Figure.astro';
+import HadamardTurn from '../../../components/figures/lec1/HadamardTurn.astro';
 
 The states a computational measurement cannot separate lie on the equator of the sphere. To get at them we have to move the state before measuring, so we need to know which moves are allowed.
 
@@ -114,5 +116,9 @@ In the language of groups: the matrices $R_{\hat n}(\theta)$ make up $SU(2)$, an
 ### Back to the two buttons
 
 Half of the puzzle is now solved by geometry. $H$ is a half turn about the axis midway between $x$ and $z$. It carries the north pole $|0\rangle$ to the point $|+\rangle$ on the equator, where the outcome is a coin flip, and a second half turn about the same axis carries it home. What the sphere does not show is why a coin cannot make the same round trip. For that we follow the amplitudes themselves, in the next section.
+
+<Figure caption="The gate H as a half turn about the axis h, which lies midway between the x-axis and the z-axis. The first H carries |0⟩ along the solid half circle to |+⟩ on the equator. The second H continues along the dashed half and returns the state to |0⟩. The large dot marks the state." width="24rem">
+  <HadamardTurn />
+</Figure>
 
 <p class="reading">Reading: Nielsen and Chuang, Sections 1.3.1, 2.2.2 (Postulate 2) and 4.2.</p>

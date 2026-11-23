@@ -1,0 +1,45 @@
+---
+// Time evolution in the energy basis: the amplitude on |E_k> is multiplied by e^{-i E_k t},
+// a pointer turning clockwise in the complex plane at rate E_k. Drawn with E1 = 3 E0, so the
+// relative phase e^{-i(E1 - E0)t} turns twice for every turn of the first pointer.
+// The still picture is the moment E0 t = 25 degrees.
+const R = 56, cy = 104, snap = 25;
+const dials = [
+  { cx: 95, turns: 1, title: 'amplitude on |E₀⟩', sup: '−iE₀t', soft: false },
+  { cx: 280, turns: 3, title: 'amplitude on |E₁⟩', sup: '−iE₁t', soft: false },
+  { cx: 465, turns: 2, title: 'relative phase', sup: '−i(E₁−E₀)t', soft: true },
+];
+---
+<svg viewBox="0 0 560 200" role="img" aria-label="Each energy eigenstate picks up a phase that turns at a rate set by its energy, and the relative phase turns at the difference of the two rates">
+  {dials.map((d, i) => (
+    <g>
+      <text class="f-note" x={d.cx} y="16" text-anchor="middle">{d.title}</text>
+      <g transform={`translate(${d.cx} ${cy})`}>
+        <circle class={d.soft ? 'f-soft' : 'f-ring'} cx="0" cy="0" r={R} />
+        <line class="f-axis" x1={-R - 8} y1="0" x2={R + 8} y2="0" />
+        <line class="f-axis" x1="0" y1={-R - 8} x2="0" y2={R + 8} />
+        <line class="f-ghost" x1="0" y1="0" x2={R} y2="0" />
+        <g class="pc-hand" transform={`rotate(${snap * d.turns})`} style={`--pc-turn:${360 * d.turns}deg`}>
+          <line class="f-hot" x1="0" y1="0" x2={R} y2="0" />
+          <circle class="f-syn" cx={R} cy="0" r="6" />
+        </g>
+        <circle class="f-dot" cx="0" cy="0" r="3" />
+      </g>
+      <text class="f-label" x={d.cx} y={cy + R + 34} text-anchor="middle">e<tspan dy="-7" font-size="11">{d.sup}</tspan></text>
+    </g>
+  ))}
+</svg>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .pc-hand {
+      transform-box: view-box;
+      transform-origin: 0 0;
+      animation: phase-clocks-turn 16s linear infinite;
+    }
+    @keyframes phase-clocks-turn {
+      0%, 6% { transform: rotate(0deg); }
+      94%, 100% { transform: rotate(var(--pc-turn)); }
+    }
+  }
+</style>

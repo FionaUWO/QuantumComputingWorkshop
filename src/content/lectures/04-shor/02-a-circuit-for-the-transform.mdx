@@ -2,6 +2,8 @@
 title: "A circuit for the transform"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import QftCircuit from '../../../components/figures/lec4/QftCircuit.astro';
 import Statement from '../../../components/Statement.astro';
 
 Take $N = 2^n$ and write $j$ in binary, $j = j_1 j_2 \dots j_n = j_1 2^{n-1} + \dots + j_n 2^0$. We also use binary fractions: $0.j_l j_{l+1} \dots j_m = j_l/2 + j_{l+1}/4 + \dots + j_m/2^{m-l+1}$.
@@ -31,6 +33,10 @@ R_k = \begin{pmatrix} 1 & 0 \\ 0 & e^{2\pi i/2^k} \end{pmatrix},
 $$
 
 so $R_1 = Z$, $R_2 = S$ and $R_3 = T$. Apply $H$ to the first qubit: it becomes $|0\rangle + e^{2\pi i\,0.j_1}|1\rangle$, since $e^{2\pi i\,0.j_1} = (-1)^{j_1}$. Then apply $R_2$ controlled by the second qubit, $R_3$ controlled by the third, and so on; each adds one more binary digit to the phase, ending with $|0\rangle + e^{2\pi i\,0.j_1 \dots j_n}|1\rangle$. Repeat on the second qubit with the qubits after it as controls, and continue down the register. Finally reverse the order of the qubits with swaps.
+
+<Figure caption="The circuit for n = 3, with time running from left to right. Each wire receives H and then one controlled phase gate for every qubit below it. Each output qubit is |0⟩ + e<sup>iθ</sup>|1⟩ up to normalisation, with the angle θ written at the right; after the swap the angles match the product form." width="34rem">
+  <QftCircuit />
+</Figure>
 
 The number of gates is $n + (n-1) + \dots + 1 = \tfrac{n(n+1)}{2}$, plus at most $n/2$ swaps: $O(n^2)$ gates for a transform on $2^n$ amplitudes. The classical fast Fourier transform takes about $n 2^n$ operations on the same vector.
 

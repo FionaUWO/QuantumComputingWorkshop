@@ -1,6 +1,9 @@
 ---
 title: "Search is a rotation"
 ---
+import Figure from '../../../components/Figure.astro';
+import GroverRotation from '../../../components/figures/lec3/GroverRotation.astro';
+import GroverProbability from '../../../components/figures/lec3/GroverProbability.astro';
 import Statement from '../../../components/Statement.astro';
 import Example from '../../../components/Example.astro';
 import Try from '../../../components/Try.astro';
@@ -29,6 +32,10 @@ G^k|s\rangle = \cos\!\big(\tfrac{2k+1}{2}\theta\big)\,|\alpha\rangle + \sin\!\bi
 $$
 </Statement>
 
+<Figure caption="The plane of |α⟩ and |β⟩, drawn for N = 8 and M = 1, where θ/2 is about 21°. The oracle reflects |s⟩ across the |α⟩ axis, taking it to the angle −θ/2. The diffusion operator reflects that across the line through |s⟩, which lands at 3θ/2. The two reflections together have turned the state by θ towards |β⟩." width="26rem">
+  <GroverRotation />
+</Figure>
+
 The probability of measuring a solution after $k$ iterations is therefore
 
 $$
@@ -42,6 +49,10 @@ k \approx \frac{\pi}{4}\sqrt{\frac{N}{M}} .
 $$
 
 The rotation does not stop at the target. Iterating further turns the state away from $|\beta\rangle$ again and the success probability falls: with Grover's algorithm, doing more work can make the answer worse.
+
+<Figure caption="The success probability P<sub>k</sub> for N = 64 and M = 1. The points are whole numbers of iterations. The probability reaches 0.997 at k = 6, close to (π/4)·√64 ≈ 6.3, and then falls back almost to zero at k = 12." width="30rem">
+  <GroverProbability />
+</Figure>
 
 <Example>
 Take $N = 4$ and $M = 1$. Then $\sin\tfrac\theta2 = \tfrac12$, so $\tfrac\theta2 = \tfrac\pi6$, and after one iteration the angle is $3 \cdot \tfrac\pi6 = \tfrac\pi2$: the state is exactly $|\beta\rangle$. One query finds one item among four with certainty, where a classical search needs $2.25$ queries on average.

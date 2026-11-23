@@ -2,6 +2,8 @@
 title: "The Fourier transform on a cyclic group"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import RootsOfUnity from '../../../components/figures/lec4/RootsOfUnity.astro';
 import Statement from '../../../components/Statement.astro';
 import Example from '../../../components/Example.astro';
 
@@ -26,6 +28,10 @@ For a mathematician this is the change of basis from the point masses on the gro
 *Proof.* The inner product of the images of $|j\rangle$ and $|j'\rangle$ is $\tfrac1N \sum_k \omega^{(j' - j)k}$. For $j = j'$ every term is $1$. Otherwise it is a geometric sum with ratio $\omega^{j'-j} \ne 1$, equal to $\tfrac{1}{N}\cdot\tfrac{\omega^{(j'-j)N} - 1}{\omega^{j'-j} - 1} = 0$. $\qquad\blacksquare$
 
 The fact used here, that the $N$-th roots of unity sum to zero, is the source of all interference in this lecture.
+
+<Figure caption="The case N = 8. On the left the powers of ω are eight arrows spaced evenly round the unit circle. On the right the same arrows are placed head to tail: they close up into a regular octagon and return to the starting point, so their sum is zero." width="32rem">
+  <RootsOfUnity />
+</Figure>
 
 <Example>
 For $N = 2$, $\omega = -1$ and the transform is the Hadamard gate. For $N = 4$, $\omega = i$ and

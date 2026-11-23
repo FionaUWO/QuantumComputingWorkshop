@@ -1,0 +1,64 @@
+---
+// The plane spanned by |alpha> and |beta>, drawn for N = 8, M = 1 (sin(theta/2) = 1/sqrt 8).
+// O reflects |s> across the |alpha> axis, D reflects the result across |s>: a rotation by theta.
+// Animated: the thick arrow goes |s> -> O|s> -> G|s>. Without animation it rests on G|s>.
+const ox = 60, oy = 225, R = 180;
+const half = Math.asin(1 / Math.sqrt(8));          // theta / 2 in radians
+const deg = (a: number) => (a * 180) / Math.PI;
+const pt = (a: number, r = R) => [ox + r * Math.cos(a), oy - r * Math.sin(a)];
+const f1 = (v: number) => v.toFixed(1);
+// arc from angle a1 to a larger angle a2 (anticlockwise on screen)
+const arc = (a1: number, a2: number, r: number) => {
+  const [x1, y1] = pt(a1, r), [x2, y2] = pt(a2, r);
+  return `M${f1(x1)} ${f1(y1)} A${r} ${r} 0 0 0 ${f1(x2)} ${f1(y2)}`;
+};
+const s = pt(half), os = pt(-half), gs = pt(3 * half);
+const tUp = pt(half / 2, 78), tDown = pt(-half / 2, 78), tTheta = pt(2 * half, 110);
+const aS = (-deg(half)).toFixed(2), aOS = deg(half).toFixed(2), aGS = (-deg(3 * half)).toFixed(2);
+const vars = `--a-s:${aS}deg; --a-os:${aOS}deg; --a-gs:${aGS}deg; transform-origin:${ox}px ${oy}px; transform:rotate(${aGS}deg)`;
+---
+<svg viewBox="0 0 400 310" role="img" aria-label="The Grover iteration as two reflections that add up to a rotation by theta in the plane of alpha and beta">
+  <defs>
+    <marker id="groverrot-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto">
+      <path class="f-arrowhead" d="M0 0 L10 5 L0 10 z" />
+    </marker>
+  </defs>
+
+  <path class="f-ring" d={arc(-half, Math.PI / 2, R)} />
+  <line class="f-axis" x1={ox} y1={oy} x2={ox + R + 18} y2={oy} />
+  <line class="f-axis" x1={ox} y1={oy} x2={ox} y2={oy - R - 18} />
+  <text class="f-label" x={ox + R + 24} y={oy + 5}>|α⟩</text>
+  <text class="f-label" x={ox} y={oy - R - 26} text-anchor="middle">|β⟩</text>
+
+  <path class="f-thin" d={arc(0, half, 56)} />
+  <path class="f-thin" d={arc(-half, 0, 56)} />
+  <path class="f-thin" d={arc(half, 3 * half, 92)} />
+  <g class="f-note" text-anchor="middle">
+    <text x={f1(tUp[0])} y={f1(tUp[1] + 5)}>θ/2</text>
+    <text x={f1(tDown[0])} y={f1(tDown[1] + 5)}>θ/2</text>
+    <text x={f1(tTheta[0])} y={f1(tTheta[1] + 5)}>θ</text>
+  </g>
+
+  <line class="f-ghost" x1={ox} y1={oy} x2={f1(os[0])} y2={f1(os[1])} />
+  <line class="f-ghost" x1={ox} y1={oy} x2={f1(gs[0])} y2={f1(gs[1])} />
+  <line class="f-wire" x1={ox} y1={oy} x2={f1(s[0])} y2={f1(s[1])} />
+  <circle class="f-dot" cx={f1(s[0])} cy={f1(s[1])} r="4" />
+  <circle class="f-dot" cx={f1(os[0])} cy={f1(os[1])} r="4" />
+  <circle class="f-dot" cx={f1(gs[0])} cy={f1(gs[1])} r="4" />
+  <text class="f-label" x={f1(s[0] + 11)} y={f1(s[1] + 2)}>|s⟩</text>
+  <text class="f-label" x={f1(os[0] + 11)} y={f1(os[1] + 9)}>O|s⟩</text>
+  <text class="f-label" x={f1(gs[0] + 11)} y={f1(gs[1] - 5)}>G|s⟩ = DO|s⟩</text>
+
+  <line class="f-hot gr-vec" style={vars} x1={ox} y1={oy} x2={ox + R - 1} y2={oy} marker-end="url(#groverrot-arrow)" />
+</svg>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .gr-vec { animation: groverrot-turn 10s ease-in-out infinite; }
+  }
+  @keyframes groverrot-turn {
+    0%, 14% { transform: rotate(var(--a-s)); }
+    32%, 44% { transform: rotate(var(--a-os)); }
+    66%, 100% { transform: rotate(var(--a-gs)); }
+  }
+</style>

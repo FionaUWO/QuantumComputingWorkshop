@@ -1,0 +1,36 @@
+---
+// The two amplitudes of the running example, (|0> + (1+i)|1>)/sqrt(3), each drawn as a point
+// of the complex plane inside the unit circle.
+const R = 80, cy = 115, s = 1 / Math.sqrt(3);
+const panels = [
+  { cx: 130, re: s, im: 0, name: 'α = 1/√3', note: 'modulus 1/√3, angle 0' },
+  { cx: 390, re: s, im: s, name: 'β = (1 + i)/√3', note: 'modulus √(2/3), angle π/4' },
+];
+const arc = 26, c45 = Math.SQRT1_2;
+---
+<svg viewBox="0 0 520 250" role="img" aria-label="The amplitudes one over root three and one plus i over root three in the complex plane">
+  <defs>
+    <marker id="ampplanes-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto">
+      <path class="f-arrowhead" d="M0 0 L10 5 L0 10 z" />
+    </marker>
+  </defs>
+  {panels.map(({ cx, re, im, name, note }) => (
+    <g>
+      <circle class="f-ring" cx={cx} cy={cy} r={R} />
+      <line class="f-axis" x1={cx - 1.3 * R} y1={cy} x2={cx + 1.3 * R} y2={cy} />
+      <line class="f-axis" x1={cx} y1={cy + 1.12 * R} x2={cx} y2={cy - 1.3 * R} />
+      <text class="f-note" x={cx + 1.3 * R} y={cy + 16} text-anchor="end">Re</text>
+      <text class="f-note" x={cx + 7} y={cy - 1.3 * R + 11}>Im</text>
+      {im > 0 && (
+        <g>
+          <path class="f-flow" d={`M${cx + arc} ${cy} A${arc} ${arc} 0 0 0 ${(cx + arc * c45).toFixed(1)} ${(cy - arc * c45).toFixed(1)}`} />
+          <text class="f-label" x={cx + 34} y={cy - 10}>π/4</text>
+        </g>
+      )}
+      <line class="f-hot" x1={cx} y1={cy} x2={(cx + R * re).toFixed(1)} y2={(cy - R * im).toFixed(1)} marker-end="url(#ampplanes-arrow)" />
+      <circle class="f-dot" cx={cx} cy={cy} r="3" />
+      <text class="f-label" x={cx} y="225" text-anchor="middle">{name}</text>
+      <text class="f-note" x={cx} y="244" text-anchor="middle">{note}</text>
+    </g>
+  ))}
+</svg>

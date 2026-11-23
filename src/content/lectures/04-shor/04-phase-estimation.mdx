@@ -2,6 +2,8 @@
 title: "Phase estimation"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import PhaseEstimation from '../../../components/figures/lec4/PhaseEstimation.astro';
 import Statement from '../../../components/Statement.astro';
 
 A unitary $U$ has eigenvalues of modulus $1$. Suppose we can prepare an eigenvector $|u\rangle$,
@@ -31,6 +33,10 @@ $$
 $$
 
 Compare with the definition of the Fourier transform. If $\varphi = a/2^t$ for an integer $a$, this state is exactly $\mathrm{QFT}\,|a\rangle$, so applying the inverse transform and measuring returns $a$, hence $\varphi$, with certainty.
+
+<Figure caption="Phase estimation with t = 3 control qubits, the most significant at the top. The bottom control acts on U, the middle one on U<sup>2</sup> and the top one on U<sup>4</sup>, and the register holding |u⟩ is left unchanged. After its control each wire is in the state |0⟩ + e<sup>iθ</sup>|1⟩ with the angle θ written above it. The inverse Fourier transform and a measurement then give an integer a close to 8φ." width="34rem">
+  <PhaseEstimation />
+</Figure>
 
 <Statement>
 **Theorem (phase estimation).** For general $\varphi$, to obtain $\varphi$ accurate to $n$ bits with probability at least $1 - \epsilon$ it suffices to use

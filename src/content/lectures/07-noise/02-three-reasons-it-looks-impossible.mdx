@@ -2,6 +2,9 @@
 title: "Three reasons it looks impossible"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import RepetitionPlot from '../../../components/figures/RepetitionPlot.astro';
+
 Classical information is protected by redundancy. The *repetition code* stores each bit three times,
 
 $$
@@ -9,6 +12,11 @@ $$
 $$
 
 and decodes by majority vote. If each bit flips independently with probability $p$, the vote fails only when two or three bits flip, with probability $3p^2(1-p) + p^3 = 3p^2 - 2p^3$. That is less than $p$ whenever $p \lt \tfrac12$.
+
+
+<Figure caption="The probability that a majority vote over three bits gives the wrong answer (solid), compared with a single unprotected bit (dashed). The code helps when p is below ½ and hurts above it." width="24rem">
+  <RepetitionPlot />
+</Figure>
 
 Three obstacles seem to block the quantum version.
 

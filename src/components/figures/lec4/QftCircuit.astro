@@ -1,0 +1,54 @@
+---
+// The quantum Fourier transform on three qubits: H and controlled phase gates on each wire in
+// turn, then a swap of the first and last qubits. Time runs left to right.
+const w = [44, 94, 144];          // wires for j1, j2, j3
+const x0 = 58, x1 = 460;          // where the wires start and end
+const ins = ['|j₁⟩', '|j₂⟩', '|j₃⟩'];
+const outs = ['2π · 0.j₃', '2π · 0.j₂j₃', '2π · 0.j₁j₂j₃'];
+
+// Hadamards: wire index, x
+const hs = [[0, 90], [1, 250], [2, 360]];
+// controlled phase gates: target wire, control wire, x, label
+const rs = [
+  [0, 1, 140, 'R₂'], [0, 2, 190, 'R₃'],
+  [1, 2, 300, 'R₂'],
+] as const;
+const sx = 420;                   // the swap
+const bw = 30, bh = 28;
+---
+<svg viewBox="0 0 600 170" role="img" aria-label="Circuit of the quantum Fourier transform on three qubits">
+  <text class="f-note" x={x1 + 14} y="14">angle on |1⟩</text>
+
+  <g class="f-label" text-anchor="end">
+    {ins.map((s, i) => <text x={x0 - 10} y={w[i] + 5}>{s}</text>)}
+  </g>
+  <g class="f-label">
+    {outs.map((s, i) => <text x={x1 + 14} y={w[i] + 5}>{s}</text>)}
+  </g>
+
+  {w.map((y) => <line class="f-wire" x1={x0} y1={y} x2={x1} y2={y} />)}
+
+  {rs.map(([t, c, x, name]) => (
+    <g>
+      <line class="f-wire" x1={x} y1={w[c]} x2={x} y2={w[t]} />
+      <circle class="f-dot" cx={x} cy={w[c]} r="4.5" />
+      <rect class="f-box" x={x - bw / 2} y={w[t] - bh / 2} width={bw} height={bh} rx="4" />
+      <text class="f-label" x={x} y={w[t] + 5} text-anchor="middle">{name}</text>
+    </g>
+  ))}
+
+  {hs.map(([i, x]) => (
+    <g>
+      <rect class="f-box" x={x - bw / 2} y={w[i] - bh / 2} width={bw} height={bh} rx="4" />
+      <text class="f-label" x={x} y={w[i] + 5} text-anchor="middle">H</text>
+    </g>
+  ))}
+
+  <line class="f-wire" x1={sx} y1={w[0]} x2={sx} y2={w[2]} />
+  {[w[0], w[2]].map((y) => (
+    <g>
+      <line class="f-wire" x1={sx - 6} y1={y - 6} x2={sx + 6} y2={y + 6} />
+      <line class="f-wire" x1={sx - 6} y1={y + 6} x2={sx + 6} y2={y - 6} />
+    </g>
+  ))}
+</svg>

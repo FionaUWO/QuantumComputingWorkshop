@@ -1,0 +1,32 @@
+---
+// A classical box for f loses its input; the quantum box U_f keeps x and adds f(x) into a second register.
+const cy = 75;             // the single classical wire
+const top = 52, bot = 98;  // the two quantum registers
+---
+<svg viewBox="0 0 640 160" role="img" aria-label="A classical box for f beside the reversible quantum oracle U f">
+  <!-- classical box -->
+  <text class="f-label f-it" x="40" y={cy + 5} text-anchor="end">x</text>
+  <line class="f-wire" x1="48" y1={cy} x2="90" y2={cy} />
+  <rect class="f-box" x="90" y={cy - 25} width="50" height="50" rx="6" />
+  <text class="f-label f-it" x="115" y={cy + 6} text-anchor="middle">f</text>
+  <line class="f-wire" x1="140" y1={cy} x2="182" y2={cy} />
+  <text class="f-label f-it" x="190" y={cy + 5}>f(x)</text>
+  <text class="f-note" x="125" y="150" text-anchor="middle">classical box: x cannot be recovered</text>
+
+  <!-- quantum box -->
+  <g class="f-label" text-anchor="end">
+    <text x="372" y={top + 5}>|x⟩</text>
+    <text x="372" y={bot + 5}>|y⟩</text>
+  </g>
+  <line class="f-wire" x1="380" y1={top} x2="574" y2={top} />
+  <line class="f-wire" x1="380" y1={bot} x2="528" y2={bot} />
+  <line class="f-wire" x1="400" y1={top + 7} x2="410" y2={top - 7} />
+  <text class="f-note" x="405" y={top - 12} text-anchor="middle">n</text>
+  <rect class="f-box" x="430" y={top - 24} width="70" height={bot - top + 48} rx="6" />
+  <text class="f-label" x="465" y={cy + 5} text-anchor="middle">U<tspan dy="4" font-size="11">f</tspan></text>
+  <g class="f-label">
+    <text x="582" y={top + 5}>|x⟩</text>
+    <text x="536" y={bot + 5}>|y ⊕ f(x)⟩</text>
+  </g>
+  <text class="f-note" x="480" y="150" text-anchor="middle">quantum box: x is kept, so the map is reversible</text>
+</svg>

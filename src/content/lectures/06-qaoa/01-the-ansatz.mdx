@@ -3,6 +3,8 @@ title: "The ansatz"
 board: false
 ---
 import Statement from '../../../components/Statement.astro';
+import Figure from '../../../components/Figure.astro';
+import AnsatzLayers from '../../../components/figures/lec6/AnsatzLayers.astro';
 
 The Quantum Approximate Optimization Algorithm, QAOA, is a variational algorithm in the sense of lecture 5, with an ansatz built from the problem itself. We describe it for MaxCut on a graph $G = (V, E)$ with $n$ vertices; it applies to any cost function on bit strings.
 
@@ -33,6 +35,10 @@ $$
 
 and its score is $F_p(\vec\gamma, \vec\beta) = \langle\vec\gamma, \vec\beta|\,H_C\,|\vec\gamma, \vec\beta\rangle$, the average cut size of a measured string.
 </Statement>
+
+<Figure caption="The QAOA circuit. Every qubit starts in |+⟩, and each layer applies the cost unitary to all the qubits and then the mixer. Time runs from left to right, so layer 1 is the rightmost pair of factors in the formula above." width="34rem">
+  <AnsatzLayers />
+</Figure>
 
 The algorithm is the hybrid loop of lecture 5: prepare the state, measure in the computational basis to get strings $z$, average $C(z)$ to estimate $F_p$, and let a classical optimiser adjust the $2p$ angles to maximise it. Write $M_p = \max F_p$.
 

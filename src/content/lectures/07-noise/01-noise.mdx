@@ -2,6 +2,9 @@
 title: "Noise"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import Board from '../../../components/Board.astro';
+
 Every algorithm so far assumed perfect gates on perfectly isolated qubits. Real qubits interact with their surroundings and real gates are slightly off. The estimate at the end of lecture 6 showed how little it takes: an error rate of one in a thousand per gate limits a computation to a few hundred gates. Shor's algorithm for numbers of cryptographic size needs billions.
 
 ### Pauli errors
@@ -12,7 +15,12 @@ The simplest models say that an unwanted Pauli matrix is applied at random.
 - **Phase flip.** With probability $p$ the qubit suffers $Z$, which sends $\alpha|0\rangle + \beta|1\rangle$ to $\alpha|0\rangle - \beta|1\rangle$. This error has no classical counterpart: it does nothing to a bit, and it exchanges $|+\rangle$ and $|-\rangle$.
 - **Depolarising noise.** With probability $p$ an error occurs, and it is $X$, $Y$ or $Z$ with probability $\tfrac p3$ each. Since $Y = iXZ$, a $Y$ error is a bit flip and a phase flip together.
 
-On the Bloch sphere the bit flip channel shrinks the sphere towards the $x$-axis, the phase flip channel towards the $z$-axis, and the depolarising channel towards the centre. The result of such a process is a probabilistic mixture of states, which needs the language of density matrices to describe fully; we will only need to track which Pauli was applied.
+On the Bloch sphere each of these errors is a half turn. $X$ turns the sphere about the $x$-axis, upside down: $|0\rangle$ and $|1\rangle$ change places, while $|+\rangle$ and $|-\rangle$ stay where they are. $Z$ turns it about the $z$-axis, front to back: $|+\rangle$ and $|-\rangle$ change places, while $|0\rangle$ and $|1\rangle$ stay. $Y$ does both. The noise applies such a flip only with probability $p$, and we are not told whether it happened. The result of such a process is a probabilistic mixture of states, which needs the language of density matrices to describe fully; we will only need to track which Pauli was applied.
+
+
+<Figure caption="The two basic errors on the Bloch sphere. A bit flip turns the arrow about the x-axis, from |0⟩ at the top to |1⟩ at the bottom. A phase flip turns it about the z-axis, from |+⟩ at the front to |−⟩ at the back. The axis of the turn is drawn thicker." width="30rem">
+  <Board kind="noise" />
+</Figure>
 
 ### Errors that are not Pauli matrices
 

@@ -2,6 +2,8 @@
 title: "Order finding"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import OrderCycle from '../../../components/figures/lec4/OrderCycle.astro';
 import Statement from '../../../components/Statement.astro';
 import Example from '../../../components/Example.astro';
 
@@ -26,6 +28,10 @@ $$
 *Proof.* $U$ shifts $k$ to $k+1$ in the sum, and $x^r \equiv x^0$, so the sum is reproduced with an extra factor $e^{2\pi i s/r}$. For the second claim, the coefficient of $|x^k\rangle$ in $\sum_s |u_s\rangle$ is $\tfrac{1}{\sqrt r}\sum_s e^{-2\pi i sk/r}$, which is $\sqrt r$ for $k = 0$ and $0$ otherwise. $\qquad\blacksquare$
 
 The eigenvalues encode $s/r$, and we do not need to prepare any $|u_s\rangle$: the easy state $|1\rangle$ is an equal superposition of all of them. Phase estimation on $U$ with the second register in $|1\rangle$ returns an approximation to $s/r$ for a uniformly random $s$.
+
+<Figure caption="The case N = 15, x = 7. Multiplication by 7 carries the powers of 7 round a cycle of length r = 4. Beside each power is its amplitude in |u<sub>1</sub>⟩, up to the factor 1/2. Applying U moves every amplitude one step along the arrows, which is the same as multiplying all of them by i = e<sup>2πi/4</sup>." width="24rem">
+  <OrderCycle />
+</Figure>
 
 The powers $U^{2^j}$ are multiplications by $x^{2^j} \bmod N$, computed by repeated squaring. The whole modular exponentiation takes $O(L^3)$ gates, and that dominates the cost.
 

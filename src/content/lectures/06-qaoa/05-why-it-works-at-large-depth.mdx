@@ -2,6 +2,9 @@
 title: "Why it works at large depth"
 board: false
 ---
+import Figure from '../../../components/Figure.astro';
+import AdiabaticSteps from '../../../components/figures/lec6/AdiabaticSteps.astro';
+
 The alternating form is that of a Trotterised adiabatic sweep. To fit the conventions of this lecture, where we *maximise*, sweep from $H_B$ to $H_C$ and follow the *highest* eigenvalue instead of the lowest:
 
 $$
@@ -15,6 +18,10 @@ $$
 $$
 
 with small angles, $\gamma_l$ increasing and $\beta_l$ decreasing along the sweep. For large $T$ and $p$ the adiabatic theorem says this reaches the maximum cuts, which proves $M_p \to C_{\max}$.
+
+<Figure caption="A linear sweep cut into p = 6 steps. Each step becomes one QAOA layer, whose two angles are the weights of H<sub>C</sub> and H<sub>B</sub> at the middle of the step multiplied by the step length T/p. The cost angles γ<sub>l</sub> climb and the mixer angles β<sub>l</sub> fall, and with more steps they follow the dashed ramps of the continuous sweep more closely." width="30rem">
+  <AdiabaticSteps />
+</Figure>
 
 QAOA is therefore at least as good as a discretised adiabatic algorithm with the same number of steps, and it may be better, since the angles are optimised and need not follow a slow sweep. In practice, optimised angles often do resemble a smooth ramp, and angles found for one instance tend to work well for other instances of similar type. That observation is used to initialise the optimiser.
 

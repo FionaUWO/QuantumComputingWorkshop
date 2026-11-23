@@ -11,6 +11,7 @@ board: false
 7. Check the bound $3n + 1 \le 2^{n-1}$ for $n = 3, 4, 5$. The Shor code corrects single-qubit errors with $n = 9$; why does that not contradict the bound being tight at $n = 5$?
 8. On a $3 \times 3$ toric code, draw a vertex check and a face check that share two edges, and verify that they commute.
 9. For the toric code, show that an $X$ error on a single edge violates exactly two face checks. What is the syndrome of a string of $Z$ errors along a path?
-10. Starting from $p = 10^{-3}$ and $p_{\mathrm{th}} = 10^{-2}$ with $A = 0.1$, estimate the distance needed for a logical error rate of $10^{-12}$, and the number of data qubits in the $d^2$ layout.
+10. The repetition code on five qubits is measured for four rounds. Before round 2 a bit flip hits qubit 1, and in round 3 the check $Z_3 Z_4$ is misread. Mark the detection events on a grid of checks against rounds. Qubit 1 lies in only one check: how many events does its error produce, and how should a decoder treat an unpaired event next to the boundary?
+11. Starting from $p = 10^{-3}$ and $p_{\mathrm{th}} = 10^{-2}$ with $A = 0.1$, estimate the distance needed for a logical error rate of $10^{-12}$, and the number of data qubits in the $d^2$ layout.
 
 <p class="reading">Reading: more problems of this kind are in Nielsen and Chuang, Chapter 10.</p>
