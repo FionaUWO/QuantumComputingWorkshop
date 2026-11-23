@@ -1,0 +1,469 @@
+1
+00:00:00,000 --> 00:00:04,835
+Hello everyone, and welcome back. We
+are QAICON Lab, the Quantum and AI for
+
+2
+00:00:04,835 --> 00:00:09,147
+Computing, Optimization, and
+Networking Lab, at Western University.
+
+3
+00:00:09,533 --> 00:00:13,616
+<font color="#7FD4E6">And today, we want a much shorter
+way to write down a quantum code.</font>
+
+4
+00:00:16,133 --> 00:00:18,789
+In lecture seven we described
+the bit flip code in two
+
+5
+00:00:18,789 --> 00:00:21,495
+quite different ways, without
+making any fuss about it.
+
+6
+00:00:22,067 --> 00:00:25,776
+The first way was to write out its
+states, so here are all eight basis
+
+7
+00:00:25,776 --> 00:00:29,969
+states of three qubits, and you can see
+that the code only ever uses these two.
+
+8
+00:00:30,567 --> 00:00:35,457
+The second way was a pair of questions,
+do the first two bits agree, and do the
+
+9
+00:00:35,457 --> 00:00:39,845
+last two agree, which we wrote as Z Z
+on one pair and Z Z on the other.
+
+10
+00:00:40,933 --> 00:00:44,539
+Now watch what happens to each of these
+descriptions as I keep adding qubits.
+
+11
+00:00:44,967 --> 00:00:47,645
+<font color="#7FD4E6">The left one explodes.
+But couldn't you just</font>
+
+12
+00:00:47,645 --> 00:00:49,949
+<font color="#7FD4E6">store the amplitudes
+that aren't zero?</font>
+
+13
+00:00:51,033 --> 00:00:54,544
+Storing only the ones that aren't
+zero is a good instinct, but for the
+
+14
+00:00:54,544 --> 00:00:58,055
+codes at the end of this lecture,
+even those keep doubling as the code
+
+15
+00:00:58,056 --> 00:01:01,262
+grows, while the list on the right
+just gets a few lines longer.
+
+16
+00:01:01,833 --> 00:01:04,868
+So in this section, I want to
+show you how a short list of
+
+17
+00:01:04,868 --> 00:01:07,637
+questions like this one can
+pin down a quantum state.
+
+18
+00:01:09,167 --> 00:01:13,178
+Let's start with the alphabet these
+questions are written in, which has
+
+19
+00:01:13,178 --> 00:01:17,246
+only four letters, the identity and
+the three Pauli matrices X, Y and Z.
+
+20
+00:01:17,833 --> 00:01:22,380
+To act on several qubits you just line the
+letters up, one for each qubit, so this
+
+21
+00:01:22,380 --> 00:01:26,646
+string means X on the first qubit, nothing
+on the second, and Z on the third.
+
+22
+00:01:27,233 --> 00:01:30,142
+We also allow a sign out in
+front, and all the strings you
+
+23
+00:01:30,142 --> 00:01:32,846
+can make this way are together
+called the Pauli group.
+
+24
+00:01:33,233 --> 00:01:37,668
+<font color="#7FD4E6">You called them questions, though. How
+is a string of matrices a question?</font>
+
+25
+00:01:38,100 --> 00:01:40,860
+It's a question because
+each string we'll use has
+
+26
+00:01:40,860 --> 00:01:43,678
+only two possible answers,
+plus one and minus one.
+
+27
+00:01:44,267 --> 00:01:47,905
+Take Z Z on the first two
+qubits, and feed it this state,
+
+28
+00:01:47,905 --> 00:01:51,933
+where the first two bits agree.
+Each Z turns a one into a minus
+
+29
+00:01:51,933 --> 00:01:55,441
+sign, the two signs cancel, and
+the answer is plus one.
+
+30
+00:01:56,033 --> 00:01:59,610
+But here the first two bits
+disagree, so only one minus sign
+
+31
+00:01:59,610 --> 00:02:03,006
+appears, nothing cancels it, and
+the answer is minus one.
+
+32
+00:02:04,533 --> 00:02:08,297
+Now, once you have two questions, you
+need to know whether one state can
+
+33
+00:02:08,297 --> 00:02:12,485
+answer plus one to both, and that comes
+down to whether the two strings commute.
+
+34
+00:02:13,067 --> 00:02:17,620
+For a single qubit you already know how
+this goes, because X followed by Z is
+
+35
+00:02:17,620 --> 00:02:22,293
+minus Z followed by X, and that's what
+we mean when we say the two anticommute.
+
+36
+00:02:22,867 --> 00:02:26,313
+For longer strings you compare
+them slot by slot, and every slot
+
+37
+00:02:26,313 --> 00:02:29,650
+where the two hold different
+letters, with neither of them the
+
+38
+00:02:29,650 --> 00:02:32,166
+identity, contributes one of
+these minus signs.
+
+39
+00:02:32,733 --> 00:02:36,513
+So here's one for you to try.
+This is X X on two qubits,
+
+40
+00:02:36,513 --> 00:02:39,811
+and this is Z Z on the same
+two. Do they commute?
+
+41
+00:02:41,100 --> 00:02:44,437
+<font color="#7FD4E6">X and Z don't commute,
+so I'd say no.</font>
+
+42
+00:02:44,767 --> 00:02:48,230
+You're right that X and Z don't
+commute, but notice that there
+
+43
+00:02:48,230 --> 00:02:51,693
+are two slots here, and each of
+them gives a minus sign. Those
+
+44
+00:02:51,694 --> 00:02:54,987
+two minus signs cancel, so these
+strings commute after all.
+
+45
+00:02:56,067 --> 00:02:59,408
+And that's the whole rule. An
+even number of clashing slots
+
+46
+00:02:59,408 --> 00:03:02,864
+means the two strings commute,
+while an odd number means they
+
+47
+00:03:02,864 --> 00:03:06,608
+anticommute, and then no state at
+all can answer plus one to both.
+
+48
+00:03:08,133 --> 00:03:11,241
+So let's take a list of strings
+that do commute, and collect
+
+49
+00:03:11,241 --> 00:03:13,770
+every state that answers plus
+one to all of them.
+
+50
+00:03:14,367 --> 00:03:18,225
+With two qubits there are four
+basis states, and the question Z
+
+51
+00:03:18,225 --> 00:03:21,896
+Z keeps the two where the bits
+agree, zero zero and one one.
+
+52
+00:03:22,467 --> 00:03:26,009
+The question X X swaps those two
+with each other, so answering
+
+53
+00:03:26,009 --> 00:03:29,261
+plus one to it means carrying
+the same amplitude on both.
+
+54
+00:03:29,700 --> 00:03:33,099
+<font color="#7FD4E6">So that leaves one state.
+Isn't that the Bell state?</font>
+
+55
+00:03:33,433 --> 00:03:37,962
+Yes, it leaves exactly one state, the
+Bell state from lecture two, and look at
+
+56
+00:03:37,962 --> 00:03:42,256
+what it took to pin it down, two short
+strings instead of four amplitudes.
+
+57
+00:03:42,833 --> 00:03:45,938
+The set of states that a list
+fixes like this is called the
+
+58
+00:03:45,938 --> 00:03:49,311
+space stabilized by the list, and
+the list itself, together with
+
+59
+00:03:49,311 --> 00:03:52,363
+all the products of its strings,
+is called the stabilizer.
+
+60
+00:03:52,933 --> 00:03:55,826
+The strings you actually write
+down are its generators, and
+
+61
+00:03:55,826 --> 00:03:58,121
+those are the only ones you
+ever need to check.
+
+62
+00:03:59,667 --> 00:04:02,643
+Now we can go back to the bit
+flip code, and watch its two
+
+63
+00:04:02,643 --> 00:04:05,776
+checks do their work on all eight
+dimensions of three qubits.
+
+64
+00:04:06,367 --> 00:04:10,309
+The first check, Z Z on qubits one
+and two, answers plus one on
+
+65
+00:04:10,309 --> 00:04:14,633
+exactly half of them, so it keeps
+this half, and we can dim the rest.
+
+66
+00:04:15,200 --> 00:04:18,964
+The second check asks about qubits
+two and three, and it cuts across
+
+67
+00:04:18,964 --> 00:04:22,166
+the first one, so again only half
+of what's left survives.
+
+68
+00:04:22,733 --> 00:04:26,589
+So with three qubits and two checks, how
+many dimensions do you think are left?
+
+69
+00:04:27,767 --> 00:04:31,583
+<font color="#7FD4E6">Eight, then four, then
+two. That's one qubit.</font>
+
+70
+00:04:31,900 --> 00:04:36,484
+Yes, two dimensions, which is one
+qubit's worth of room, and those two
+
+71
+00:04:36,484 --> 00:04:41,400
+are exactly zero zero zero and one one
+one, the code space we started with.
+
+72
+00:04:41,967 --> 00:04:46,032
+And the same thing happens for any
+number of qubits. You start with two
+
+73
+00:04:46,032 --> 00:04:49,980
+to the n dimensions, every new check
+halves that, and after n minus k
+
+74
+00:04:49,980 --> 00:04:53,696
+checks you're left with two to the
+k, which is room for k qubits.
+
+75
+00:04:54,067 --> 00:04:58,281
+<font color="#7FD4E6">Any check at all? What if I
+add Z on one and Z on three?</font>
+
+76
+00:04:58,700 --> 00:05:02,517
+Good, Z on one and three is a nice
+one to try, because it's just the
+
+77
+00:05:02,517 --> 00:05:06,504
+product of the two checks we already
+have, so this cut removes nothing.
+
+78
+00:05:07,100 --> 00:05:09,269
+That's why the count only
+works for independent
+
+79
+00:05:09,269 --> 00:05:11,767
+checks, where none of them
+is a product of the others.
+
+80
+00:05:13,900 --> 00:05:17,569
+So for fifty qubits, the list is at
+most fifty strings of fifty
+
+81
+00:05:17,569 --> 00:05:21,298
+letters, which is about five
+thousand bits, while the amplitudes
+
+82
+00:05:21,298 --> 00:05:25,204
+come to two to the fifty complex
+numbers, around a million billion.
+
+83
+00:05:25,633 --> 00:05:28,502
+<font color="#7FD4E6">So can every state be
+written as a list like this?</font>
+
+84
+00:05:28,933 --> 00:05:32,308
+No, not every state, and I should
+be honest about that. Only very
+
+85
+00:05:32,308 --> 00:05:35,735
+special states can be written as
+a list like this, but they happen
+
+86
+00:05:35,735 --> 00:05:38,846
+to include every code we'll meet
+in the rest of the lecture.
+
+87
+00:05:40,367 --> 00:05:43,212
+So a code doesn't have to be
+handed to you as a table of
+
+88
+00:05:43,212 --> 00:05:46,471
+amplitudes. You can hand over a
+short list of questions instead.
+
+89
+00:05:46,900 --> 00:05:50,179
+<font color="#7FD4E6">And the three boxes we dimmed,
+are those just thrown away?</font>
+
+90
+00:05:51,267 --> 00:05:54,615
+They're not thrown away at all,
+and I think that's the best part.
+
+91
+00:05:54,615 --> 00:05:57,754
+Those three boxes are where a
+single bit flip sends the code,
+
+92
+00:05:57,754 --> 00:06:00,841
+and which box you land in tells
+you which qubit was flipped.
+
+93
+00:06:01,433 --> 00:06:04,780
+That's what we'll take up next,
+in section eight point two, where
+
+94
+00:06:04,780 --> 00:06:07,866
+the answers that come back minus
+one turn into the syndrome.

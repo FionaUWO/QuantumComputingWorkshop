@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "pipeline"))
 from common import *  # noqa: E402,F401
 DROP = 0.4            # the camera looks this much higher, which centres the picture (as in 1.2)
 TS = 0.66             # side of a letter tile
-X_TILE, Z_TILE = PURPLE, GOOD
+X_TILE, Z_TILE = PAULI_X, PAULI_Z      # common.py
 
 def tile(ch, s=TS):
     """One letter of a Pauli string. tile.ch is the letter."""
@@ -47,22 +47,91 @@ class Main(NarratedScene):
     EP = "8.1"
     SCENES = [("i", "opening"), ("a", "hook"), ("b", "alphabet"), ("c", "commute"), ("d", "bell"),
               ("e", "halving"), ("f", "cost"), ("g", "closing")]
+    # Each shot is centred on screen (the user's review, 2026-11-23: nothing sitting on the bottom,
+    # even margins left and right). A shot starts with each scene and at the lines in MID_SHOTS,
+    # where the picture changes its make-up; it is named after its first line. A full render notes
+    # the box each shot's picture fills (layout.json beside this file); the next render points the camera at
+    # the middle of that box, placed SAFE_Y above the centre of the screen so that the strip of
+    # subtitles at the bottom stays clear. Inside a scene the camera pans to the next shot at the
+    # start of its line. The offsets are whole pixels of the 1080p film, so thin lines stay sharp.
+    SAFE_Y = 0.3
+    PX = 135
+    MID_SHOTS = ("b5", "c3", "c7", "e7", "e8", "f3")
+    def cam_for(self, shot):
+        box = self.layout.get(shot)
+        cx, cy = ((box[0] + box[1]) / 2, (box[2] + box[3]) / 2 - self.SAFE_Y) if box else (0.0, DROP)
+        return np.array([round(cx * self.PX) / self.PX, round(cy * self.PX) / self.PX, 0.0])
+    def pan_to(self, shot, run_time=0.6):
+        new = self.cam_for(shot)
+        delta = new - self.cam
+        if np.abs(delta).max() < 0.05:
+            return
+        movers = [self.camera.frame, self.head, self.wm]
+        if getattr(self, "card_mob", None) is not None:
+            movers.append(self.card_mob)
+        self.measuring = False
+        self.play(*[m.animate.shift(delta) for m in movers], run_time=run_time)
+        self.measuring = True
+        self.cam = new
     def construct(self):
         only = os.environ.get("ONLY", "")
         self.busy = {}
+        self.boxes = {}
+        self.cur = None
+        self.measuring = True
+        lay = Path(__file__).resolve().parent / "layout.json"      # kept with the sources: renders read it
+        self.layout = json.loads(lay.read_text(encoding="utf-8")) if lay.exists() else {}
+        self.cam = np.array([0.0, 0.0, 0.0])
         self.head = header("8.1  The Pauli group and stabilizers")
         self.wm = watermark()
+        head0, wm0 = self.head.get_center(), self.wm.get_center()
         for letter, name in self.SCENES:
             if only and letter not in only:
                 continue
-            if letter != "i" and self.head not in self.mobjects:     # nothing over the opening card
-                self.camera.frame_center = np.array([0.0, DROP, 0.0])
-                self.head.shift(UP * DROP)
-                self.wm.shift(UP * DROP)
-                self.play(FadeIn(self.head), FadeIn(self.wm), run_time=0.4)
+            if letter != "i":
+                self.clear_stage()
+                first = next(i for i in self.subs if i[0] == letter)
+                self.cam = self.cam_for(first)
+                self.camera.frame_center = self.cam.copy()
+                self.head.move_to(head0 + self.cam)
+                self.wm.move_to(wm0 + self.cam)
+                if self.head not in self.mobjects:                   # nothing over the opening card
+                    self.play(FadeIn(self.head), FadeIn(self.wm), run_time=0.4)
+            self.cur = first if letter != "i" else None
             getattr(self, name)()
         self.save_marks()
         (out_dir(self.EP) / "busy.json").write_text(json.dumps(self.busy, indent=1), encoding="utf-8")
+        if not only:
+            new = {k: [round(v, 3) for v in b] for k, b in self.boxes.items()}
+            lay.write_text(json.dumps(new, indent=1), encoding="utf-8")
+            for k, b in new.items():
+                w, h = b[1] - b[0], b[3] - b[2]
+                flag = "  TOO BIG" if w > 13.4 or h > 6.2 else ""
+                print(f"layout {k}: x {b[0]:.2f}..{b[1]:.2f}  y {b[2]:.2f}..{b[3]:.2f}  ({w:.1f} x {h:.1f}){flag}")
+    def measure(self):
+        """Grow the current scene's box by everything on stage, except the definition card (it has
+        its own place on screen), number trackers, and anything marked as running out of frame."""
+        if self.cur is None or not self.measuring:
+            return
+        b = self.boxes.get(self.cur, [np.inf, -np.inf, np.inf, -np.inf])
+        for m in self.stage():
+            if m is getattr(self, "card_mob", None) or isinstance(m, ValueTracker) or getattr(m, "unmeasured", False):
+                continue
+            if not any(len(s.points) for s in m.get_family()):
+                continue
+            b = [min(b[0], m.get_left()[0]), max(b[1], m.get_right()[0]),
+                 min(b[2], m.get_bottom()[1]), max(b[3], m.get_top()[1])]
+        self.boxes[self.cur] = b
+    def card(self, term, definition, width=11.0, x=0.0):
+        """As in NarratedScene, but the card keeps its place on screen when the camera moves."""
+        new = def_card(term, definition, width, x).shift(self.cam - np.array([0.0, DROP, 0.0]))
+        new.unmeasured = True
+        old = getattr(self, "card_mob", None)
+        if old is None:
+            self.play(FadeIn(new, shift=UP * 0.2), run_time=0.5)
+        else:
+            self.play(FadeOut(old), FadeIn(new, shift=UP * 0.2), run_time=0.5)
+        self.card_mob = new
     @contextmanager
     def voice(self, *ids, gap=None):
         """As in NarratedScene, and two things more. The holds inside a line were written for the
@@ -75,7 +144,11 @@ class Main(NarratedScene):
         self.pace = real / (words / 150 * 60) if real else 1.0
         with super().voice(*ids, gap=gap) as total:
             t0 = self.now
+            if ids[0] in self.MID_SHOTS:
+                self.cur = ids[0]
+                self.pan_to(ids[0])
             yield total
+            self.measure()           # at the end of the line, when what it took away has gone
             self.busy[ids[-1]] = {"busy": round(self.now - t0, 2), "voice": round(total, 2),
                                   "at_219_wpm": round(words / 219 * 60, 2)}
         self.pace = 1.0
@@ -83,7 +156,7 @@ class Main(NarratedScene):
         super().hold(seconds * getattr(self, "pace", 1.0))
     def stage(self):
         """Everything on screen except the header and the watermark."""
-        return [m for m in self.mobjects if m is not self.head and m is not self.wm]
+        return [m for m in self.mobjects if m is not self.head and m is not self.wm and m is not self.camera.frame]
     def clear_stage(self, run_time=0.6):
         self.card_mob = None
         left = self.stage()
@@ -114,22 +187,46 @@ class Main(NarratedScene):
             self.play(FadeIn(number), run_time=0.5)
         self.play(FadeOut(VGroup(series, title, number)), FadeOut(corner), run_time=0.6)
     # ------------------------------------------------------------ A. two descriptions of one code
-    LX, RX_ = -3.4, 3.3           # centres of the two descriptions
+    LX, RX_ = -3.3, 3.3           # centres of the two descriptions (mirror images of each other)
     TOP = 2.35                    # top of both columns
-    def amp_rows(self, n, lit, pitch=None):
-        """The amplitude table of n qubits as 2^n thin rows; `lit` are the rows that are not zero."""
-        pitch = pitch or max(0.42 * 0.72 ** (n - 3), 0.012)
+    FOOT = -2.0                   # the line of the two counts under the columns
+    # The amplitude column is laid out on whole pixels of the 1080p film (135 px a unit, measured
+    # from the corner of the camera's frame), so that its thin rows come out evenly spaced and
+    # sharp. At the largest size, 2^7 rows, every row is 2 px tall with 2 px between rows; each
+    # qubit fewer doubles both. The column always has the same height, 512 px, and stops well
+    # above the foot.
+    NMAX, COL_W, PITCH = 7, 296, 4
+
+    def y_px(self, p):
+        return self.cam[1] + 4.0 - p / self.PX
+
+    def x_px(self, p):
+        return self.cam[0] - 7.111111 + p / self.PX
+
+    def amp_rows(self, n, lit):
+        """The amplitude table of n qubits as 2^n rows of equal height; `lit` are the rows that are
+        not zero."""
+        pitch = self.PITCH * 2 ** (self.NMAX - n)             # px from one row to the next
+        top = round((self.cam[1] + 4.0 - self.TOP) * self.PX)   # px of the column's top edge
+        left = round((self.LX - self.cam[0] + 7.111111) * self.PX - self.COL_W / 2)
+        w = self.COL_W / self.PX
         rows = VGroup()
         for k in range(2 ** n):
             on = k in lit
-            r = Rectangle(width=2.2, height=pitch * 0.62, stroke_width=0, fill_color=HILITE if on else MUTED,
+            y0 = top + k * pitch + pitch // 4                   # a row is half the pitch, centred
+            y1 = y0 + pitch // 2
+            r = Rectangle(width=w, height=(y1 - y0) / self.PX, stroke_width=0, fill_color=HILITE if on else MUTED,
                           fill_opacity=1 if on else 0.28)
-            r.move_to([self.LX + 0.45, self.TOP - (k + 0.5) * pitch, 0])
+            r.move_to([self.x_px(left) + w / 2, (self.y_px(y0) + self.y_px(y1)) / 2, 0])
             rows.add(r)
         return rows
+
+    def foot(self, tex, x, color=MUTED):
+        return M(tex, size=30, color=color).move_to([x, self.FOOT, 0])
+
     def check_list(self, n):
         """The checks of the repetition code on n qubits: Z on each neighbouring pair."""
-        s = min(TS, 3.9 / n)
+        s = min(TS, 3.5 / n)
         rows = VGroup(*[pstring(["Z" if j in (i, i + 1) else "I" for j in range(n)], s) for i in range(n - 1)])
         rows.arrange(DOWN, buff=0.16 * s / TS)
         return rows.move_to([self.RX_, 0, 0]).align_to([0, self.TOP, 0], UP)
@@ -166,41 +263,52 @@ class Main(NarratedScene):
             self.play(Indicate(checks[1], color=HILITE, scale_factor=1.12), run_time=0.8)
         # a4: more qubits. The table doubles each time, the list grows by one line
         count = M("n = 3", size=40).move_to([0, 1.6, 0])
+        amps = self.foot(r"2^3 = 8\ \text{amplitudes}", self.LX)
+        qs = self.foot(r"2\ \text{questions}", self.RX_)
         with self.voice("a4"):
-            self.play(FadeIn(count), FadeOut(names), run_time=0.5)
-            for n in range(4, 9):
+            self.play(FadeIn(count), FadeOut(names), FadeIn(amps), FadeIn(qs), run_time=0.5)
+            for n in range(4, self.NMAX + 1):
                 new_rows = self.amp_rows(n, lit=(0, 2 ** n - 1))
                 new_checks = self.check_list(n)
                 new_count = M(f"n = {n}", size=40).move_to(count)
-                self.remove(*rows.get_family(), *checks.get_family(), count)
-                self.add(new_rows, new_checks, new_count)
-                rows, checks, count = new_rows, new_checks, new_count
-                self.wait(0.55)
+                new_amps = self.foot(rf"2^{n} = {2 ** n}\ \text{{amplitudes}}", self.LX)
+                new_qs = self.foot(rf"{n - 1}\ \text{{questions}}", self.RX_)
+                self.remove(*rows.get_family(), *checks.get_family(), count, amps, qs)
+                self.add(new_rows, new_checks, new_count, new_amps, new_qs)
+                rows, checks, count, amps, qs = new_rows, new_checks, new_count, new_amps, new_qs
+                self.wait(0.7)
+
         # a5: what if only the rows that are not zero were kept?
         with self.voice("a5"):
             self.play(*[r.animate.set_fill(opacity=0.08) for r in rows[1:-1]], run_time=0.8)
         # a6: in a larger code the rows that are not zero double as well
         frame = SurroundingRectangle(checks, color=HILITE, buff=0.18, corner_radius=0.12)
-        nz = M(r"\text{not zero: }", "2", size=32, color=HILITE).move_to([self.LX + 0.45, 2.95 - 0.02, 0])
+        size = 2 ** self.NMAX
+        nz = self.foot(r"\text{not zero: }2", self.LX, HILITE)
         with self.voice("a6"):
-            self.play(FadeOut(cap_l), FadeIn(nz), run_time=0.5)
+            self.play(ReplacementTransform(amps, nz), run_time=0.5)
             self.hold(2.0)
             rng = np.random.default_rng(8)
+            on = {0, size - 1}
             for m in (4, 8, 16, 32, 64):
-                on = set(rng.choice(256, size=m, replace=False).tolist()) | {0, 1, 2, 3, 5, 8, 11, 14}
-                new_rows = self.amp_rows(8, lit=on)
+                on |= set(rng.choice(sorted(set(range(size)) - on), size=m - len(on), replace=False).tolist())
+                new_rows = self.amp_rows(self.NMAX, lit=on)
                 for k, r in enumerate(new_rows):
                     if k not in on:
                         r.set_fill(opacity=0.08)
-                new_nz = M(r"\text{not zero: }", str(m), size=32, color=HILITE).move_to(nz)
+                new_nz = self.foot(rf"\text{{not zero: }}{m}", self.LX, HILITE)
                 self.remove(*rows.get_family(), nz)
                 self.add(new_rows, new_nz)
                 rows, nz = new_rows, new_nz
                 self.wait(0.5)
             self.play(Create(frame), run_time=0.7)
+
+        # a7: the questions are what this section is about; the picture stays until the line ends
         with self.voice("a7"):
-            self.hold(3.0)
-            self.clear_stage(0.8)
+            self.hold(1.2)
+            self.play(VGroup(rows, nz, cap_l).animate.set_opacity(0.15), run_time=0.8)
+            self.hold(0.6)
+            self.play(Indicate(checks, color=HILITE, scale_factor=1.06), run_time=1.0)
     # ------------------------------------------------------------ B. the alphabet; a string is a question
     def alphabet(self):
         self.clear_stage()
@@ -522,7 +630,7 @@ class Main(NarratedScene):
             self.play(FadeIn(tag), run_time=0.4)
         num = two
         # e7: any number of qubits. A long bar halved again and again, and only then the formula
-        bx, bw, by = -5.9, 8.4, -2.05
+        bx, bw, by = -5.9, 8.4, -1.55
         bar = Rectangle(width=bw, height=0.34, stroke_width=0, fill_color=MUTED, fill_opacity=0.35)
         bar.move_to([bx + bw / 2, by, 0])
         lab = M("2^n", size=32).next_to(bar, UP, buff=0.12).align_to(bar, RIGHT)
@@ -585,6 +693,7 @@ class Main(NarratedScene):
         col.move_to([-3.3, 2.1 - 4.5, 0])
         stripes = VGroup(*[Line([-4.4, 2.1 - 0.16 * k, 0], [-2.2, 2.1 - 0.16 * k, 0], color=BG, stroke_width=2)
                            for k in range(1, 40)])
+        col.unmeasured = stripes.unmeasured = True      # it runs out of the frame on purpose
         cap_l = T("the amplitudes", size=24, color=MUTED).move_to([-3.3, 2.45, 0])
         big = M(r"2^{50} \approx 10^{15}", size=44, color=HILITE).move_to([-0.2, 0.2, 0])
         big.shift(LEFT * 0.2)
@@ -657,7 +766,7 @@ class Main(NarratedScene):
                 pairs.append(pair)
                 self.hold(0.9)
         nxt = VGroup(T("Next", size=26, color=MUTED), T("8.2  Stabilizer codes", size=50, bold=True))
-        nxt.arrange(DOWN, buff=0.3).move_to([0, 0.3, 0])
+        nxt.arrange(DOWN, buff=0.3).move_to(self.cam + [0, self.SAFE_Y, 0])     # the middle of the screen
         with self.voice("g4"):
             minus_ones = [p[i] for p, (_, _, ans) in zip(pairs, flips) for i in (0, 1) if not ans[i]]
             self.hold(3.0)

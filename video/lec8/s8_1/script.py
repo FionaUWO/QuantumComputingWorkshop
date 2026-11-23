@@ -32,7 +32,7 @@ LINES = [
     ('a4', 'A', 'Now watch what happens to each of these descriptions as I keep adding qubits.'),
     ('a5', 'B', "The left one explodes. But couldn't you just store the amplitudes that aren't zero?"),
     ('a6', 'A', "Storing only the ones that aren't zero is a good instinct, but for the codes at the end of this lecture, even those keep doubling as the code grows, while the list on the right just gets a few lines longer."),
-    ('a7', 'A', 'So in this section I want to show you how a short list of questions can pin down a state, and how you can read off, from the list alone, how much room it leaves.'),
+    ('a7', 'A', 'So in this section, I want to show you how a short list of questions like this one can pin down a quantum state.'),
     # --- B. The alphabet: Pauli strings, and why a string is a question
     ('b1', 'A', "Let's start with the alphabet these questions are written in, which has only four letters, the identity and the three Pauli matrices X, Y and Z."),
     ('b2', 'A', 'To act on several qubits you just line the letters up, one for each qubit, so this string means X on the first qubit, nothing on the second, and Z on the third.'),
@@ -86,7 +86,7 @@ PAUSE_AFTER = {
     'i2': 0.95,   # end of a scene
     'a1': 0.6,
     'a2': 0.6,
-    'a3': 0.6,
+    'a3': 1.1,   # half a second more before the next line (user's review, 2026-11-23)
     'a4': 0.45,   # the picture grows, then the other speaker answers
     'a5': 1.1,    # thinking pause: would storing the non-zero ones be enough?
     'a6': 0.6,
@@ -103,7 +103,7 @@ PAUSE_AFTER = {
     'c3': 0.6,
     'c4': 1.3,    # thinking pause: do XX and ZZ commute?
     'c5': 0.35,   # the other speaker answers
-    'c6': 0.6,
+    'c6': 1.1,   # half a second more before the next line (user's review, 2026-11-23)
     'c7': 0.95,   # end of a scene
     'd1': 0.6,
     'd2': 0.6,
@@ -136,4 +136,15 @@ SPEAKER = {i: who for i, who, _ in LINES}
 # (a [tag] in a line is a direction to the voice: it is spoken to, never shown)
 import re
 
-SEGS = [(i, re.sub(r"\[[^\]]*\]\s*", "", t), t) for i, _, t in LINES]
+# how the voice must say a word that it would otherwise misread (the subtitle keeps the spelling);
+# the lab name is said "Q A Con" (the user's correction, 2026-11-23)
+SAY = {'QAICON Lab': 'Q A Con Lab'}
+
+
+def spoken(t):
+    for word, say in SAY.items():
+        t = t.replace(word, say)
+    return t
+
+
+SEGS = [(i, re.sub(r"\[[^\]]*\]\s*", "", t), spoken(t)) for i, _, t in LINES]

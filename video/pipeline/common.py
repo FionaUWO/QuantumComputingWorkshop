@@ -28,6 +28,11 @@ DIM = "#2E2640"       # an empty dot
 ACCENT = "#F28C28"    # minus signs and cancellation only
 HILITE = "#7FD4E6"    # emphasis: "look here", key words, frames, the state arrow
 GOOD = "#6FCF97"
+# Letters of a Pauli string, from lecture 8 on (the user's choice, 2026-11-23): an X tile is
+# purple, a Z tile is green, a Y tile is half of each, the identity is a DIM tile. Green also
+# marks a correct answer (ticks) in lecture 1; the two never share a picture.
+PAULI_X = PURPLE
+PAULI_Z = GOOD
 FONT = "Segoe UI"
 
 config.background_color = BG

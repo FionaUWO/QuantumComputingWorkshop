@@ -68,7 +68,7 @@ Y 的方块画成紫绿各半，对应 Y 是 X 和 Z 合在一起。字幕：A �
 | a4 | A | Now watch what happens to each of these descriptions as I keep adding qubits. | 中间计数 n = 3 → 4 → … → 8，每 0.55 秒跳一格。左边每跳一次行数翻倍，到 n = 5 已冲出画面底部；右边每次只多一行、每行多一格 | 0.45 |
 | a5 | B | The left one explodes. But couldn't you just store the amplitudes that aren't zero? | 左边除首尾两行外，其余行淡到几乎看不见 | **1.1** |
 | a6 | A | Storing only the ones that aren't zero is a good instinct, but for the codes at the end of this lecture, even those keep doubling as the code grows, while the list on the right just gets a few lines longer. | 左边标题换成 "not zero: 2"，数字依次跳到 4、8、16、32、64，亮着的行随之成倍增加；最后右边的列表被青色框圈住 | 0.6 |
-| a7 | A | So in this section I want to show you how a short list of questions can pin down a state, and how you can read off, from the list alone, how much room it leaves. | 画面保持约 3 秒，然后全部淡出 | 0.95 |
+| a7 | A | So in this section, I want to show you how a short list of questions like this one can pin down a quantum state. | 左边振幅柱变暗，右边问题列表闪一下；画面保持到这句说完，下一场景开始时才淡出 | 0.95 |
 
 ## B 场景：字母表，一串字母是一个问题
 
