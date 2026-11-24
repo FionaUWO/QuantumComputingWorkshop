@@ -1,0 +1,389 @@
+1
+00:00:00,000 --> 00:00:04,785
+Hello everyone, and welcome back. We
+are QAICON Lab, the Quantum and AI for
+
+2
+00:00:04,785 --> 00:00:09,052
+Computing, Optimization, and
+Networking Lab, at Western University.
+
+3
+00:00:09,433 --> 00:00:13,511
+<font color="#7FD4E6">And today, we meet the code that
+most quantum hardware is betting on.</font>
+
+4
+00:00:16,033 --> 00:00:19,443
+Every code we've built so far
+has distance three, so each one
+
+5
+00:00:19,443 --> 00:00:22,739
+can fix a single error and no
+more, and a real machine with
+
+6
+00:00:22,739 --> 00:00:25,978
+thousands of qubits is going to
+need a lot more than that.
+
+7
+00:00:26,567 --> 00:00:30,669
+So here is a question for you. If we
+want a code that can fix many errors at
+
+8
+00:00:30,669 --> 00:00:34,825
+once, do you think its checks will have
+to reach across more and more qubits?
+
+9
+00:00:36,000 --> 00:00:41,172
+<font color="#7FD4E6">I would think so. More errors to catch,
+so each check has to look at more qubits?</font>
+
+10
+00:00:41,500 --> 00:00:45,994
+Well, that's what the codes so far would
+suggest, since Shor's checks already touch
+
+11
+00:00:45,994 --> 00:00:50,379
+six qubits. But the surface code can be
+made as strong as you like, and every one
+
+12
+00:00:50,379 --> 00:00:54,270
+of its checks still touches just four
+qubits sitting next to each other.
+
+13
+00:00:55,800 --> 00:00:59,114
+Here's how it's laid out. Draw
+a square grid, put one qubit
+
+14
+00:00:59,114 --> 00:01:02,370
+on every edge rather than on
+the points, and then glue the
+
+15
+00:01:02,370 --> 00:01:05,398
+top edge to the bottom and the
+left edge to the right.
+
+16
+00:01:05,967 --> 00:01:09,354
+That gluing turns the flat sheet
+into the surface of a doughnut,
+
+17
+00:01:09,354 --> 00:01:12,741
+and it's why this first version
+is called the toric code. With L
+
+18
+00:01:12,740 --> 00:01:16,127
+squares in each direction, you
+end up with two L squared qubits.
+
+19
+00:01:16,700 --> 00:01:20,992
+At every point where four edges meet, we
+put an X check on those four edges, and
+
+20
+00:01:20,992 --> 00:01:25,066
+around every little square we put a Z
+check on the four edges of its border.
+
+21
+00:01:25,500 --> 00:01:28,205
+<font color="#7FD4E6">And a point and a
+square never clash?</font>
+
+22
+00:01:28,533 --> 00:01:32,133
+They don't, because a point and
+a square either share no edges
+
+23
+00:01:32,133 --> 00:01:35,379
+at all or share two of them,
+and two clashes cancel, the
+
+24
+00:01:35,378 --> 00:01:38,978
+same even overlap we needed for
+CSS codes in the last section.
+
+25
+00:01:39,567 --> 00:01:44,131
+In hardware, each check gets an ancilla of
+its own placed in the middle of its four
+
+26
+00:01:44,131 --> 00:01:48,361
+qubits, and four CNOTs to its nearest
+neighbours are all the wiring it needs.
+
+27
+00:01:48,933 --> 00:01:53,895
+Counting is quick. Multiplying every point
+check together gives nothing, and so does
+
+28
+00:01:53,895 --> 00:01:58,738
+multiplying every square check, so two of
+the checks aren't independent, and two L
+
+29
+00:01:58,738 --> 00:02:03,341
+squared qubits minus two L squared minus
+two checks leaves two logical qubits.
+
+30
+00:02:04,867 --> 00:02:08,893
+Now let a few Z errors land on edges
+that join up into a path, like this
+
+31
+00:02:08,893 --> 00:02:12,352
+chain of four, and think about which
+point checks will notice.
+
+32
+00:02:12,933 --> 00:02:15,367
+Before I light anything
+up, take a guess. Which
+
+33
+00:02:15,367 --> 00:02:17,748
+checks along this path
+do you think will fire?
+
+34
+00:02:18,933 --> 00:02:21,216
+<font color="#7FD4E6">All the ones along
+the path, I suppose?</font>
+
+35
+00:02:21,533 --> 00:02:25,497
+Well, that seems natural, since every
+point on the path touches an error.
+
+36
+00:02:25,497 --> 00:02:29,461
+But a point in the middle of the chain
+touches two errored edges, and two
+
+37
+00:02:29,462 --> 00:02:33,206
+clashes cancel, so the checks that
+fire are just the two at its ends.
+
+38
+00:02:33,800 --> 00:02:37,521
+So the syndrome never shows you the
+chain, it shows you where the chain
+
+39
+00:02:37,521 --> 00:02:40,976
+stops, and the decoder has to work
+backwards from those endpoints.
+
+40
+00:02:41,567 --> 00:02:45,659
+X errors behave the same way on the
+shifted grid whose points are the centres
+
+41
+00:02:45,659 --> 00:02:49,858
+of the squares, so a chain of X errors
+lights up two square checks at its ends.
+
+42
+00:02:51,400 --> 00:02:54,442
+And a chain that closes up
+into a loop has no ends at
+
+43
+00:02:54,442 --> 00:02:57,836
+all, so it trips no check, and
+that is where the danger is.
+
+44
+00:02:58,433 --> 00:03:01,908
+If the loop just encloses a patch
+of the grid, it is the product of
+
+45
+00:03:01,908 --> 00:03:05,435
+the square checks inside it, so it
+did nothing to the encoded state,
+
+46
+00:03:05,435 --> 00:03:08,541
+much like the innermost region
+from section eight point two.
+
+47
+00:03:08,967 --> 00:03:11,699
+<font color="#7FD4E6">And a loop that goes all the
+way around the doughnut?</font>
+
+48
+00:03:12,767 --> 00:03:16,494
+A loop around the doughnut is the
+dangerous one, because it can't be
+
+49
+00:03:16,494 --> 00:03:20,277
+written as a product of checks, so
+it slips past every test and still
+
+50
+00:03:20,277 --> 00:03:23,615
+changes the encoded state, which
+makes it a logical operator.
+
+51
+00:03:24,500 --> 00:03:28,429
+The shortest loop around the torus
+has L edges, so the distance is L,
+
+52
+00:03:28,429 --> 00:03:31,954
+and that is the whole trick of
+this code: to make it stronger,
+
+53
+00:03:31,954 --> 00:03:35,767
+you simply make the grid bigger,
+and the checks stay the same size.
+
+54
+00:03:36,200 --> 00:03:39,635
+<font color="#7FD4E6">So it really is two
+L squared, two, L.</font>
+
+55
+00:03:39,967 --> 00:03:43,166
+Right. And that last L is the
+part I like most, because
+
+56
+00:03:43,166 --> 00:03:46,602
+whether an error is harmless or
+fatal now comes down to one
+
+57
+00:03:46,602 --> 00:03:50,215
+geometric question, whether its
+loop can be shrunk to a point.
+
+58
+00:03:51,733 --> 00:03:55,432
+So how does the decoder work? It's
+handed a set of lit-up points, and
+
+59
+00:03:55,432 --> 00:03:58,859
+it joins them in pairs with paths
+that are as short as possible,
+
+60
+00:03:58,859 --> 00:04:01,905
+then applies errors along those
+paths to cancel them out.
+
+61
+00:04:02,500 --> 00:04:06,679
+If its guess and the real error together
+form a loop that can be shrunk away, the
+
+62
+00:04:06,679 --> 00:04:10,650
+encoded state comes back untouched, even
+if the guess took a different route.
+
+63
+00:04:11,233 --> 00:04:14,279
+It only fails when error and
+correction together wrap
+
+64
+00:04:14,279 --> 00:04:17,501
+around the torus, and that
+takes about L over two errors
+
+65
+00:04:17,500 --> 00:04:20,839
+lined up in a row, which gets
+rare fast as the grid grows.
+
+66
+00:04:21,433 --> 00:04:24,702
+Pairing points with the least total
+length is a classical matching
+
+67
+00:04:24,702 --> 00:04:28,022
+problem, and there are algorithms
+that solve it in polynomial time.
+
+68
+00:04:28,600 --> 00:04:32,669
+And since nobody builds a doughnut-
+shaped chip, in practice the torus
+
+69
+00:04:32,669 --> 00:04:36,679
+is cut open into a flat patch with
+two kinds of boundary, which holds
+
+70
+00:04:36,680 --> 00:04:40,749
+one logical qubit and uses about d
+squared data qubits for distance d.
+
+71
+00:04:42,267 --> 00:04:45,621
+So the surface code turns errors
+into chains, sees only their
+
+72
+00:04:45,621 --> 00:04:48,863
+ends, and fails only when a
+chain wraps all the way around,
+
+73
+00:04:48,863 --> 00:04:52,329
+which you can push as far away
+as you like by growing the grid.
+
+74
+00:04:52,767 --> 00:04:55,982
+<font color="#7FD4E6">But every gate that measures
+those checks can go wrong as</font>
+
+75
+00:04:55,982 --> 00:04:58,336
+<font color="#7FD4E6">well. Does adding more
+qubits really help?</font>
+
+76
+00:04:58,667 --> 00:05:01,590
+Adding qubits does help, but
+only if the hardware is good
+
+77
+00:05:01,590 --> 00:05:04,565
+enough to begin with, and in
+section eight point six we'll
+
+78
+00:05:04,565 --> 00:05:07,436
+see where that line sits,
+which is called the threshold.
