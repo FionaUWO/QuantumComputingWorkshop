@@ -1,0 +1,345 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:04.850
+Hello everyone, and welcome back. We
+are QAICON Lab, the Quantum and AI for
+
+00:00:04.850 --> 00:00:09.175
+Computing, Optimization, and
+Networking Lab, at Western University.
+
+00:00:09.567 --> 00:00:14.139
+<c.asks>And today, we find out what a code can
+actually see when something goes wrong.</c>
+
+00:00:16.667 --> 00:00:19.909
+At the end of the last section we
+flipped the first qubit of the bit
+
+00:00:19.909 --> 00:00:23.393
+flip code, and the state moved out to
+a box where the first check answers
+
+00:00:23.393 --> 00:00:26.442
+minus one, so we knew straight away
+that something had happened.
+
+00:00:27.033 --> 00:00:29.616
+Now let's hit the same
+qubit with a different
+
+00:00:29.616 --> 00:00:32.728
+error, a Z instead of an X,
+and ask both checks again.
+
+00:00:33.300 --> 00:00:37.872
+This time both checks answer plus one,
+exactly as if nothing had happened at all.
+
+00:00:38.300 --> 00:00:42.406
+<c.asks>Hmm, so a Z on one qubit just
+doesn't bother this code?</c>
+
+00:00:43.500 --> 00:00:48.261
+Well... it does bother it, quite a
+lot. If you look at the encoded state,
+
+00:00:48.261 --> 00:00:52.956
+zero zero zero plus one one one has
+turned into zero zero zero minus one
+
+00:00:52.957 --> 00:00:57.586
+one one, which is a different state,
+and not one of the checks noticed.
+
+00:00:58.167 --> 00:01:01.311
+So the checks never look at
+the error itself, they only
+
+00:01:01.311 --> 00:01:04.571
+learn something about it, and
+the question for us is what
+
+00:01:04.570 --> 00:01:07.714
+exactly they learn, and what
+can slip past them unseen.
+
+00:01:08.633 --> 00:01:12.395
+Let's start with a state in the code
+and a single check, which the state
+
+00:01:12.395 --> 00:01:16.105
+answers with plus one, so applying
+the check just gives the state back.
+
+00:01:16.700 --> 00:01:21.212
+Now suppose an error E hits first. If E
+commutes with the check, you can slide
+
+00:01:21.212 --> 00:01:25.431
+the check straight past it, and the
+damaged state still answers plus one.
+
+00:01:26.000 --> 00:01:30.438
+But if E anticommutes with the check,
+sliding past it throws off a minus sign,
+
+00:01:30.438 --> 00:01:34.992
+like the ones we counted last time, and
+now the damaged state answers minus one.
+
+00:01:35.433 --> 00:01:37.517
+<c.asks>Every time? It
+isn't random?</c>
+
+00:01:37.867 --> 00:01:42.217
+Not random at all, no. The answer depends
+only on the error and the check, and not
+
+00:01:42.217 --> 00:01:46.406
+on which encoded state you started from,
+which is why we can measure the checks
+
+00:01:46.405 --> 00:01:49.681
+without learning, or disturbing, the
+information we've stored.
+
+00:01:50.267 --> 00:01:53.494
+So if you write a one for every
+check that answers minus one,
+
+00:01:53.494 --> 00:01:56.613
+and a zero for every check that
+answers plus one, you get a
+
+00:01:56.613 --> 00:01:59.302
+short string of bits, which is
+called the syndrome.
+
+00:01:59.900 --> 00:02:03.716
+For the bit flip code, the three
+single flips give three different
+
+00:02:03.716 --> 00:02:07.532
+syndromes, one zero, one one, and
+zero one, and that's exactly why
+
+00:02:07.533 --> 00:02:10.116
+the three dimmed boxes could tell
+them apart.
+
+00:02:11.033 --> 00:02:14.244
+Now, here is one for you
+to try. If qubits one and
+
+00:02:14.244 --> 00:02:17.323
+two both flip at once,
+what does each check say?
+
+00:02:18.500 --> 00:02:21.522
+<c.asks>The first check sees
+two flips, so they</c>
+
+00:02:21.522 --> 00:02:25.022
+<c.asks>cancel. And the second
+sees one, so zero one?</c>
+
+00:02:25.367 --> 00:02:30.447
+Spot on. Each check just counts the minus
+signs it gets from both errors together,
+
+00:02:30.447 --> 00:02:34.899
+so syndromes add up, with two ones making
+a zero, the way a parity does.
+
+00:02:35.467 --> 00:02:40.143
+But zero one is also the syndrome of a
+single flip on qubit three, so a decoder
+
+00:02:40.143 --> 00:02:44.939
+that trusts it will flip qubit three, and
+now all three qubits have been flipped.
+
+00:02:46.033 --> 00:02:50.007
+<c.asks>Wait, so it lands on one one
+one? That's the other code word.</c>
+
+00:02:50.333 --> 00:02:54.809
+Right. X on all three qubits turns
+zero zero zero into one one one and
+
+00:02:54.809 --> 00:02:59.285
+back again, it passes both checks,
+and it isn't a check itself, so the
+
+00:02:59.284 --> 00:03:03.111
+code has quietly been turned into a
+different encoded state.
+
+00:03:04.633 --> 00:03:08.650
+So every Pauli error you could name
+lands in one of three regions, depending
+
+00:03:08.650 --> 00:03:12.506
+on what the checks say about it, and the
+innermost region is the easiest.
+
+00:03:13.100 --> 00:03:16.110
+If the error is one of the
+checks, or a product of them,
+
+00:03:16.110 --> 00:03:19.668
+like Z Z on the first two qubits,
+then it fixes every state in the
+
+00:03:19.668 --> 00:03:22.952
+code, so it did nothing at all
+and there's nothing to repair.
+
+00:03:23.533 --> 00:03:26.604
+If the error anticommutes
+with at least one check, the
+
+00:03:26.604 --> 00:03:29.965
+syndrome isn't all zeros, and
+we say the error is detected,
+
+00:03:29.966 --> 00:03:32.921
+which covers every single
+flip in the bit flip code.
+
+00:03:33.500 --> 00:03:38.145
+And then there is this region in between,
+the errors that commute with every check
+
+00:03:38.145 --> 00:03:42.675
+without being checks themselves, like the
+Z on qubit one, or the X on all three.
+
+00:03:43.100 --> 00:03:46.765
+<c.asks>So those are the ones that change
+the state and nobody notices.</c>
+
+00:03:47.100 --> 00:03:50.263
+Exactly. An error in there
+passes every test and still
+
+00:03:50.263 --> 00:03:53.904
+changes the encoded state, so
+it's called a logical error, and
+
+00:03:53.904 --> 00:03:57.485
+the strings that live there are
+called the logical operators.
+
+00:03:58.067 --> 00:04:01.140
+I like that the same strings
+play both parts, because a
+
+00:04:01.140 --> 00:04:04.498
+logical operator applied by
+accident is a failure, while the
+
+00:04:04.498 --> 00:04:08.084
+same operator applied on purpose
+is a gate on the encoded qubit.
+
+00:04:09.633 --> 00:04:12.669
+So how strong a code is comes
+down to how short its shortest
+
+00:04:12.669 --> 00:04:15.962
+logical error is, and we measure
+a string by counting the letters
+
+00:04:15.962 --> 00:04:18.947
+in it that aren't the identity,
+which is called its weight.
+
+00:04:19.533 --> 00:04:23.104
+The smallest weight of any logical
+error is the distance of the code,
+
+00:04:23.104 --> 00:04:26.675
+and an error lighter than that can
+never be a logical error, so it is
+
+00:04:26.675 --> 00:04:29.301
+either caught by the checks or
+does nothing at all.
+
+00:04:29.900 --> 00:04:32.790
+So for the bit flip code, what
+do you think the distance is?
+
+00:04:33.967 --> 00:04:37.494
+<c.asks>X X X is the logical
+error, so three?</c>
+
+00:04:37.833 --> 00:04:41.819
+Well, that's the natural guess,
+because it's the logical error we just
+
+00:04:41.819 --> 00:04:46.094
+met. But remember the Z on qubit one
+from the start, which sits in the same
+
+00:04:46.094 --> 00:04:50.080
+region with a weight of only one, so
+the distance of this code is one.
+
+00:04:50.667 --> 00:04:53.926
+And that matches what you saw in
+lecture seven, where this code
+
+00:04:53.926 --> 00:04:57.501
+could fix any one bit flip but not
+a general error on a single qubit.
+
+00:04:58.100 --> 00:05:02.087
+In general, a set of errors can
+all be corrected as long as no
+
+00:05:02.087 --> 00:05:06.401
+two of them multiply to a logical
+error, and that is just what went
+
+00:05:06.400 --> 00:05:10.518
+wrong before, since X one X two
+times X three is X on all three.
+
+00:05:11.100 --> 00:05:14.672
+So with distance d, any two
+errors of weight at most d minus
+
+00:05:14.672 --> 00:05:18.062
+one over two, rounded down,
+multiply to something lighter
+
+00:05:18.061 --> 00:05:21.633
+than d, and a code of distance d
+corrects every one of them.
+
+00:05:23.167 --> 00:05:26.347
+So the checks never see an
+error itself, only the pattern
+
+00:05:26.347 --> 00:05:29.641
+of which checks it anticommutes
+with, and a code is only as
+
+00:05:29.641 --> 00:05:32.707
+strong as the lightest error
+that none of them can see.
+
+00:05:33.133 --> 00:05:36.911
+<c.asks>Then can we build a code where every
+single-qubit error gets caught?</c>
+
+00:05:37.233 --> 00:05:41.656
+We can, and in section eight point three
+we'll meet three of them, each with
+
+00:05:41.656 --> 00:05:46.315
+distance three, so any error on a single
+qubit is not only caught but corrected.
