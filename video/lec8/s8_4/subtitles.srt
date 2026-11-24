@@ -1,0 +1,379 @@
+1
+00:00:00,000 --> 00:00:04,740
+Hello everyone, and welcome back. We
+are QAICON Lab, the Quantum and AI for
+
+2
+00:00:04,740 --> 00:00:08,968
+Computing, Optimization, and
+Networking Lab, at Western University.
+
+3
+00:00:09,367 --> 00:00:12,937
+<font color="#7FD4E6">And today, we build quantum
+codes out of classical ones.</font>
+
+4
+00:00:15,467 --> 00:00:19,424
+At the end of the last section we
+noticed that every check in Shor's
+
+5
+00:00:19,424 --> 00:00:23,440
+code and in Steane's code is made
+entirely of X's or entirely of Z's,
+
+6
+00:00:23,439 --> 00:00:27,868
+and in Steane's code both halves come
+from the same table of ones and zeros.
+
+7
+00:00:28,467 --> 00:00:31,810
+That table is older than quantum
+computing by decades, since it
+
+8
+00:00:31,810 --> 00:00:34,992
+belongs to the Hamming code,
+which engineers have used since
+
+9
+00:00:34,992 --> 00:00:38,443
+the nineteen fifties to repair a
+single flipped bit in a message.
+
+10
+00:00:39,033 --> 00:00:42,625
+So here's a tempting recipe.
+Take a classical code you like,
+
+11
+00:00:42,625 --> 00:00:46,278
+write its table once with X's
+and once with Z's, and call the
+
+12
+00:00:46,279 --> 00:00:49,506
+result a quantum code. Do you
+think that always works?
+
+13
+00:00:50,700 --> 00:00:54,587
+<font color="#7FD4E6">Hmm, the Z checks catch bit
+flips and the X checks catch</font>
+
+14
+00:00:54,587 --> 00:00:58,121
+<font color="#7FD4E6">phase flips, so as long as
+the code is good, right?</font>
+
+15
+00:00:58,467 --> 00:01:01,432
+Well, that's half of the
+answer, because a good code is
+
+16
+00:01:01,432 --> 00:01:04,451
+certainly needed. But the half
+that's missing is the one
+
+17
+00:01:04,451 --> 00:01:07,745
+genuinely quantum part of the
+story, so let's go and find it.
+
+18
+00:01:09,267 --> 00:01:12,271
+So what does a table like this
+actually do for a classical
+
+19
+00:01:12,271 --> 00:01:15,802
+message? Each row picks out a few
+positions, and it asks whether the
+
+20
+00:01:15,802 --> 00:01:18,753
+bits sitting in those positions
+add up to an even number.
+
+21
+00:01:19,333 --> 00:01:22,696
+A message passes when every row
+says even, and the messages
+
+22
+00:01:22,696 --> 00:01:26,175
+that pass are the code, which
+in linear algebra is called the
+
+23
+00:01:26,176 --> 00:01:29,481
+kernel of the table, with all
+the arithmetic done mod two.
+
+24
+00:01:30,067 --> 00:01:33,961
+Now if one bit flips, the rows that
+contain it start saying odd, and the
+
+25
+00:01:33,961 --> 00:01:38,513
+pattern of odd rows you get is the column
+of the table at the position that flipped.
+
+26
+00:01:38,933 --> 00:01:41,757
+<font color="#7FD4E6">Oh, that's the address
+trick from Steane's code.</font>
+
+27
+00:01:42,100 --> 00:01:46,078
+Right. Now you can see where Steane's
+code got it from, and nothing quantum
+
+28
+00:01:46,078 --> 00:01:50,002
+happens in this picture at all, it's
+an ordinary parity check, the kind of
+
+29
+00:01:50,002 --> 00:01:52,743
+check the memory in your computer
+runs all day long.
+
+30
+00:01:54,267 --> 00:01:57,859
+So now you take two tables with
+the same number of columns,
+
+31
+00:01:57,859 --> 00:02:01,575
+which we'll call H X and H Z,
+and turn every row of the first
+
+32
+00:02:01,575 --> 00:02:05,167
+into an X check and every row
+of the second into a Z check.
+
+33
+00:02:05,767 --> 00:02:09,192
+Two X checks always commute,
+and so do two Z checks, since
+
+34
+00:02:09,192 --> 00:02:12,557
+a letter never clashes with
+itself, which leaves just one
+
+35
+00:02:12,558 --> 00:02:15,983
+kind of pair to worry about,
+an X check against a Z check.
+
+36
+00:02:16,567 --> 00:02:19,882
+And as we saw last time, an X
+and a Z clash on every qubit
+
+37
+00:02:19,882 --> 00:02:23,488
+they share, so the pair commutes
+when they share an even number
+
+38
+00:02:23,487 --> 00:02:26,395
+of qubits and anticommutes when
+that number is odd.
+
+39
+00:02:26,967 --> 00:02:30,981
+Let me try the tempting recipe on
+the smallest table we know, the two
+
+40
+00:02:30,981 --> 00:02:34,641
+rows of the bit flip code, written
+once with X and once with Z.
+
+41
+00:02:35,833 --> 00:02:41,621
+<font color="#7FD4E6">X X I and I Z Z only share
+qubit two. So they anticommute!</font>
+
+42
+00:02:41,967 --> 00:02:45,766
+That's it. Qubit two is the
+single clash, so a perfectly good
+
+43
+00:02:45,766 --> 00:02:49,628
+classical code still breaks the
+recipe, because one row of one
+
+44
+00:02:49,629 --> 00:02:53,301
+table overlaps one row of the
+other an odd number of times.
+
+45
+00:02:53,900 --> 00:02:59,240
+So the missing half is this. Every row
+of H X has to share an even number of
+
+46
+00:02:59,240 --> 00:03:04,438
+ones with every row of H Z, and if you
+collect all those overlaps into one
+
+47
+00:03:04,438 --> 00:03:09,636
+product, the condition reads H X times
+H Z transpose equals zero, mod two.
+
+48
+00:03:10,233 --> 00:03:14,112
+When that holds, the checks define
+a code, and the number of logical
+
+49
+00:03:14,112 --> 00:03:17,644
+qubits is n minus the number of
+independent X checks minus the
+
+50
+00:03:17,644 --> 00:03:21,350
+number of independent Z checks,
+the same halving count as before.
+
+51
+00:03:22,900 --> 00:03:27,134
+Once the checks commute, the two kinds
+of error stay out of each other's way.
+
+52
+00:03:27,134 --> 00:03:31,201
+A bit flip only trips the Z checks,
+and the pattern it leaves is H Z times
+
+53
+00:03:31,201 --> 00:03:35,101
+the error, so you can decode that half
+like an ordinary classical code.
+
+54
+00:03:35,700 --> 00:03:39,297
+A phase flip trips nothing but
+the X checks, leaving H X times
+
+55
+00:03:39,297 --> 00:03:42,953
+its pattern, and that half gets
+a classical decoder of its own.
+
+56
+00:03:43,400 --> 00:03:47,190
+<font color="#7FD4E6">And a Y error, which is a bit
+flip and a phase flip at once?</font>
+
+57
+00:03:48,267 --> 00:03:51,700
+It lights up both halves at the
+same time, and each decoder fixes
+
+58
+00:03:51,700 --> 00:03:54,973
+its own part of it, one undoing
+the bit flip and the other the
+
+59
+00:03:54,973 --> 00:03:57,870
+phase flip, without ever needing
+to talk to each other.
+
+60
+00:03:58,467 --> 00:04:01,621
+I find that the nicest part of
+the construction, because all
+
+61
+00:04:01,621 --> 00:04:04,507
+the hard work of decoding a
+quantum code turns into two
+
+62
+00:04:04,507 --> 00:04:07,500
+classical problems that people
+already knew how to solve.
+
+63
+00:04:09,033 --> 00:04:12,922
+So let's go back to Steane's code,
+where both tables are the same H,
+
+64
+00:04:12,922 --> 00:04:16,578
+and the condition becomes H times
+its own transpose equals zero.
+
+65
+00:04:17,167 --> 00:04:22,150
+If you check, any two rows of the Hamming
+table share two ones, and each row shares
+
+66
+00:04:22,150 --> 00:04:26,222
+four with itself, so every overlap is
+even, and the condition holds.
+
+67
+00:04:26,667 --> 00:04:30,533
+<font color="#7FD4E6">So the bit flip table failed,
+but the Hamming table passes.</font>
+
+68
+00:04:30,867 --> 00:04:34,294
+Right. Classical coding theorists
+have a name for a table like
+
+69
+00:04:34,294 --> 00:04:37,890
+that, they say the code contains
+its dual, and it's the one extra
+
+70
+00:04:37,890 --> 00:04:41,429
+demand that a quantum code makes
+on top of the classical theory.
+
+71
+00:04:42,967 --> 00:04:47,827
+So two classical codes laid over the
+same qubits, one for each kind of error,
+
+72
+00:04:47,827 --> 00:04:52,815
+give you a quantum code as long as their
+tables overlap evenly, and codes built
+
+73
+00:04:52,815 --> 00:04:56,907
+this way are called CSS codes, after
+Calderbank, Shor and Steane.
+
+74
+00:04:57,333 --> 00:05:01,552
+<font color="#7FD4E6">But these checks still reach right
+across the whole code. Do they have to?</font>
+
+75
+00:05:01,900 --> 00:05:06,448
+They don't, and in section eight point
+five we'll meet the surface code, a CSS
+
+76
+00:05:06,448 --> 00:05:10,759
+code whose checks only ever touch four
+neighbouring qubits on a flat grid.
