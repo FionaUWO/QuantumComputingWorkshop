@@ -367,6 +367,115 @@ class Bloch(VGroup):
 H_AXIS = np.array([1.0, 0.0, 1.0]) / np.sqrt(2)     # H is a half turn about this axis
 
 
+# ---------------------------------------------------------------- circuits (from 8.3 on)
+class Circuit(VGroup):
+    """A small circuit drawn like the lecture-7 figure BitFlipCircuit: data wires on top, ancilla
+    wires below (starting in |0>), a meter at the right end of each ancilla. Lines, CNOTs and H boxes
+    are white; only a real X or Z gate is coloured (purple / green), so a column of gates reads like
+    the Pauli string it measures.
+
+    data:  labels of the data wires, top to bottom (e.g. ["1", "2", "3"])
+    anc:   number of ancilla wires
+    cols:  one entry per column, left to right:
+           ("cnot", control, target)              wires counted from the top, data first
+           ("ctrl", control, {wire: "X"|"Z"})     one control dot driving several Pauli boxes
+           ("h", wire)
+    The parts are kept by name: .wires, .labels, .cols (one VGroup per column), .meters, and
+    .y(w), .x(k) give a wire's height and a column's position, for pulses and highlights.
+    """
+
+    def __init__(self, data, anc, cols, gap=0.42, step=0.5, anc_gap=0.25, lead=0.45, size=0.34, **kw):
+        super().__init__(**kw)
+        self.n, self.m, self.gap, self.step, self.size = len(data), anc, gap, step, size
+        self._ys = [-i * gap for i in range(self.n)] + [-(self.n + i) * gap - anc_gap for i in range(anc)]
+        self._x0 = 0.0
+        self._xs = [lead + k * step for k in range(len(cols))]
+        x_end = self._xs[-1] + lead if cols else lead
+        self.meter_x = x_end + 0.3
+        self.wires = VGroup()
+        for w, y in enumerate(self._ys):
+            right = self.meter_x - 0.3 if w >= self.n else self.meter_x + 0.7
+            self.wires.add(Line([0, y, 0], [right, y, 0], color=MUTED, stroke_width=2))
+        self.labels = VGroup(*[T(s, size=18, color=MUTED).next_to([0, y, 0], LEFT, buff=0.15)
+                               for s, y in zip(data, self._ys)])
+        self.labels.add(*[M(r"|0\rangle", size=24, color=MUTED).next_to([0, y, 0], LEFT, buff=0.12)
+                          for y in self._ys[self.n:]])
+        self.cols = VGroup(*[self._column(c, x) for c, x in zip(cols, self._xs)])
+        self.meters = VGroup(*[self._meter(y) for y in self._ys[self.n:]])
+        self.add(self.wires, self.labels, self.cols, self.meters)
+
+    def y(self, w):
+        return self.wires[w].get_start()[1]
+
+    def x(self, k):
+        return self.cols[k].get_center()[0]
+
+    def point(self, w, k):
+        """Where wire w crosses column k (k may be 'start' or 'meter')."""
+        line = self.wires[w]
+        if k == "start":
+            return line.get_start()
+        if k == "meter":
+            return self.meters[w - self.n].get_center()
+        return np.array([self.cols[k].get_center()[0], line.get_start()[1], 0])
+
+    def _box(self, letter, at):
+        s = self.size
+        col = {"X": PAULI_X, "Z": PAULI_Z, "H": BG}[letter]
+        box = Square(side_length=s, stroke_width=0 if letter != "H" else 2, stroke_color=INK,
+                     fill_color=col, fill_opacity=1)
+        txt = T(letter, size=int(48 * s), color=BG if letter == "Z" else INK, bold=True)
+        return VGroup(box, txt.move_to(box)).move_to(at)
+
+    def _column(self, c, x):
+        kind = c[0]
+        g = VGroup()
+        if kind == "h":
+            g.add(self._box("H", [x, self._ys[c[1]], 0]))
+        elif kind == "cnot":
+            yc, yt = self._ys[c[1]], self._ys[c[2]]
+            r = self.size * 0.45
+            g.add(Line([x, yc, 0], [x, yt, 0], color=INK, stroke_width=2.5))
+            g.add(Dot([x, yc, 0], radius=0.07, color=INK))
+            g.add(Circle(radius=r, color=INK, stroke_width=2.5).move_to([x, yt, 0]))
+            g.add(Line([x - r, yt, 0], [x + r, yt, 0], color=INK, stroke_width=2.5))
+        elif kind == "ctrl":
+            yc = self._ys[c[1]]
+            ys = [self._ys[w] for w in c[2]]
+            g.add(Line([x, min(ys + [yc]), 0], [x, max(ys + [yc]), 0], color=INK, stroke_width=2.5))
+            g.add(Dot([x, yc, 0], radius=0.07, color=INK))
+            for w, letter in c[2].items():
+                g.add(self._box(letter, [x, self._ys[w], 0]))
+        g.x_at = x
+        return g
+
+    def _meter(self, y):
+        x = self.meter_x
+        k = min(1.0, self.gap * 0.85 / 0.42)        # meters shrink when the ancillas sit close together
+        box = RoundedRectangle(width=0.6 * k, height=0.42 * k, corner_radius=0.06, color=INK, stroke_width=2,
+                               fill_color=BG, fill_opacity=1).move_to([x, y, 0])
+        arc = Arc(radius=0.17 * k, start_angle=PI * 0.15, angle=PI * 0.7, color=INK, stroke_width=2)
+        arc.move_to([x, y + 0.02 * k, 0])
+        needle = Line([x, y - 0.12 * k, 0], [x + 0.12 * k, y + 0.12 * k, 0], color=INK, stroke_width=2)
+        return VGroup(box, arc, needle)
+
+    def readout(self, w, bit, size=30):
+        """The outcome written right of the meter on ancilla w: 0 in white, 1 in orange."""
+        m = self.meters[w - self.n]
+        return T(str(bit), size=size, color=ACCENT if bit else INK, bold=True).next_to(m, RIGHT, buff=0.18)
+
+    def pulse_path(self, w_from, k_from, w_to, k_col):
+        """An error's trail: along wire w_from from column k_from (or the start) to column k_col,
+        down that column's vertical line to wire w_to, and on to w_to's meter."""
+        a = self.point(w_from, k_from)
+        b = self.point(w_from, k_col)
+        c = self.point(w_to, k_col)
+        d = self.point(w_to, "meter") + LEFT * 0.3
+        path = VMobject()
+        path.set_points_as_corners([a, b, c, d])
+        return path
+
+
 # ---------------------------------------------------------------- narrated scene
 class NarratedScene(MovingCameraScene):
     """A scene whose pacing follows the narration audio.

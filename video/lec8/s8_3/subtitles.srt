@@ -1,0 +1,469 @@
+1
+00:00:00,000 --> 00:00:04,787
+Hello everyone, and welcome back. We
+are QAICON Lab, the Quantum and AI for
+
+2
+00:00:04,787 --> 00:00:09,056
+Computing, Optimization, and
+Networking Lab, at Western University.
+
+3
+00:00:09,433 --> 00:00:14,212
+<font color="#7FD4E6">And today, we meet three codes that
+can fix any error on a single qubit.</font>
+
+4
+00:00:16,733 --> 00:00:20,799
+Last time we ended on a question,
+whether a code can catch every possible
+
+5
+00:00:20,799 --> 00:00:25,090
+error on a single qubit, and the answer
+is yes, as long as the lightest error
+
+6
+00:00:25,090 --> 00:00:28,704
+that slips past all of its checks has a
+weight of at least three.
+
+7
+00:00:29,300 --> 00:00:32,393
+Peter Shor found the first
+code like that in 1995, and
+
+8
+00:00:32,393 --> 00:00:35,252
+it spends nine physical
+qubits to protect a single
+
+9
+00:00:35,252 --> 00:00:38,461
+qubit of information, which
+does feel like rather a lot.
+
+10
+00:00:39,033 --> 00:00:41,909
+So here's something for you to
+guess before we start. What do
+
+11
+00:00:41,909 --> 00:00:44,832
+you think is the fewest qubits
+that could possibly do the job?
+
+12
+00:00:46,000 --> 00:00:49,899
+<font color="#7FD4E6">Hmm, there are three kinds
+of error, and the bit flip</font>
+
+13
+00:00:49,899 --> 00:00:53,723
+<font color="#7FD4E6">code needed three qubits
+for just one kind, so nine?</font>
+
+14
+00:00:54,067 --> 00:00:57,722
+Well, that's a very natural way to
+count, and it's the way Shor's code
+
+15
+00:00:57,722 --> 00:01:01,112
+is put together. But the true
+answer is smaller than nine, and by
+
+16
+00:01:01,113 --> 00:01:04,609
+the end you'll be able to see why,
+just by counting something else.
+
+17
+00:01:06,133 --> 00:01:09,096
+Let's write Shor's code the
+way we learned to in the last
+
+18
+00:01:09,096 --> 00:01:12,006
+two sections, as a list of
+checks, which for nine qubits
+
+19
+00:01:12,006 --> 00:01:14,916
+sitting in three blocks of
+three comes to eight strings.
+
+20
+00:01:15,500 --> 00:01:18,467
+The first six are Z pairs
+inside each block, just like
+
+21
+00:01:18,467 --> 00:01:21,378
+the checks of the bit flip
+code, so each block on its
+
+22
+00:01:21,378 --> 00:01:24,233
+own can catch a bit flip on
+any of its three qubits.
+
+23
+00:01:24,800 --> 00:01:29,104
+The last two put an X on six qubits at a
+time, and they compare the signs of two
+
+24
+00:01:29,104 --> 00:01:33,625
+neighbouring blocks, which is how a phase
+flip anywhere inside a block gets noticed.
+
+25
+00:01:34,200 --> 00:01:38,399
+If you're wondering how a check like that
+actually gets measured, here is the
+
+26
+00:01:38,399 --> 00:01:42,654
+circuit for the first one, where an extra
+ancilla qubit starts in zero and two
+
+27
+00:01:42,654 --> 00:01:46,909
+CNOTs copy the parity of qubits one and
+two onto it, just as in lecture seven.
+
+28
+00:01:47,500 --> 00:01:51,941
+An X check is read the other way round,
+with a Hadamard on the ancilla before
+
+29
+00:01:51,941 --> 00:01:55,973
+and after, and in between the ancilla
+controls an X on each of its six
+
+30
+00:01:55,973 --> 00:02:00,122
+qubits, so the ancilla reads one only
+when that check answers minus one.
+
+31
+00:02:00,567 --> 00:02:04,743
+<font color="#7FD4E6">But the X checks and the Z checks
+overlap. Do they still commute?</font>
+
+32
+00:02:05,067 --> 00:02:09,214
+They do. Every Z pair sits either
+completely inside an X check or
+
+33
+00:02:09,214 --> 00:02:13,425
+completely outside it, so the two
+share either two qubits or none,
+
+34
+00:02:13,425 --> 00:02:16,535
+and an even number of clashes
+means they commute.
+
+35
+00:02:17,133 --> 00:02:20,793
+And with nine qubits and eight
+independent checks, each one cutting
+
+36
+00:02:20,793 --> 00:02:25,064
+the space in half, we're left with two
+dimensions, which is one logical qubit.
+
+37
+00:02:25,633 --> 00:02:29,807
+Now here is something I found strange
+the first time I saw it, which is that
+
+38
+00:02:29,807 --> 00:02:34,093
+the operator acting as a logical X on
+this code is made entirely of Z letters.
+
+39
+00:02:34,533 --> 00:02:38,664
+<font color="#7FD4E6">Wait, so Z on all nine qubits
+flips the logical bit?</font>
+
+40
+00:02:39,733 --> 00:02:44,935
+Yes. Z on the three qubits of a block
+turns the plus inside that block into a
+
+41
+00:02:44,935 --> 00:02:50,205
+minus, and logical zero and logical one
+differ by just those three signs, so Z
+
+42
+00:02:50,205 --> 00:02:55,201
+on all nine swaps them, while X on all
+nine ends up playing the logical Z.
+
+43
+00:02:56,733 --> 00:02:59,864
+Andrew Steane found a code that
+does the same job with seven
+
+44
+00:02:59,864 --> 00:03:03,048
+qubits, and it comes from a
+classical idea, which is to write
+
+45
+00:03:03,049 --> 00:03:06,233
+the numbers one to seven in
+binary as the columns of a table.
+
+46
+00:03:06,833 --> 00:03:10,085
+Each row of this table picks
+out four of the qubits, so if
+
+47
+00:03:10,085 --> 00:03:13,451
+you draw each row as a circle
+around its four, you get three
+
+48
+00:03:13,451 --> 00:03:16,303
+overlapping circles with one
+qubit in every region.
+
+49
+00:03:16,900 --> 00:03:21,765
+Every circle carries two checks, X on its
+four qubits and Z on the same four, so
+
+50
+00:03:21,765 --> 00:03:26,446
+that's six checks on seven qubits, which
+once again leaves one logical qubit.
+
+51
+00:03:27,033 --> 00:03:31,787
+And any two circles share two qubits,
+while a circle's own X and Z checks
+
+52
+00:03:31,787 --> 00:03:36,211
+share all four, so every overlap is
+even and all six checks commute.
+
+53
+00:03:36,800 --> 00:03:40,013
+So now suppose an X error hits
+qubit five. Before I light
+
+54
+00:03:40,013 --> 00:03:43,570
+anything up, which circles do you
+think are going to notice it?
+
+55
+00:03:44,767 --> 00:03:49,302
+<font color="#7FD4E6">Five sits inside circles one and
+three, but it's outside circle two.</font>
+
+56
+00:03:49,633 --> 00:03:53,687
+Exactly. So the three Z checks
+answer one, zero, one, and if
+
+57
+00:03:53,687 --> 00:03:57,603
+you read that as a number in
+binary, it comes out as five.
+
+58
+00:03:58,200 --> 00:04:01,659
+You can watch the same thing
+happen in the circuit, where each
+
+59
+00:04:01,659 --> 00:04:05,288
+circle gets its own ancilla, and
+the X on qubit five only reaches
+
+60
+00:04:05,288 --> 00:04:08,463
+the two ancillas that have a CNOT
+coming from qubit five.
+
+61
+00:04:08,900 --> 00:04:12,064
+<font color="#7FD4E6">Oh, so the syndrome is just
+the address of the qubit?</font>
+
+62
+00:04:12,400 --> 00:04:16,069
+That's it. Each qubit's column in
+the table is its own number
+
+63
+00:04:16,069 --> 00:04:19,982
+written in binary, so whichever
+qubit is hit, the syndrome spells
+
+64
+00:04:19,982 --> 00:04:23,956
+out where, and a Z error does the
+same thing through the X checks.
+
+65
+00:04:25,500 --> 00:04:30,125
+The smallest code of all uses five
+qubits, and its four checks are
+
+66
+00:04:30,125 --> 00:04:34,608
+really one string, X Z Z X I,
+shifted one place along each time.
+
+67
+00:04:35,200 --> 00:04:38,591
+Even a mixed check like this one
+can be measured the same way,
+
+68
+00:04:38,591 --> 00:04:42,149
+with the ancilla sitting between
+two Hadamards and controlling an
+
+69
+00:04:42,148 --> 00:04:45,706
+X on the first and fourth qubits
+and a Z on the second and third.
+
+70
+00:04:46,300 --> 00:04:49,694
+And now we can finally answer the
+question from the start, where the trick
+
+71
+00:04:49,694 --> 00:04:52,949
+is just to count the different cases
+that a syndrome has to tell apart.
+
+72
+00:04:53,533 --> 00:04:58,650
+On n qubits, each qubit can suffer an X,
+a Y or a Z, which makes three n single-
+
+73
+00:04:58,650 --> 00:05:03,637
+qubit errors, and then there is one more
+case where nothing went wrong at all.
+
+74
+00:05:04,233 --> 00:05:08,518
+With one logical qubit you have n
+minus one checks, and they give two to
+
+75
+00:05:08,518 --> 00:05:12,864
+the n minus one different syndromes,
+so if every case needs a syndrome of
+
+76
+00:05:12,864 --> 00:05:16,666
+its own, three n plus one can be at
+most two to the n minus one.
+
+77
+00:05:17,100 --> 00:05:22,478
+<font color="#7FD4E6">So let me try. Three qubits gives
+ten cases, but only four syndromes.</font>
+
+78
+00:05:22,800 --> 00:05:27,351
+Right. Four qubits gives thirteen
+cases and still only eight syndromes,
+
+79
+00:05:27,351 --> 00:05:31,837
+and five gives sixteen cases and
+exactly sixteen syndromes, so five is
+
+80
+00:05:31,837 --> 00:05:35,868
+the first size that fits, with not a
+single syndrome left over.
+
+81
+00:05:36,967 --> 00:05:39,939
+<font color="#7FD4E6">So my nine was almost
+twice what we need.</font>
+
+82
+00:05:40,267 --> 00:05:44,657
+It was, but it was a very reasonable
+nine, since Shor's code was the first
+
+83
+00:05:44,657 --> 00:05:48,806
+one anyone found. And I should be
+honest that this count assumes every
+
+84
+00:05:48,806 --> 00:05:52,835
+error needs its own syndrome, which
+Shor's code doesn't bother with,
+
+85
+00:05:52,835 --> 00:05:57,285
+because a Z on qubit one and a Z on
+qubit two look identical to its checks.
+
+86
+00:05:57,867 --> 00:06:01,648
+That turns out to be harmless, since
+the two of them multiply to one of
+
+87
+00:06:01,648 --> 00:06:05,321
+the checks, and fixing the wrong one
+does nothing at all. A different
+
+88
+00:06:05,322 --> 00:06:08,995
+argument shows that even codes like
+that can't get below five qubits.
+
+89
+00:06:10,533 --> 00:06:13,363
+So a code that fixes any
+single-qubit error needs a
+
+90
+00:06:13,363 --> 00:06:16,476
+different syndrome for every
+way one qubit can go wrong,
+
+91
+00:06:16,477 --> 00:06:19,647
+and five qubits turn out to
+be just enough room for that.
+
+92
+00:06:20,067 --> 00:06:25,334
+<font color="#7FD4E6">Shor's and Steane's checks were all X's or
+all Z's, though. Is that a coincidence?</font>
+
+93
+00:06:25,667 --> 00:06:30,264
+Not a coincidence at all. In section eight
+point four we'll see how codes like those
+
+94
+00:06:30,264 --> 00:06:34,417
+two can be built from a pair of classical
+codes, one for each kind of error.
