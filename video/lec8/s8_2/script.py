@@ -116,4 +116,15 @@ SPEAKER = {i: who for i, who, _ in LINES}
 # (a [tag] in a line is a direction to the voice: it is spoken to, never shown)
 import re
 
-SEGS = [(i, re.sub(r"\[[^\]]*\]\s*", "", t), t) for i, _, t in LINES]
+# how the voice must say a word it would otherwise misread (the subtitle keeps the spelling);
+# the lab name is said "Q A Con" (the user's correction, 2026-11-23)
+SAY = {'QAICON Lab': 'Q A Con Lab'}
+
+
+def spoken(t):
+    for word, say in SAY.items():
+        t = t.replace(word, say)
+    return t
+
+
+SEGS = [(i, re.sub(r"\[[^\]]*\]\s*", "", t), spoken(t)) for i, _, t in LINES]
